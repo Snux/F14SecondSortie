@@ -1,0 +1,474 @@
+#####################################################################################
+##    ____   _______   _________________  _  _____    ________  ___  ______________
+##    / __/__<  / / /  / __/ __/ ___/ __ \/ |/ / _ \  / __/ __ \/ _ \/_  __/  _/ __/
+##   / _//___/ /_  _/ _\ \/ _// /__/ /_/ /    / // / _\ \/ /_/ / , _/ / / _/ // _/
+##  /_/     /_/ /_/  /___/___/\___/\____/_/|_/____/ /___/\____/_/|_| /_/ /___/___/
+##
+## A P-ROC Project by Mark Sunnucks
+## Built on PyProcGame from Adam Preble and Gerry Stellenberg
+## Thanks to Scott Danesi for inspiration from his Earthshaker Aftershock
+#####################################################################################
+# P-ROC Game Description file for F-14 Tomcat
+PRGame:
+    # Treat this as wpc as that's how the P-ROC will see it via the interface board.
+    machineType: wpc
+    numBalls: 4
+PRFlippers:
+    - flipperLwR
+    - flipperLwL
+PRBumpers:
+    - jetBumper
+PRKickbacks:
+    rescue:
+PRPinmame:
+    # This section is specific to running the P-ROC via Pinmame.
+
+    # keyboard:
+    #   on or off - determines whether keyboard will be enabled or not
+    #   useful in a Sys11 in early debugging
+
+    # s11CreditDisplay and s11BallDisplay :
+    #   If using a Sys11 game prior which has a separate Ball/Credit display, you can put them on the
+    #   DMD.  If the value for a display is set to zero (or removed from YAML) it won't display.
+    #   Otherwise it's the vertical position of the display from the top.  Try 1 and 15 for a start.
+
+    # autoPatterDetection:
+    #   on or off - by default, Pinmame will try to automatically detect patter requirements.
+    #   there is a thread on the forum about this.  For Sys11 this should certainly be disabled,
+    #   as it does nasty things.  Likely enable for other platforms but could be useful to disable.
+
+    # doubleAlpha:
+    #   0 or 1 - set to 1 if your machine has 2 lines of 16 character alphanumeric displays.
+    #   This will adapt the code to properly handle the various display types in Sys11 machines (and a couple of WPC)
+
+    keyboard: on
+    autoPatterDetection: off
+    s11CreditDisplay: 0
+    s11BallDisplay: 0
+    doubleAlpha: 0
+PRSwitches:
+    # **** Format ****
+    # name:
+    #   number: <number>
+    #   type: <type>
+    #
+    #   <number> can be: SFx (Flipper switch, labeled Fx in WPC manual
+    #                    SDx (Dedicated switch, labeled SDx in WPC manual
+    #                    Sx  (Matrix switch, labeled x in WPC manual
+    #   <type> can be: 'NO' (normally open.  This is the default; so no need to use this)
+    #                  'NC' (normally closed.  Common for optos)
+    flipperLwR:
+        number: S27
+    flipperLwL:
+        number: S87
+    coinLeft:
+        number: S16
+    coinCenter:
+        number: S15
+    coinRight:
+        number: S14
+    up:
+        number: SD8
+    down:
+        number: SD2
+    enter:
+        number: SD5
+    exit:
+        number: SD0
+    startButton:
+        number: S13
+    tilt:
+        number: S11
+    outlaneLeft:
+        number: S85
+        tags: early_save
+    inlaneLeft:
+        number: S83
+    inlaneRight:
+        number: S84
+    outlaneRight:
+        number: S86
+        tags: early_save
+    slamTilt:
+        number: S17
+    outhole:
+        number: S22
+        tags: outhole
+    trough4:
+        number: S23
+        tags: trough, trough_eject
+    trough2:
+        number: S24
+        tags: trough
+    trough3:
+        number: S25
+        tags: trough
+    trough1:
+        number: S26
+        tags: trough
+    shooter:
+        number: S28
+        tags: shooter_lane
+    unused31:
+        number: S31
+    unused32:
+        number: S32
+    unused33:
+        number: S33
+    rampEntry:
+        number: S34
+    rightEject:
+        number: S35
+    leftCentreEject:
+        number: S36
+    rightCentreEject:
+        number: S37
+    vUK:
+        number: S38
+    leftRescue:
+        number: S41
+    rightRescue:
+        number: S42
+    unused43:
+        number: S43
+    jetBumper:
+        number: S44
+    unused45:
+        number: S45
+    bottomRampMade:
+        number: S46
+    centerRampMade:
+        number: S47
+    topRampMade:
+        number: S48
+    lowerLeftT:
+        number: S51
+    lowerLeftO:
+        number: S52
+    lowerLeftM:
+        number: S53
+    lowerRightT:
+        number: S54
+    lowerRightA:
+        number: S55
+    lowerRightC:
+        number: S56
+    unused57:
+        number: S57
+    unused58:
+        number: S58
+    target3:
+        number: S61
+    target2:
+        number: S62
+    target1:
+        number: S63
+    target4:
+        number: S64
+    target5:
+        number: S65
+    target6:
+        number: S66
+    bonusXRight:
+        number: S67
+    spinner:
+        number: S68
+    upperLeftT:
+        number: S71
+    upperLeftO:
+        number: S72
+    upperLeftM:
+        number: S73
+    upperRightT:
+        number: S74
+    upperRightA:
+        number: S75
+    upperRightC:
+        number: S76
+    yagov:
+        number: S77
+    bonusXLeft:
+        number: S78
+    slingL:
+        number: S81
+    slingR:
+        number: S82
+    unused84:
+        number: S84
+    unused85:
+        number: S85
+    unused88:
+        number: S88
+PRCoils:
+    outholeKicker_flasher1:
+        number: C01
+        tags: outhole
+    ballReleaseShooterLane_flasher2:
+        number: C02
+        tags: trough_eject
+    upKicker_flasher3:
+        number: C03
+    unusedC4_flasher4:
+        number: C04
+    centreRightEject_flasher5:
+        number: C05
+    knocker_flasher6:
+        number: C06
+    rightEject_flasher7:
+        number: C07
+    unusedC8_flasher8:
+        number: C08
+    flasher9:
+        number: C09
+    centreLeftEject:
+        number: C10
+    gi:
+        number: C11
+    yagovKickBack:
+        number: C12
+    rescueKickBack:
+        number: C13
+    acSelect:
+        number: C14
+    flasher10:
+        number: C15
+    beacons:
+        number: C16
+    leftKicker:
+        number: C17
+    rightKicker:
+        number: C18
+
+    autoLaunch:
+        number: C19
+    jetBumper:
+        number: C20
+    upperDivertor:
+        number: C21
+    lowerDivertor:
+        number: C22
+    flipperEnable:
+        number: C23
+PRLamps:
+    lightLockOn:
+        number: L11
+    lightRelease:
+        number: L12
+    blueSpecial:
+        number: L13
+    flyAgain:
+        number: L14
+    leftRescue:
+        number: L15
+    kill:
+        number: L16
+    rightRescue:
+        number: L17
+    kickBack:
+        number: L18
+    alpha:
+        number: L21
+    bravo:
+        number: L22
+    charlie:
+        number: L23
+    delta:
+        number: L24
+    echo:
+        number: L25
+    foxtrot:
+        number: L26
+    golf:
+        number: L27
+    insurance:
+        number: L28
+    bonus1K:
+        number: L31
+    bonus2K:
+        number: L32
+    bonus4K:
+        number: L33
+    bonus8K:
+        number: L34
+    bonus16K:
+        number: L35
+    bonus32K:
+        number: L36
+    bonus64K:
+        number: L37
+    special:
+        number: L38
+    bonus2X:
+        number: L41
+    bonus3X:
+        number: L42
+    bonus4X:
+        number: L43
+    bonus5X:
+        number: L44
+    bonus6X:
+        number: L45
+    bonus7X:
+        number: L46
+    bonus8X:
+        number: L47
+    bonusXLeft:
+        number: L48
+    lowerLeftT:
+        number: L51
+    lowerLeftO:
+        number: L52
+    lowerLeftM:
+        number: L53
+    lowerRightT:
+        number: L54
+    lowerRightA:
+        number: L55
+    lowerRightC:
+        number: L56
+    inLanes:
+        number: L57
+    landing:
+        number: L58
+    target3:
+        number: L61
+    target2:
+        number: L62
+    target1:
+        number: L63
+    target4:
+        number: L64
+    target5:
+        number: L65
+    target6:
+        number: L66
+    release:
+        number: L67
+    lockOn:
+        number: L68
+    upperLeftT:
+        number: L71
+    upperLeftO:
+        number: L72
+    upperLeftM:
+        number: L73
+    upperRightT:
+        number: L74
+    upperRightA:
+        number: L75
+    upperRightC:
+        number: L76
+    bonusXRight:
+        number: L77
+    spinner2K:
+        number: L78
+    upperLock:
+        number: L81
+    middleLock:
+        number: L82
+    lowerLock:
+        number: L83
+    upperLanding:
+        number: L84
+    middleLanding:
+        number: L85
+    lowerLanding:
+        number: L86
+    ripOff:
+        number: L87
+    extraBall:
+        number: L88
+    kill1red:
+        number: 200
+    kill2red:
+        number: 201
+    kill3red:
+        number: 202
+    kill4red:
+        number: 203
+    kill5red:
+        number: 204
+    kill6red:
+        number: 205
+    kill7red:
+        number: 206
+    kill1green:
+        number: 207
+    kill2green:
+        number: 208
+    kill3green:
+        number: 209
+    kill4green:
+        number: 210
+    kill5green:
+        number: 211
+    kill6green:
+        number: 212
+    kill7green:
+        number: 213
+    kill1blue:
+        number: 215
+    kill2blue:
+        number: 216
+    kill3blue:
+        number: 217
+    kill4blue:
+        number: 218
+    kill5blue:
+        number: 219
+    kill6blue:
+        number: 220
+    kill7blue:
+        number: 221
+
+
+PRBallSave:
+
+    pulseCoils:
+
+    resetSwitches:
+#        shooterL: open
+#        outlaneL: open
+#        inlaneL: open
+#        threeBankTargets: open
+#        rightTopPost: open
+#        captiveBall1: open
+#        mystery: open
+#        leftRampEnter: closed
+#        leftRollover: open
+#        inlaneR: open
+#        topCenterRollover: open
+#        leftScorePost: open
+#        subwayEnter1: open
+#        subwayEnter2: open
+#        shooterR: open
+#        outlaneR: open
+#        inlaneFarR: open
+#        slingL: open
+#        slingR: open
+#        captiveBall2: open
+#        dropTargetJ: open
+#        dropTargetU: open
+#        dropTargetD: open
+#        dropTargetG: open
+#        dropTargetE: open
+#        trough1: closed
+#        leftRampEnter: closed
+#        leftRampToLock: closed
+#        leftRampExit: closed
+#        rightRampEnter: closed
+#        centerRampExit: closed
+#        captiveBall3: open
+#        topRightOpto: closed
+#        topRampExit: closed
+#        rightRampExit: closed
+#        globePosition2: open
+    stopSwitches:
+#        shooterR: closed
+#        shooterL: closed
+#        popperL: active
+#        popperR: active
+#        # don't ball search if a flipper button is pressed
+#        flipperLwL: closed
+#        flipperLwR: closed
+
