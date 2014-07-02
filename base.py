@@ -65,7 +65,14 @@ class BaseGameMode(game.Mode):
 		#self.game.sound.play('game_start_rev')
 		#self.delay(delay=1.2,handler=self.game.sound.play,param='game_start')
 		#self.game.sound.play('game_start')
-		
+
+                # Set up some handlers for the main playfield switches.
+                for switch in self.game.switches:
+                    if switch.name.find('target', 0) != -1:
+                        self.add_switch_handler(name=switch.name, event_type='active', \
+				delay=0.01, handler=self.target1_6)
+
+
 		self.game.utilities.log('Game Started')
 		
 	def start_ball(self):
@@ -234,6 +241,12 @@ class BaseGameMode(game.Mode):
         def sw_rightEject_closed_for_1s(self,sw):
                 self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
 		return procgame.game.SwitchStop
+
+        def target1_6(self,sw):
+            self.game.utilities.score(100)
+            self.game.utilities.flickerOn(sw.name)   # switch on the lamp at the target
+            self.game.utilities.set_player_stats(sw.name,True)
+            #self.game.current_player().targetmade[sw.name]=True
 
         def sw_rightCentreEject_closed_for_1s(self,sw):
                 self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)

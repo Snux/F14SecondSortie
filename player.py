@@ -48,8 +48,8 @@ class Player(procgame.game.Player):
 			self.player_stats['bonus']=0
 			self.player_stats['center_shots']=0
 
-			### Drop Target Stats ####################################
-			self.player_stats['drop_banks_completed']=0
+			### Kickback Stats ####################################
+			self.player_stats['kickback_active']=False
 
 			### Jackpot Stats ########################################
 			self.player_stats['jackpot_level']=1
@@ -72,15 +72,27 @@ class Player(procgame.game.Player):
 			self.player_stats['skillshot_active']=False
 			self.player_stats['skillshot_x']=1
 
-			### Zone Status Stats ####################################
-			self.player_stats['active_zone_limit']=3
-			self.player_stats['zones_visited']=0
-			self.player_stats['zone1_status']=-1
-			self.player_stats['zone2_status']=-1
-			self.player_stats['zone3_status']=-1
-			self.player_stats['zone4_status']=-1
-			self.player_stats['zone5_status']=-1
-			self.player_stats['zone6_status']=-1
-			self.player_stats['zone7_status']=-1
-			self.player_stats['zone8_status']=-1
-			self.player_stats['zone9_status']=-1
+			### Kill Status Stats ####################################
+			## Count of completed missions
+			self.player_stats['kills_completed']=0
+
+                        ## Per mission status
+                        ## -1 = Initial
+                        ##  0 = Available
+                        ##  1 = In progress
+                        ##  2 = Complete
+			self.player_stats['alpha_kill_status']=-1
+			self.player_stats['bravo_kill_status']=-1
+			self.player_stats['charlie_kill_status']=-1
+			self.player_stats['delta_kill_status']=-1
+			self.player_stats['echo_kill_status']=-1
+			self.player_stats['fox_kill_status']=-1
+			self.player_stats['golf_kill_status']=-1
+
+                        ## Status of the 1-6 lamps
+                        self.player_stats['target1']=False
+			self.player_stats['target2']=False
+                        self.player_stats['target3']=False
+                        self.player_stats['target4']=False
+                        self.player_stats['target5']=False
+                        self.player_stats['target6']=False

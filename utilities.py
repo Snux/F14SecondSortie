@@ -34,8 +34,7 @@ import time
 import player
 from player import *
 
-ser=serial.Serial("COM6",300)
-time.sleep(1)
+
 #ser.setPort("COM6")
 #ser.baudrate=115200
 #ser.open()
@@ -59,8 +58,11 @@ class UtilitiesMode(game.Mode):
 			self.ACNameArray.append('knocker_flasher6')
 			self.ACNameArray.append('rightEject_flasher7')
                         self.ACNameArray.append('unusedC8_flasher8')
-                        
-                        
+
+                        self.sect_dict = self.game.config['PRGame']
+                        if self.sect_dict['arduino']:
+                            self.ser=serial.Serial("COM6",300)
+                            time.sleep(1)
                         
 
 	#######################
@@ -177,30 +179,10 @@ class UtilitiesMode(game.Mode):
                 except:
                     pass
 
-	def displayText(self,priority,topText=' ',bottomText=' ',seconds=2,justify='left',topBlinkRate=0,bottomBlinkRate=0):
-		# This function will be used as a very basic display prioritizing helper
-		# Check if anything with a higher priority is running
-		if (priority >= self.currentDisplayPriority):
-			self.cancel_delayed('resetDisplayPriority')
-			self.game.alpha_score_display.cancel_script()
-			self.game.alpha_score_display.set_text(topText,0,justify)
-			self.game.alpha_score_display.set_text(bottomText,1,justify)
-			self.delay(name='resetDisplayPriority',event_type=None,delay=seconds,handler=self.resetDisplayPriority)
-			self.currentDisplayPriority = priority
-
 	def resetDisplayPriority(self):
 		self.currentDisplayPriority = 0
 		#self.updateBaseDisplay()
 
-	def updateBaseDisplay(self):
-		print "Update Base Display Called"
-		if (self.currentDisplayPriority == 0 and self.game.tiltStatus == 0 and self.game.ball <> 0):
-			self.p = self.game.current_player()
-			self.game.alpha_score_display.cancel_script()
-			self.game.alpha_score_display.set_text(locale.format("%d", self.p.score, grouping=True),0,justify='left')
-			self.game.alpha_score_display.set_text(self.p.name.upper() + "  BALL "+str(self.game.ball),1,justify='right')
-			print self.p.name
-			print "Ball " + str(self.game.ball)
 	
 	######################
 	#### GI Functions ####
@@ -211,11 +193,13 @@ class UtilitiesMode(game.Mode):
 	def enableGI(self):
 		self.game.coils.gi.disable()
 
+        ######################
+        #### Arduino call ####
+        ######################
         def write_arduino(self,servalue):
                 #self.log('Arduino "%s"' % (servalue))
-                ser.write(servalue)
-                #self.ser.flush()
-                #ser.write(servalue)
+                if self.sect_dict['arduino']:
+                    ser.write(servalue)
 
 
 	###################################
@@ -227,19 +211,30 @@ class UtilitiesMode(game.Mode):
 			#self.game.sound.play_music('main',loops=-1)
 			self.game.shooter_lane_status = 0
 
+        def flickerOn(self,lamp,duration=0.75,schedule=0x55555555):
+                """
+                Flickers a lamp briefly and then switches it on
+                Optionally specify the duration of the flicker and the lamp schedule
+
+                Usage from other modes :
+                self.game.effects.flickerOn(lamp='shootAgain')
+                self.game.effects.flickerOn(lamp='shootAgain', duration=3.0)
+                """
+                self.game.lamps[lamp].schedule(schedule=schedule, cycle_seconds=duration, now=True)
+                self.delay(name=lamp+"on",event_type=None,delay=duration,handler=self.game.lamps[lamp].enable)
 
 	##########################
 	#### Player Functions ####
 	##########################
 	def set_player_stats(self,id,value):
 		if (self.game.ball <> 0):
-			self.p = self.game.current_player()
-			self.p.player_stats[id]=value
+			#self.p = self.game.current_player()
+			self.game.current_player().player_stats[id]=value
 
 	def get_player_stats(self,id):
 		if (self.game.ball <> 0):
-			self.p = self.game.current_player()
-			return self.p.player_stats[id]
+			#self.p = self.game.current_player()
+			return self.game.current_player().player_stats[id]
 		else:
 			return False
 
