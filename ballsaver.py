@@ -54,7 +54,7 @@ class BallSaver(game.Mode):
 		
 	def startBallSaverLamps(self):
 		self.game.lamps.insurance.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=False)
-                self.game.lamps.kill6red.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=False)
+                
 
 	def startBallSaverLampsWarning(self):
 		self.game.lamps.insurance.schedule(schedule=0x0F0F0F0F, cycle_seconds=0, now=False)

@@ -1,5 +1,5 @@
 Audits: {3-Bank Drop Targets Hits: 0, Average Ball Time: 0, Average Game Time: 0,
-  Average Score: 0, Balls Played: 69, Center Ramps: 0, Credits: 0, Games Played: 1,
+  Average Score: 0, Balls Played: 106, Center Ramps: 0, Credits: 0, Games Played: 1,
   Games Started: 0, Jet Hits: 0, Left Flippers: 0, Left Inlanes: 0, Left Outlane Drains: 0,
   Right Flippers: 0, Right Inlanes: 0, Right Outlane Drains: 0, Saucers: 0, Shelter Visits: 0,
   Skyway Tolls: 0, Tilts: 0, Warnings: 0}
@@ -16,6 +16,6 @@ LastGameScores: {LastPlayer1Score: ' ', LastPlayer2Score: ' ', LastPlayer3Score:
   LastPlayer4Score: ' '}
 MilesChampion:
 - {date: 'Sun Oct  3 17:38:46 2010', inits: SRD, score: 30}
-Time Stamps: {First Boot-Up: '19 Jun 2014 15:08', Last Boot-Up: '02 Jul 2014 20:49',
+Time Stamps: {First Boot-Up: '19 Jun 2014 15:08', Last Boot-Up: '03 Jul 2014 14:53',
   Last GC Score Entry: Not Set, Last Game Start: Not Set, Last High Score Entry: Not
     Set, Last Replay: Not Set, Overall Game Time: 0, Overall Time On: 0}

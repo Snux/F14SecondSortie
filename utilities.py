@@ -59,10 +59,12 @@ class UtilitiesMode(game.Mode):
 			self.ACNameArray.append('rightEject_flasher7')
                         self.ACNameArray.append('unusedC8_flasher8')
 
+                        ## Open up the Arduino COM port if one is specified.
                         self.sect_dict = self.game.config['PRGame']
-                        if self.sect_dict['arduino']:
-                            self.ser=serial.Serial("COM6",300)
-                            time.sleep(1)
+                        if (self.sect_dict['arduino'] != False) :
+                            self.ser=serial.Serial(port=self.sect_dict['arduino'],baudrate=9600,timeout=1)
+                            ## Need to sleep here for a couple of seconds to let the port settle down
+                            time.sleep(2)
                         
 
 	#######################
@@ -197,10 +199,19 @@ class UtilitiesMode(game.Mode):
         #### Arduino call ####
         ######################
         def write_arduino(self,servalue):
-                #self.log('Arduino "%s"' % (servalue))
-                if self.sect_dict['arduino']:
-                    ser.write(servalue)
+                if (self.sect_dict['arduino'] != False):
+                    self.log('Arduino "%s"' % (servalue[0]))
+                    if len(servalue) == 6:
+                        self.ser.write(servalue)
+                    else:
+                        self.log('Length error')
+                    if len(self.ser.read()) == 1:
+                        self.log('Got handshake')
+                    else:
+                        self.log('Handshake failed')
 
+        def arduino_count(self,display,start,direction,limit,ticks):
+            self.write_arduino('C'+chr(display)+chr(start)+chr(direction)+chr(limit)+chr(ticks))
 
 	###################################
 	#### Music and Sound Functions ####

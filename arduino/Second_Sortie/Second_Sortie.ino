@@ -13,6 +13,8 @@
 //
 // Directive D controls the LED displays.  Next byte specifies which display (0 or 1)
 // then the next 4 contain raw data for the segments (one per character
+//
+// Directive C runs a counter.  Next byte signifies which display.  Then start count, up/down, limit, ticks per count
 
 
 // Included libraries
@@ -39,12 +41,20 @@ volatile unsigned long green[7];
 volatile unsigned long blue[7];
 volatile unsigned long sched_reset=0xFFFFFFFF;
 
+// Holds data for the counter when used.
+volatile byte count_display,count_start, count_limit, count_ticks, count_ticks_per_count;
+volatile int count_direction;
+
 // Stored lamp schedules coming in from USB
 volatile unsigned long red_stored[7];
 volatile unsigned long green_stored[7];
 volatile unsigned long blue_stored[7];
 
 void setup() {
+  
+  // Set count_display to 99 which means not in use
+  count_display = 99;
+  count_ticks = 0;
 
   // Clear down the stored schedules, will switch all the lamps off
   byte i;
@@ -55,7 +65,7 @@ void setup() {
   }
   
   // Setup the serial port, need to find the fastest reliable rate
-  Serial.begin(300);
+  Serial.begin(9600);
 
   // Setup the blinky parts
   matrix.begin(0x70);
@@ -90,6 +100,17 @@ void loop() {
     // Take action depending on the command
     switch (command) {
       
+      // Counter control
+      case 'C':
+        count_display = byte1;
+        count_start = byte2;
+        if (byte3 == 0) count_direction = 1;
+        else count_direction = -1;
+        count_limit = byte4;
+        count_ticks_per_count = byte5;
+        count_ticks = byte5;  // setting at limit will force immediate refresh
+        break;
+      
       // Pixel control
       case 'R':
       case 'G':
@@ -109,28 +130,55 @@ void loop() {
       // 7 seg control  
       case 'D':
         if (byte1 == 0) {
-        matrix2.writeDigitRaw(0,byte2);
-        matrix2.writeDigitRaw(1,byte3);
-        matrix2.writeDigitRaw(3,byte4);
-        matrix2.writeDigitRaw(4,byte5);
-        matrix2.writeDisplay();
+          if (count_display == 0) count_display = 99;
+          matrix2.writeDigitRaw(0,byte2);
+          matrix2.writeDigitRaw(1,byte3);
+          matrix2.writeDigitRaw(3,byte4);
+          matrix2.writeDigitRaw(4,byte5);
+          matrix2.writeDisplay();
         }
         else {
-        matrix.writeDigitRaw(0,byte2);
-        matrix.writeDigitRaw(1,byte3);
-        matrix.writeDigitRaw(3,byte4);
-        matrix.writeDigitRaw(4,byte5);
-        matrix.writeDisplay();
+          if (count_display == 1) count_display = 99;
+          matrix.writeDigitRaw(0,byte2);
+          matrix.writeDigitRaw(1,byte3);
+          matrix.writeDigitRaw(3,byte4);
+          matrix.writeDigitRaw(4,byte5);
+          matrix.writeDisplay();
         }
         break;
-        
-    } 
-  }
+    }
+    // Throw a character back to the game, so it knows we're ready for some more
+    Serial.write('X');
+    }
     
-}
+    // If we have a display performing an active count, then process it
+    if (count_display != 99) {
+      // See if we've got enough ticks to update the display
+      if (count_ticks >= count_ticks_per_count) {
+        count_ticks = 0;
+        if (count_display == 0) {
+          matrix2.print(count_start,DEC);
+          matrix2.writeDisplay();
+        }
+        else {
+          matrix.print(count_start,DEC);
+          matrix.writeDisplay();
+        }
+
+        if (count_start == count_limit) count_display = 99;
+        count_start += count_direction;
+      }
+    }
+          
+ }
+    
+
 
 // Routine called by the hardware timer interrupt
 void scheduleProcess() {
+  
+  // Increment the tick counter
+  count_ticks ++;
   
   // Grab the current (right most) bit of each schedule and send to the relevant pixel
   // then shift each schedule right

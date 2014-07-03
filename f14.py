@@ -39,6 +39,7 @@ from centerramp import *
 from player import *
 from ballsaver import *
 from bonus import *
+from mission import *
 #from droptargets import *
 #from collectzones import *
 #from spinner import *
@@ -137,6 +138,7 @@ class F14SecondSortie(game.BasicGame):
 		self.trough = Trough(self,0)
 		self.base_mode = BaseGameMode(self,0)
 		self.attract_mode = AttractMode(self,1)
+                self.mission = MissionMode(self,2)
 		#self.centerramp_mode = CenterRampMode(self,8)
 		#self.drops_mode = DropTargets(self,9)
 		#self.collect_mode = CollectZones(self,10)
@@ -151,6 +153,7 @@ class F14SecondSortie(game.BasicGame):
 		self.modes.add(self.utilities)
 		self.modes.add(self.trough)
 		self.modes.add(self.base_mode)
+                self.modes.add(self.mission)
 
 	def save_settings(self):
 			super(F14SecondSortie, self).save_settings(settings_path)

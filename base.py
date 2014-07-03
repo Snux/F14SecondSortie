@@ -105,12 +105,24 @@ class BaseGameMode(game.Mode):
 		#### Enable GI in case it is disabled from TILT ####
 		self.game.utilities.enableGI()
 
+                self.update_lamps()
+
 		#### Start Shooter Lane Music ####
 		self.game.sound.play_music('dangerzone',loops=-1)
 		self.game.shooter_lane_status = 1
 
 		#### Debug Info ####
 		print "Ball Started"
+
+
+        ### Update lamps, generally called when the ball starts
+        def update_lamps(self):
+            for switch in self.game.switches:
+                    if switch.name.find('target', 0) != -1:
+                        if self.game.utilities.get_player_stats(switch.name):
+                            self.game.lamps[switch.name].enable()
+                        else:
+                            self.game.lamps[switch.name].disable()
 
 	def finish_ball(self):
 		self.game.modes.add(self.game.bonus_mode)
@@ -243,11 +255,20 @@ class BaseGameMode(game.Mode):
 		return procgame.game.SwitchStop
 
         def target1_6(self,sw):
-            self.game.utilities.score(100)
-            self.game.utilities.flickerOn(sw.name)   # switch on the lamp at the target
-            self.game.utilities.set_player_stats(sw.name,True)
-            #self.game.current_player().targetmade[sw.name]=True
+            if self.game.utilities.get_player_stats(sw.name):
+                self.game.utilities.score(100)
+            else:
+                self.game.utilities.score(1000)
+                self.game.utilities.flickerOn(sw.name)   # switch on the lamp at the target
+                self.game.utilities.set_player_stats(sw.name,True)
+                completed = self.game.utilities.get_player_stats('target1-6_completed') + 1
+                
+                self.game.utilities.set_player_stats('target1-6_completed',completed)
+                # If we've lit all 6, need to add the
+                if completed == 6:
+                    self.game.mission.completed1_6()
 
+                
         def sw_rightCentreEject_closed_for_1s(self,sw):
                 self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
 		return procgame.game.SwitchStop
@@ -286,6 +307,8 @@ class BaseGameMode(game.Mode):
 	##################################################
 	def sw_rampEntry_active(self, sw):
 		self.game.utilities.setBallInPlay(True)
+                self.game.utilities.write_arduino('D'+chr(0)+chr(113)+chr(62)+chr(121)+chr(56))
+                self.game.utilities.arduino_count(1,100,1,0,16)
 		return procgame.game.SwitchStop
 
 	def sw_shooter_open(self, sw):

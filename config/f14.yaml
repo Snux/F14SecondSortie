@@ -13,7 +13,8 @@ PRGame:
     # Treat this as wpc as that's how the P-ROC will see it via the interface board.
     machineType: wpc
     numBalls: 4
-    arduino: False
+    # Should we attempt to initialise and use the Arduino?
+    arduino: COM6
 PRFlippers:
     - flipperLwR
     - flipperLwL
@@ -381,46 +382,67 @@ PRLamps:
         number: L88
     kill1red:
         number: 200
+        tags: R
+    kill1green:
+        number: 200
+        tags: G
+    kill1blue:
+        number: 200
+        tags: B
     kill2red:
         number: 201
+        tags: R
+    kill2green:
+        number: 201
+        tags: G
+    kill2blue:
+        number: 201
+        tags: B
     kill3red:
         number: 202
+        tags: R
+    kill3green:
+        number: 202
+        tags: G
+    kill3blue:
+        number: 202
+        tags: B
     kill4red:
         number: 203
+        tags: R
+    kill4green:
+        number: 203
+        tags: G
+    kill4blue:
+        number: 203
+        tags: B
     kill5red:
         number: 204
+        tags: R
+    kill5green:
+        number: 204
+        tags: G
+    kill5blue:
+        number: 204
+        tags: B
     kill6red:
         number: 205
+        tags: R
+    kill6green:
+        number: 205
+        tags: G
+    kill6blue:
+        number: 205
+        tags: B
     kill7red:
         number: 206
-    kill1green:
-        number: 207
-    kill2green:
-        number: 208
-    kill3green:
-        number: 209
-    kill4green:
-        number: 210
-    kill5green:
-        number: 211
-    kill6green:
-        number: 212
+        tags: R
     kill7green:
-        number: 213
-    kill1blue:
-        number: 215
-    kill2blue:
-        number: 216
-    kill3blue:
-        number: 217
-    kill4blue:
-        number: 218
-    kill5blue:
-        number: 219
-    kill6blue:
-        number: 220
+        number: 206
+        tags: G
     kill7blue:
-        number: 221
+        number: 206
+        tags: B
 
 
 PRBallSave:
