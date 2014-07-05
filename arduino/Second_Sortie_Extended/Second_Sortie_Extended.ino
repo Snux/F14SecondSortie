@@ -1,5 +1,7 @@
 //Arduino sketch for handling various functions in F-14 Second Sortie
 //
+// TO DO - add code to allow the alphanumeric displays to be used as counters to.
+//
 // Currently handles the 7 RGB 'Neopixels' for the KILL inserts and
 // two 7 segment LED displays.  The code could be tuned for sure, but
 // it currently works fine.
@@ -11,7 +13,7 @@
 // Directive R, G and B control the neopixels.  Next byte contains the lamp number (0-6), 
 // the next four hold the lamp schedule (same as used in pyprocgame for normal lamps
 //
-// Directive D controls the LED displays.  Next byte specifies which display (0 - 5)
+// Directives D controls the LED displays with raw data.  Next byte specifies which display (0 - 5)
 // then the next 4 contain raw data for the segments (one per character
 //
 // Directive C runs a counter.  Next byte signifies which display.  Then start count, up/down, limit, ticks per count
@@ -172,6 +174,7 @@ void loop() {
           numeric4[byte1].print(count_display[byte1],DEC);
           numeric4[byte1].writeDisplay();
         } else {
+          // TO - DO
         }
         break;
 
@@ -201,6 +204,7 @@ void loop() {
           numeric4[byte1].writeDisplay();
         }
         else {
+          // TO DO
         }
         break;
 
