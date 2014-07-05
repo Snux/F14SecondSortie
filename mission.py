@@ -75,7 +75,17 @@ class MissionMode(game.Mode):
                     self.game.utilities.set_player_stats('target6',False)
                     self.game.utilities.set_player_stats('target1-6_completed',0)
 
-                    self.game.update_lamps()
+                # Determine the mission the player will do next, if there is one.
+                next_mission = 'None';
+                for mission in self.kill.list:
+                    if self.game.utilities.get_player_stats(mission) == 0 and next_mission == 'None':
+                        next_mission = mission;
+                self.game.utilities.set_player_stats('next_mission',next_mission)
+
+
+
+                self.game.update_lamps()
+
 
 
 	def update_lamps(self):
@@ -102,5 +112,12 @@ class MissionMode(game.Mode):
                         self.game.lamps[mission+'red'].disable()
                         self.game.lamps[mission+'green'].enable()
                         self.game.lamps[mission+'blue'].disable()
+
+                # If there is a mission waiting to be played, flash the release lamp
+                if self.game.utilities.get_player_stats('next_mission') != 'None':
+                    self.game.lamps.release.schedule(schedule=0xF0F0F0F0)
+                    self.log.info(" - next mission to play is " +self.game.utilities.get_player_stats('next_mission'))
+                else:
+                    self.game.lamps.release.disable()
 
 	
