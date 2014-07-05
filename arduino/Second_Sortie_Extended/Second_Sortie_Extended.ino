@@ -11,11 +11,16 @@
 // Directive R, G and B control the neopixels.  Next byte contains the lamp number (0-6), 
 // the next four hold the lamp schedule (same as used in pyprocgame for normal lamps
 //
-// Directive D controls the LED displays.  Next byte specifies which display (0 or 1)
+// Directive D controls the LED displays.  Next byte specifies which display (0 - 5)
 // then the next 4 contain raw data for the segments (one per character
 //
 // Directive C runs a counter.  Next byte signifies which display.  Then start count, up/down, limit, ticks per count
-
+//
+// Directive N will send a number to the numeric displays.  Next byte signifies which display.  Next 2 bytes contain number.
+//
+// Directive A will send an alphanumeric string to one of the A/N displays.  Next byte specifies display.  Next 4 contain string
+//
+// Directive Q will send the value of a counter back to the PC.  Next byte contains the counter number.
 
 // Included libraries
 #include <Wire.h>                 // For i2c control
@@ -151,7 +156,7 @@ void loop() {
       
       // Set display counting
       case 'C':
-        count_limit[byte1] = byte3 * 255 + byte4;
+        count_limit[byte1] = byte3 * 256 + byte4;
         count_active[byte1] = true;
         if (byte2 == 0) count_direction[byte1] = 1;
         else count_direction[byte1] = -1;
@@ -161,7 +166,7 @@ void loop() {
       
       // Set display to a numeric value
       case 'N':
-        count_display[byte1] = byte2 * 255 + byte3;
+        count_display[byte1] = byte2 * 256 + byte3;
         count_active[byte1] = false;
         if (byte1 < 2) {
           numeric4[byte1].print(count_display[byte1],DEC);
@@ -173,9 +178,9 @@ void loop() {
       // Add or subtract a value to a counter
       case 'I':
         if (byte2 == 0) {
-          count_display[byte1] += byte3 * 255 + byte4;
+          count_display[byte1] += byte3 * 256 + byte4;
         } else {
-          count_display[byte1] -= byte3 * 255 + byte4;
+          count_display[byte1] -= byte3 * 256 + byte4;
         }
         numeric4[byte1].print(count_display[byte1],DEC);
         numeric4[byte1].writeDisplay();
@@ -228,7 +233,10 @@ void loop() {
         if (command == 'G') green_stored[byte1]=schedule;
         if (command == 'B') blue_stored[byte1]=schedule;
         break;
-        
+
+      // PC is queerying the value of a counter - sent it back up the serial line in 2 bytes
+      case 'Q':
+        Serial.write('Q'+char(count_display[byte1] / 256)+char(count_display[byte1] % 256));
       
     }
     // Throw a character back to the game, so it knows we're ready for some more
