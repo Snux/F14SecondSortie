@@ -268,19 +268,19 @@ PRLamps:
         number: L17
     kickBack:
         number: L18
-    alpha:
+    kill1:
         number: L21
-    bravo:
+    kill2:
         number: L22
-    charlie:
+    kill3:
         number: L23
-    delta:
+    kill4:
         number: L24
-    echo:
+    kill5:
         number: L25
-    foxtrot:
+    kill6:
         number: L26
-    golf:
+    kill7:
         number: L27
     insurance:
         number: L28

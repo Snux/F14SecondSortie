@@ -73,6 +73,7 @@ class Player(procgame.game.Player):
 			self.player_stats['kills_completed']=0
                         self.player_stats['target1-6_completed']=0
                         self.player_stats['next_mission']='None'
+                        self.player_stats['mission_in_progress']='None'
 
                         ## Per mission status
                         ## -1 = Initial

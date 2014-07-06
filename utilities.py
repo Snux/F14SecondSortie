@@ -208,7 +208,8 @@ class UtilitiesMode(game.Mode):
                     if len(self.ser.read()) == 1:
                         self.log('Got handshake')
                     else:
-                        self.log('Handshake failed')
+                        self.log('Handshake failed - disable Arduino')
+                        self.sect_dict['arduino'] = False
 
         def arduino_count(self,display,start,direction,limit,ticks):
             self.write_arduino('C'+chr(display)+chr(start)+chr(direction)+chr(limit)+chr(ticks))

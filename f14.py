@@ -139,6 +139,7 @@ class F14SecondSortie(game.BasicGame):
 		self.base_mode = BaseGameMode(self,0)
 		self.attract_mode = AttractMode(self,1)
                 self.mission = MissionMode(self,2)
+                self.kill1mission = Kill1Mode(self,3)
 		#self.centerramp_mode = CenterRampMode(self,8)
 		#self.drops_mode = DropTargets(self,9)
 		#self.collect_mode = CollectZones(self,10)

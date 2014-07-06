@@ -1,6 +1,7 @@
 //Arduino sketch for handling various functions in F-14 Second Sortie
 //
 // TO DO - add code to allow the alphanumeric displays to be used as counters to.
+//       - add some error handling.
 //
 // Currently handles the 7 RGB 'Neopixels' for the KILL inserts and
 // two 7 segment LED displays.  The code could be tuned for sure, but
@@ -23,6 +24,9 @@
 // Directive A will send an alphanumeric string to one of the A/N displays.  Next byte specifies display.  Next 4 contain string
 //
 // Directive Q will send the value of a counter back to the PC.  Next byte contains the counter number.
+
+//Code version number
+int CODE_VERSION = 2;
 
 // Included libraries
 #include <Wire.h>                 // For i2c control
@@ -96,35 +100,15 @@ void setup() {
   // Initialise the displays and neopixels
   numeric4[0].begin(0x70);
   numeric4[1].begin(0x71);
-  alpha4[0].begin(0x72);
+  alpha4[0].begin(0x75);
   alpha4[1].begin(0x73);
-  alpha4[2].begin(0x74);
-  alpha4[3].begin(0x75);
+  alpha4[2].begin(0x72);
+  alpha4[3].begin(0x74);
   strip.begin();
-  numeric4[0].writeDisplay();
-  numeric4[1].writeDisplay();
-
-  for (i=0;i<4;i++) {
-    alpha4[i].writeDigitRaw(3, 0x0);
-    alpha4[i].writeDigitRaw(0, 0xFFFF);
-    alpha4[i].writeDisplay();
-    delay(200);
-    alpha4[i].writeDigitRaw(0, 0x0);
-    alpha4[i].writeDigitRaw(1, 0xFFFF);
-    alpha4[i].writeDisplay();
-    delay(200);
-    alpha4[i].writeDigitRaw(1, 0x0);
-    alpha4[i].writeDigitRaw(2, 0xFFFF);
-    alpha4[i].writeDisplay();
-    delay(200);
-    alpha4[i].writeDigitRaw(2, 0x0);
-    alpha4[i].writeDigitRaw(3, 0xFFFF);
-    alpha4[i].writeDisplay();
-    delay(200);
-    alpha4[i].clear();
-    alpha4[i].writeDisplay();  
-  }
   
+  
+
+  boot_display();
   
   // Set the pixel brightness
   strip.setBrightness(128);
@@ -199,8 +183,8 @@ void loop() {
         if (byte1 < 2) {
           numeric4[byte1].writeDigitRaw(0,byte2);
           numeric4[byte1].writeDigitRaw(1,byte3);
-          numeric4[byte1].writeDigitRaw(2,byte4);
-          numeric4[byte1].writeDigitRaw(3,byte5);
+          numeric4[byte1].writeDigitRaw(3,byte4);
+          numeric4[byte1].writeDigitRaw(4,byte5);
           numeric4[byte1].writeDisplay();
         }
         else {
@@ -241,6 +225,7 @@ void loop() {
       // PC is queerying the value of a counter - sent it back up the serial line in 2 bytes
       case 'Q':
         Serial.write('Q'+char(count_display[byte1] / 256)+char(count_display[byte1] % 256));
+        break;
       
     }
     // Throw a character back to the game, so it knows we're ready for some more
@@ -305,6 +290,56 @@ void scheduleProcess() {
   }
   
 }  
+
+// Throw something on the display to start with
+void boot_display() {
+  int i;
+  // Put the identifier for each display on the display for short while
+  for (i=0;i<6;i++) {
+    if (i < 2) {
+      numeric4[i].print(i,DEC);
+      numeric4[i].writeDisplay();
+    } else {
+      alpha4[i-2].clear();
+      alpha4[i-2].writeDigitAscii(3, char(i+48));
+      alpha4[i-2].writeDisplay();
+    }
+  }
+  
+  delay(500);
+  numeric4[0].writeDigitRaw(0,B01110001);  //F
+  numeric4[0].writeDigitRaw(1,B01000000);  //-
+  numeric4[0].writeDigitRaw(3,B00000110);  //1
+  numeric4[0].writeDigitRaw(4,B01100110);  //4
+  numeric4[1].print(CODE_VERSION,DEC);
+  numeric4[0].writeDisplay();
+  numeric4[1].writeDisplay();
+  alpha4[0].writeDigitAscii(0,'C');
+  alpha4[0].writeDigitAscii(1,'o');
+  alpha4[0].writeDigitAscii(2,'d');
+  alpha4[0].writeDigitAscii(3,'e');
+  alpha4[1].writeDigitAscii(0,'V');
+  alpha4[1].writeDigitAscii(1,'e');
+  alpha4[1].writeDigitAscii(2,'r');
+  alpha4[1].writeDigitAscii(3,'s');
+  alpha4[2].writeDigitAscii(0,'B');
+  alpha4[2].writeDigitAscii(1,'o');
+  alpha4[2].writeDigitAscii(2,'o');
+  alpha4[2].writeDigitAscii(3,'t');
+  alpha4[3].clear();
+  alpha4[3].writeDigitAscii(2,'O');
+  alpha4[3].writeDigitAscii(3,'K');
+  for (i=0;i<4;i++) {
+    alpha4[i].writeDisplay();
+  }
+  //delay(500);
+  //for (i=0;i<4;i++) {
+  //  alpha4[i].clear();
+  //  alpha4[i].writeDisplay();
+  //}
+  
+
+}
 
 // These routines are left in from the Neopixel example.  Might be useful for an attract
 // mode or something.  Currently not used.

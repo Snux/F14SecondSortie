@@ -45,7 +45,12 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 			
-	
+	def sw_vUK_closed_for_1s(self, sw):
+            
+            self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+            self.game.modes.add(self.game.kill1mission)
+            return procgame.game.SwitchStop
+
         # Called by the base mode when lamps 1-6 have been lit.
         ## Per mission status
                         ## -1 = Initial
@@ -77,7 +82,7 @@ class MissionMode(game.Mode):
 
                 # Determine the mission the player will do next, if there is one.
                 next_mission = 'None';
-                for mission in self.kill.list:
+                for mission in self.kill_list:
                     if self.game.utilities.get_player_stats(mission) == 0 and next_mission == 'None':
                         next_mission = mission;
                 self.game.utilities.set_player_stats('next_mission',next_mission)
@@ -94,21 +99,25 @@ class MissionMode(game.Mode):
                     status=self.game.utilities.get_player_stats(mission);
                     if status == -1:
                         self.log.info("- setting "+mission+" to disabled")
+                        self.game.lamps[mission].disable()
                         self.game.lamps[mission+'red'].disable()
                         self.game.lamps[mission+'green'].disable()
                         self.game.lamps[mission+'blue'].disable()
                     elif status == 0:
                         self.log.info("- setting "+mission+" to available")
+                        self.game.lamps[mission].schedule(schedule=0xFF00FF00)
                         self.game.lamps[mission+'blue'].schedule(schedule=0xFF00FF00)
                         self.game.lamps[mission+'red'].disable()
                         self.game.lamps[mission+'green'].disable()
                     elif status == 1:
                         self.log.info("- setting "+mission+" to in progress")
+                        self.game.lamps[mission].schedule(schedule=0xFF00FF00)
                         self.game.lamps[mission+'red'].schedule(schedule=0xFF00FF00)
                         self.game.lamps[mission+'green'].disable()
                         self.game.lamps[mission+'blue'].disable()
                     else:
                         self.log.info("- setting "+mission+" to complete")
+                        self.game.lamps[mission].enable()
                         self.game.lamps[mission+'red'].disable()
                         self.game.lamps[mission+'green'].enable()
                         self.game.lamps[mission+'blue'].disable()
@@ -120,4 +129,25 @@ class MissionMode(game.Mode):
                 else:
                     self.game.lamps.release.disable()
 
-	
+
+class Kill1Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+			super(Kill1Mode, self).__init__(game, priority)
+
+
+                        #setup logging
+                        self.log = logging.getLogger('f14.mission number 1')
+
+        def mode_started(self):
+            self.log.info("kill 1 starting")
+            self.game.utilities.display_text(txt="Start 1",time=3)
+            self.game.utilities.set_player_stats('mission_in_progress','kill1')
+            self.game.utilities.set_player_stats('kill1',1)
+
+
+        def sw_target1_closed(self, sw):
+            self.game.utilities.display_text(txt="1 complete",time=3)
+            self.game.utilities.set_player_stats('kill1',2)
+            self.game.modes.remove(self)
+            return procgame.game.SwitchStop
