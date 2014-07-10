@@ -134,6 +134,7 @@ class BaseGameMode(game.Mode):
 	def end_ball(self):
 		#Remove Bonus
 		self.game.modes.remove(self.game.bonus_mode)
+                self.game.modes.remove(self.game.kill1mission)
 
 		#update games played stats
 		self.game.game_data['Audits']['Balls Played'] += 1

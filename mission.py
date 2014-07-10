@@ -130,25 +130,72 @@ class MissionMode(game.Mode):
                     self.game.lamps.release.disable()
 
 
+
+#     ___    __       __          __  ___ _            _
+#    / _ |  / /___   / /  ___ _  /  |/  /(_)___  ___  (_)___   ___
+#   / __ | / // _ \ / _ \/ _ `/ / /|_/ // /(_-< (_-< / // _ \ / _ \
+#  /_/ |_|/_// .__//_//_/\_,_/ /_/  /_//_//___//___//_/ \___//_//_/
+#           /_/
+#
+# Light all TOMCAT targets.  Player must hit all targets within time limit
+
 class Kill1Mode(game.Mode):
 	"""docstring for Bonus"""
 	def __init__(self, game, priority):
-			super(Kill1Mode, self).__init__(game, priority)
+            super(Kill1Mode, self).__init__(game, priority)
+
+            self.tomcatTargets={}
+            #setup logging
+            self.log = logging.getLogger('f14.mission number 1')
+            for switch in self.game.switches:
+                if switch.name[0:5] in ('upper','lower'):
+                    self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
+                    self.tomcatTargets[switch.name]=False
 
 
-                        #setup logging
-                        self.log = logging.getLogger('f14.mission number 1')
 
         def mode_started(self):
             self.log.info("kill 1 starting")
             self.game.utilities.display_text(txt="Start 1",time=3)
             self.game.utilities.set_player_stats('mission_in_progress','kill1')
             self.game.utilities.set_player_stats('kill1',1)
+            self.game.update_lamps()
+            for target in self.tomcatTargets:
+                self.tomcatTargets[target]=False
 
 
-        def sw_target1_closed(self, sw):
-            self.game.utilities.display_text(txt="1 complete",time=3)
+        def mode_stopped(self):
+            for x in self.tomcatTargets:
+                self.tomcatTargets[x]=False
             self.game.utilities.set_player_stats('kill1',2)
             self.game.utilities.set_player_stats('mission_in_progress','None')
-            self.game.modes.remove(self)
+            self.log.info("mode finishing")
+
+
+        def update_lamps(self):
+            for target in self.tomcatTargets:
+                if self.tomcatTargets[target] == False:
+                    self.game.lamps[target].schedule(schedule=0xFFF0FFF0)
+                else:
+                    self.game.lamps[target].enable()
+
+        def targetTOMCAT(self,sw):
+            self.tomcatTargets[sw.name]=True
+            self.game.sound.play('tomcat')
+            #if sw.name[0:5]=="upper":
+            #    otherside="lower"+sw.name[5:]
+            #else:
+            #    otherside="upper"+sw.name[5:]
+            #self.tomcatTargets[otherside]=True
+            self.game.utilities.score(1000)
+            if sum([i for i in self.tomcatTargets.values()])==12: # all targets lit
+                self.game.modes.remove(self)
+                self.game.utilities.display_text(txt="1 complete",time=3)
+            else:
+                self.game.utilities.flickerOn(sw.name)
+                self.game.utilities.display_text(txt="TOMCAT",time=3)
+                #self.game.effects.flickerOn(othersi
             return procgame.game.SwitchStop
+
+
+            
