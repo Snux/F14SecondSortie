@@ -149,5 +149,6 @@ class Kill1Mode(game.Mode):
         def sw_target1_closed(self, sw):
             self.game.utilities.display_text(txt="1 complete",time=3)
             self.game.utilities.set_player_stats('kill1',2)
+            self.game.utilities.set_player_stats('mission_in_progress','None')
             self.game.modes.remove(self)
             return procgame.game.SwitchStop
