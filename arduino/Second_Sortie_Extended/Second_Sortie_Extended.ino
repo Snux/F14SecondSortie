@@ -24,7 +24,8 @@
 // Directive A will send an alphanumeric string to one of the A/N displays.  Next byte specifies display.  Next 4 contain string
 //
 // Directive Q will send the value of a counter back to the PC.  Next byte contains the counter number.
-
+//
+// Directive W will blank a display
 //Code version number
 int CODE_VERSION = 2;
 
@@ -205,6 +206,20 @@ void loop() {
         alpha4[byte1 - 2].writeDisplay();
         break;
 
+      // Blank the display
+      case 'W':
+        // Blanking the display, so it needs to stop counting (if it was)
+        count_active[byte1]=false;
+        count_display[byte1]=0;
+        count_direction[byte1]=0;
+        if (byte1 < 2) {
+            numeric4[byte1].clear();
+            numeric4[byte1].writeDisplay();
+        } else {
+            alpha4[byte1-2].clear();
+            alpha4[byte1-2].writeDisplay();
+        }
+        break;
 
       // Pixel control
       case 'R':

@@ -1,5 +1,5 @@
 Audits: {3-Bank Drop Targets Hits: 0, Average Ball Time: 0, Average Game Time: 0,
-  Average Score: 0, Balls Played: 124, Center Ramps: 0, Credits: 0, Games Played: 2,
+  Average Score: 0, Balls Played: 131, Center Ramps: 0, Credits: 0, Games Played: 2,
   Games Started: 0, Jet Hits: 0, Left Flippers: 0, Left Inlanes: 0, Left Outlane Drains: 0,
   Right Flippers: 0, Right Inlanes: 0, Right Outlane Drains: 0, Saucers: 0, Shelter Visits: 0,
   Skyway Tolls: 0, Tilts: 0, Warnings: 0}
@@ -12,10 +12,10 @@ ClassicHighScoreData:
 - {date: 'Sun Oct  3 15:04:27 2010', inits: DRB, score: 2000000}
 - {date: 'Sun Oct  3 22:05:01 2010', inits: SSD, score: 1000000}
 Hidden: {Total Score: 0}
-LastGameScores: {LastPlayer1Score: 71400, LastPlayer2Score: ' ', LastPlayer3Score: ' ',
+LastGameScores: {LastPlayer1Score: ' ', LastPlayer2Score: ' ', LastPlayer3Score: ' ',
   LastPlayer4Score: ' '}
 MilesChampion:
 - {date: 'Sun Oct  3 17:38:46 2010', inits: SRD, score: 30}
-Time Stamps: {First Boot-Up: '19 Jun 2014 15:08', Last Boot-Up: '10 Jul 2014 19:26',
+Time Stamps: {First Boot-Up: '19 Jun 2014 15:08', Last Boot-Up: '11 Jul 2014 06:51',
   Last GC Score Entry: Not Set, Last Game Start: Not Set, Last High Score Entry: Not
     Set, Last Replay: Not Set, Overall Game Time: 0, Overall Time On: 0}

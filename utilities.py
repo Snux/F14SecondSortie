@@ -211,8 +211,23 @@ class UtilitiesMode(game.Mode):
                         self.log('Handshake failed - disable Arduino')
                         self.sect_dict['arduino'] = False
 
-        def arduino_count(self,display,start,direction,limit,ticks):
-            self.write_arduino('C'+chr(display)+chr(start)+chr(direction)+chr(limit)+chr(ticks))
+        def arduino_start_count(self,display,direction,limit,ticks):
+            self.write_arduino('C'+chr(display)+chr(direction)+chr(limit/256)+chr(limit % 256)+chr(ticks))
+
+        def arduino_blank(self,display):
+            self.log('Arduino - blank display '+str(display))
+            self.write_arduino('W'+chr(display)+'    ')
+
+        def arduino_write_alpha(self,display,text):
+            self.log('Arduino - write '+text+' to display '+str(display))
+            self.write_arduino('A'+chr(display)+text)
+
+        def arduino_write_number(self,display,number):
+            self.write_arduino('N'+chr(display)+chr(number / 256)+chr(number % 256)+'  ')
+
+        def arduino_blank_all(self):
+            for i in range (0,6):
+                self.arduino_blank(display=i)
 
 	###################################
 	#### Music and Sound Functions ####

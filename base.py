@@ -72,6 +72,7 @@ class BaseGameMode(game.Mode):
                         self.add_switch_handler(name=switch.name, event_type='active', \
 				delay=0.01, handler=self.target1_6)
 
+                self.game.utilities.arduino_blank_all()
 
 		self.game.utilities.log('Game Started')
 		
@@ -308,8 +309,8 @@ class BaseGameMode(game.Mode):
 	##################################################
 	def sw_rampEntry_active(self, sw):
 		self.game.utilities.setBallInPlay(True)
-                self.game.utilities.write_arduino('D'+chr(0)+chr(113)+chr(62)+chr(121)+chr(56))
-                self.game.utilities.arduino_count(1,100,1,0,16)
+                #self.game.utilities.write_arduino('D'+chr(0)+chr(113)+chr(62)+chr(121)+chr(56))
+                #self.game.utilities.arduino_count(1,100,1,0,16)
 		return procgame.game.SwitchStop
 
 	def sw_shooter_open(self, sw):

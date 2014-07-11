@@ -162,6 +162,10 @@ class Kill1Mode(game.Mode):
             self.game.update_lamps()
             for target in self.tomcatTargets:
                 self.tomcatTargets[target]=False
+            self.game.utilities.arduino_write_alpha(display=2,text='Time')
+            self.game.utilities.arduino_write_number(display=0,number=1000)
+            self.game.utilities.arduino_start_count(display=0,direction=1,limit=200,ticks=8)
+            
 
 
         def mode_stopped(self):
