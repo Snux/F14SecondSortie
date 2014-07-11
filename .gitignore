@@ -8,3 +8,4 @@ f14.txt
 #############
 *.pyc
 game_data.yaml
+config/game_data.yaml

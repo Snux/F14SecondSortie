@@ -22,6 +22,9 @@ import procgame
 from procgame import *
 import locale
 import logging
+import random
+import procgame.dmd
+from procgame.dmd import font_named
 
 class MissionMode(game.Mode):
 	"""docstring for Bonus"""
@@ -45,10 +48,11 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 			
-	def sw_vUK_closed_for_1s(self, sw):
-            
-            self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
-            self.game.modes.add(self.game.kill1mission)
+	def sw_rightEject_closed_for_1s(self, sw):
+            self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+            #self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+            if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
+                self.game.modes.add(self.game.kill1mission)
             return procgame.game.SwitchStop
 
         # Called by the base mode when lamps 1-6 have been lit.
@@ -145,17 +149,27 @@ class Kill1Mode(game.Mode):
             super(Kill1Mode, self).__init__(game, priority)
 
             self.tomcatTargets={}
+            self.tomcatTargetIndex={}
             #setup logging
             self.log = logging.getLogger('f14.mission number 1')
+            target_index = 0
+            self.current_position=0
             for switch in self.game.switches:
                 if switch.name[0:5] in ('upper','lower'):
                     self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
                     self.tomcatTargets[switch.name]=False
+                    self.tomcatTargetIndex[target_index] = switch.name
+                    target_index += 1
 
 
+            
 
         def mode_started(self):
             self.log.info("kill 1 starting")
+            self.press_layer = dmd.TextLayer(128/2, -5, font_named("beware20aa.dmd"), "center").set_text("TOMCAT")
+            self.start_layer = dmd.TextLayer(128/2, 10, font_named("beware20aa.dmd"), "center").set_text("TOMCAT")
+            self.start_layer.composite_op = 'blacksrc'
+            self.layer = dmd.GroupedLayer(128, 32, [self.press_layer,self.start_layer])
             self.game.utilities.display_text(txt="Start 1",time=3)
             self.game.utilities.set_player_stats('mission_in_progress','kill1')
             self.game.utilities.set_player_stats('kill1',1)
@@ -165,7 +179,24 @@ class Kill1Mode(game.Mode):
             self.game.utilities.arduino_write_alpha(display=2,text='Time')
             self.game.utilities.arduino_write_number(display=0,number=1000)
             self.game.utilities.arduino_start_count(display=0,direction=1,limit=200,ticks=8)
-            
+            self.current_position = random.randint(0,11)
+            self.move_target()
+
+        def move_target(self):
+            self.game.lamps[self.tomcatTargetIndex[self.current_position]].disable()
+            self.current_position += random.choice([-1,1])
+            if self.current_position == 12:
+                self.current_position = 0
+            elif self.current_position == -1:
+                self.current_position = 11
+            self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
+            mission_text = list("------------")
+            mission_text[self.current_position] = '+'
+            self.layer = dmd.TextLayer(128/2, 7, font_named("beware11.dmd"), "center", opaque=True).set_text(''.join(mission_text))
+            self.delay(name='move_target',delay=0.5,handler=self.move_target)
+            #self.update_lamps()
+
+
 
 
         def mode_stopped(self):
@@ -174,14 +205,16 @@ class Kill1Mode(game.Mode):
             self.game.utilities.set_player_stats('kill1',2)
             self.game.utilities.set_player_stats('mission_in_progress','None')
             self.log.info("mode finishing")
+            self.game.utilities.arduino_blank_all()
+            del self.layer
+            self.cancel_delayed('move_target')
 
 
         def update_lamps(self):
-            for target in self.tomcatTargets:
-                if self.tomcatTargets[target] == False:
-                    self.game.lamps[target].schedule(schedule=0xFFF0FFF0)
-                else:
-                    self.game.lamps[target].enable()
+            #for target in self.tomcatTargets:
+            #    self.game.lamps[target].disable()
+            #self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
+            pass
 
         def targetTOMCAT(self,sw):
             self.tomcatTargets[sw.name]=True

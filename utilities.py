@@ -77,7 +77,7 @@ class UtilitiesMode(game.Mode):
 			logging.warning(text)
 		else:
 			logging.info(text)
-		print level + " - " + text
+		#print level + " - " + text
 
 
 	#################################
@@ -200,7 +200,7 @@ class UtilitiesMode(game.Mode):
         ######################
         def write_arduino(self,servalue):
                 if (self.sect_dict['arduino'] != False):
-                    self.log('Arduino "%s"' % (servalue[0]))
+                    #self.log('Arduino "%s"' % (servalue[0]))
                     if len(servalue) == 6:
                         self.ser.write(servalue)
                     else:
@@ -226,6 +226,7 @@ class UtilitiesMode(game.Mode):
             self.write_arduino('N'+chr(display)+chr(number / 256)+chr(number % 256)+'  ')
 
         def arduino_blank_all(self):
+            self.log('Arduino - clear all displays')
             for i in range (0,6):
                 self.arduino_blank(display=i)
 

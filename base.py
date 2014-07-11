@@ -106,7 +106,7 @@ class BaseGameMode(game.Mode):
 		#### Enable GI in case it is disabled from TILT ####
 		self.game.utilities.enableGI()
 
-                self.update_lamps()
+                self.game.update_lamps()
 
 		#### Start Shooter Lane Music ####
 		self.game.sound.play_music('dangerzone',loops=-1)
@@ -126,6 +126,7 @@ class BaseGameMode(game.Mode):
                             self.game.lamps[switch.name].disable()
 
 	def finish_ball(self):
+                self.game.modes.remove(self.game.kill1mission)
 		self.game.modes.add(self.game.bonus_mode)
 		if self.game.tiltStatus == 0:
 			self.game.bonus_mode.calculate(self.game.base_mode.end_ball)
@@ -135,7 +136,7 @@ class BaseGameMode(game.Mode):
 	def end_ball(self):
 		#Remove Bonus
 		self.game.modes.remove(self.game.bonus_mode)
-                self.game.modes.remove(self.game.kill1mission)
+                
 
 		#update games played stats
 		self.game.game_data['Audits']['Balls Played'] += 1
@@ -309,9 +310,7 @@ class BaseGameMode(game.Mode):
 	##################################################
 	def sw_rampEntry_active(self, sw):
 		self.game.utilities.setBallInPlay(True)
-                #self.game.utilities.write_arduino('D'+chr(0)+chr(113)+chr(62)+chr(121)+chr(56))
-                #self.game.utilities.arduino_count(1,100,1,0,16)
-		return procgame.game.SwitchStop
+                return procgame.game.SwitchStop
 
 	def sw_shooter_open(self, sw):
 		# This will play the car take off noise when the ball leaves the shooter lane

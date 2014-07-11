@@ -286,7 +286,7 @@ void scheduleProcess() {
     green[i] >>= 1;
     blue[i] >>= 1;
   } 
-
+  sched_reset >>= 1;
   // Push the result to the pixel chain
   strip.show();
   
@@ -299,9 +299,6 @@ void scheduleProcess() {
       blue[i]=blue_stored[i];
     }
     sched_reset=0xFFFFFFFF;
-  }
-  else {
-    sched_reset >>= 1;
   }
   
 }  
