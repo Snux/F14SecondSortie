@@ -115,7 +115,7 @@ class AttractMode(game.Mode):
                 self.sortie_layer = dmd.TextLayer(128/2, 8, font_named("beware20aa.dmd"), "center").set_text("SORTIE")
                 self.sortie_layer.composite_op = 'blacksrc'
                 self.second_sortie_layer = dmd.GroupedLayer(128, 32, [self.second_layer,self.sortie_layer])
-
+                
                 gen = dmd.MarkupFrameGenerator()
                 gen.font_plain=font_named("beware11.dmd")
                 gen.font_bold=font_named("beware20aa.dmd")

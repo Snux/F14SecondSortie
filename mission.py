@@ -48,7 +48,8 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 			
-	def sw_rightEject_closed_for_1s(self, sw):
+	#def sw_rightEject_closed_for_1s(self, sw):
+        def sw_vUK_closed_for_1s(self, sw):
             self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
             #self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
@@ -75,7 +76,7 @@ class MissionMode(game.Mode):
                     mission_to_play = initial_missions[0]
                     self.log.info("Setting mission "+mission_to_play+" to available")
                     self.game.utilities.set_player_stats(mission_to_play,0)
-                    self.game.utilities.display_text(txt=self.mission_name[mission_to_play]+" Ready",time=3)
+                    self.game.utilities.display_text(txt=self.mission_name[mission_to_play],txt2="READY",time=3,blink=0)
                     self.game.utilities.set_player_stats('target1',False)
                     self.game.utilities.set_player_stats('target2',False)
                     self.game.utilities.set_player_stats('target3',False)
@@ -141,7 +142,7 @@ class MissionMode(game.Mode):
 #  /_/ |_|/_// .__//_//_/\_,_/ /_/  /_//_//___//___//_/ \___//_//_/
 #           /_/
 #
-# Light all TOMCAT targets.  Player must hit all targets within time limit
+# Moving lit TOMCAT target, hit the lit one.
 
 class Kill1Mode(game.Mode):
 	"""docstring for Bonus"""
@@ -154,33 +155,40 @@ class Kill1Mode(game.Mode):
             self.log = logging.getLogger('f14.mission number 1')
             target_index = 0
             self.current_position=0
+            self.target_speed = 1
+
             for switch in self.game.switches:
                 if switch.name[0:5] in ('upper','lower'):
                     self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
                     self.tomcatTargets[switch.name]=False
-                    self.tomcatTargetIndex[target_index] = switch.name
+                    #self.tomcatTargetIndex[target_index] = switch.name
                     target_index += 1
-
+            self.tomcatTargetIndex = (["lowerLeftT","lowerLeftO","lowerLeftM","upperLeftT","upperLeftO","upperLeftM",
+                                        "upperRightC","upperRightA","upperRightT","lowerRightC","lowerRightA","lowerRightT"])
 
             
 
         def mode_started(self):
             self.log.info("kill 1 starting")
-            self.press_layer = dmd.TextLayer(128/2, -5, font_named("beware20aa.dmd"), "center").set_text("TOMCAT")
-            self.start_layer = dmd.TextLayer(128/2, 10, font_named("beware20aa.dmd"), "center").set_text("TOMCAT")
-            self.start_layer.composite_op = 'blacksrc'
-            self.layer = dmd.GroupedLayer(128, 32, [self.press_layer,self.start_layer])
-            self.game.utilities.display_text(txt="Start 1",time=3)
+            #self.game.utilities.display_text(txt="Start 1",time=3)
             self.game.utilities.set_player_stats('mission_in_progress','kill1')
             self.game.utilities.set_player_stats('kill1',1)
             self.game.update_lamps()
             for target in self.tomcatTargets:
                 self.tomcatTargets[target]=False
-            self.game.utilities.arduino_write_alpha(display=2,text='Time')
-            self.game.utilities.arduino_write_number(display=0,number=1000)
-            self.game.utilities.arduino_start_count(display=0,direction=1,limit=200,ticks=8)
+            self.game.utilities.arduino_write_alpha(display=2,text='FUEL')
+            self.game.utilities.arduino_write_number(display=0,number=960)
+            self.game.utilities.arduino_start_count(display=0,direction=1,limit=0,ticks=1)
             self.current_position = random.randint(0,11)
-            self.move_target()
+            self.first_layer = dmd.TextLayer(128/2, -5, font_named("beware11.dmd"),"center").set_text("ALPHA MISSION")
+            self.second_layer = dmd.TextLayer(128/2, 14, font_named("Font_CC_5px_az.dmd"),"center").set_text("SHOOT THE MOVING TARGET")
+            self.third_layer = dmd.TextLayer(128/2, 20, font_named("Font_CC_5px_az.dmd"),"center").set_text("BEFORE FUEL RUNS OUT")
+            self.second_layer.composite_op = 'blacksrc'
+            self.third_layer.composite_op = 'blacksrc'
+
+            self.layer = dmd.GroupedLayer(128, 32, [self.first_layer,self.second_layer,self.third_layer])
+            self.delay(name='move_target',delay=3,handler=self.move_target)
+            self.delay(name='fuel_out',delay=30,handler=self.fuel_out)
 
         def move_target(self):
             self.game.lamps[self.tomcatTargetIndex[self.current_position]].disable()
@@ -192,11 +200,14 @@ class Kill1Mode(game.Mode):
             self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
             mission_text = list("------------")
             mission_text[self.current_position] = '+'
-            self.layer = dmd.TextLayer(128/2, 7, font_named("beware11.dmd"), "center", opaque=True).set_text(''.join(mission_text))
-            self.delay(name='move_target',delay=0.5,handler=self.move_target)
+            self.third_layer= dmd.TextLayer(128/2, 24, font_named("Font_CC_7px_az.dmd"), "center").set_text(''.join(mission_text))
+            self.layer = dmd.GroupedLayer(128, 32, [self.first_layer,self.second_layer,self.third_layer])
+            self.delay(name='move_target',delay=self.target_speed,handler=self.move_target)
             #self.update_lamps()
 
-
+        def fuel_out(self):
+            self.game.utilities.display_text(txt="FUEL EMPTY",time=3,blink=4)
+            self.game.modes.remove(self)
 
 
         def mode_stopped(self):
@@ -208,6 +219,8 @@ class Kill1Mode(game.Mode):
             self.game.utilities.arduino_blank_all()
             del self.layer
             self.cancel_delayed('move_target')
+            self.cancel_delayed('fuel_out')
+            self.game.update_lamps()
 
 
         def update_lamps(self):
@@ -217,6 +230,12 @@ class Kill1Mode(game.Mode):
             pass
 
         def targetTOMCAT(self,sw):
+            if sw.name == self.tomcatTargetIndex[self.current_position]:
+                self.game.utilities.score(20000)
+                self.game.utilities.display_text(txt="TARGET HIT",time=3)
+                self.target_speed /= 2
+            else:
+                self.game.utilities.score(1500)
             self.tomcatTargets[sw.name]=True
             self.game.sound.play('tomcat')
             #if sw.name[0:5]=="upper":
@@ -224,14 +243,6 @@ class Kill1Mode(game.Mode):
             #else:
             #    otherside="upper"+sw.name[5:]
             #self.tomcatTargets[otherside]=True
-            self.game.utilities.score(1000)
-            if sum([i for i in self.tomcatTargets.values()])==12: # all targets lit
-                self.game.modes.remove(self)
-                self.game.utilities.display_text(txt="1 complete",time=3)
-            else:
-                self.game.utilities.flickerOn(sw.name)
-                self.game.utilities.display_text(txt="TOMCAT",time=3)
-                #self.game.effects.flickerOn(othersi
             return procgame.game.SwitchStop
 
 

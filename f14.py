@@ -134,7 +134,7 @@ class F14SecondSortie(game.BasicGame):
 		self.revision = "2.0.0"
 
 		#### Mode Definitions ####
-		self.utilities = UtilitiesMode(self,2)
+		self.utilities = UtilitiesMode(self,100)
 		self.trough = Trough(self,0)
 		self.base_mode = BaseGameMode(self,0)
 		self.attract_mode = AttractMode(self,1)
