@@ -39,9 +39,9 @@ class Player(procgame.game.Player):
 			### Bonus and Status #####################################
 			self.player_stats['status']=''
 			self.player_stats['bonus_x']=1
-
-			### Center Ramp Stats ####################################
-			self.player_stats['bonus']=0
+                        self.player_stats['bonus']=0
+                        self.player_stats['bonusXRight']='off'
+                        self.player_stats['bonusXLeft']='off'
 			self.player_stats['center_shots']=0
 
 			### Kickback Stats ####################################

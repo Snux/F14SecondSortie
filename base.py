@@ -22,6 +22,7 @@
 
 import procgame.game
 from procgame import *
+import time
 #import pinproc
 #import random
 #import time
@@ -41,6 +42,7 @@ class BaseGameMode(game.Mode):
 			self.game.modes.add(self.game.attract_mode)
 			self.game.utilities.releaseStuckBalls()
                         self.reset()
+                        self.lastBonusLoop = time.clock()
 			
 	###############################################################
 	# MAIN GAME HANDLING FUNCTIONS
@@ -73,6 +75,10 @@ class BaseGameMode(game.Mode):
                         self.add_switch_handler(name=switch.name, event_type='active', \
 				delay=0.01, handler=self.target1_6)
 
+                self.add_switch_handler(name='bonusXRight',event_type='active', \
+                                delay=0.01, handler=self.bonusLane)
+                self.add_switch_handler(name='bonusXLeft',event_type='active', \
+                                delay=0.01, handler=self.bonusLane)
                 self.game.utilities.arduino_blank_all()
 
 		self.game.utilities.log('Game Started')
@@ -364,3 +370,45 @@ class BaseGameMode(game.Mode):
 
 	def sw_outlaneRight_closed(self, sw):
 		self.game.sound.play('outlane')
+
+        def bonusLane(self,sw):
+            if time.clock() - self.lastBonusLoop < 1:
+                pass
+            else:
+                self.lastBonusLoop=time.clock()
+                if sw.name[6:]=="Right":
+                    if self.game.utilities.get_player_stats('bonusXRight') == 'on':
+                        self.inc_bonusMultiplier()
+                        self.cancel_delayed(name="rightoff")
+                    self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
+                    self.delay(name="rightoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Right")
+                    self.bonusXRight = 'on'
+                else:
+                    if self.bonusXLeft == 'on':
+                        self.inc_bonusMultiplier()
+                        self.cancel_delayed(name="leftoff")
+                    self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
+                    self.delay(name="leftoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Left")
+                    self.bonusXLeft = 'on'
+
+
+        def bonusLaneOff(self,side):
+            if side == "Right":
+                self.game.utilities.set_player_stats('bonusXRight','off')
+                self.game.lamps["bonusXRight"].disable()
+            else:
+                self.game.utilities.set_player_stats('bonusXLeft','off')
+                self.game.lamps["bonusXLeft"].disable()
+
+        def bonus(self, bonus):
+            bonus_now = min(self.game.utilities.get_player_stats('bonus') + bonus,127)
+            self.game.utilities.set_player_stats('bonus',bonus_now)
+            self.effects.light_bonus()
+
+        def inc_bonusMultiplier(self):
+            mult = self.game.utilities.get_player_stats('bonus_x')
+            if mult < 8:
+                mult += 1
+                self.game.utilities.set_player_stats('bonus_x',mult)
+                self.effects.display_text(txt="BONUS",txt2=str(mult)+"X")
+                self.effects.light_bonus()

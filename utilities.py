@@ -282,3 +282,28 @@ class UtilitiesMode(game.Mode):
 		else:
 			return 0
 
+        def update_lamps(self):
+                self.light_bonus()
+
+        def light_bonus(self):
+                """
+                Display the current bonus multiplier and bonus count for
+                the player on the playfield lamps
+                """
+
+                # Multiplier is easy
+                mult=self.game.utilities.get_player_stats('bonus_x')
+                if mult > 1:
+                    for x in range(2, mult+1):
+                        self.game.lamps["bonus"+str(x)+"X"].enable()
+
+                # For the bonus we need to work through the binary value
+                bonus = self.game.utilities.get_player_stats('bonus_x')
+                bonusbin = "0"*(7-len(bin(bonus)[2:]))+bin(bonus)[2:]
+                digitvalue=64
+                for digit in list(bonusbin):
+                    if digit == "1":
+                        self.game.lamps["bonus"+str(digitvalue)+"K"].enable()
+                    else:
+                        self.game.lamps["bonus"+str(digitvalue)+"K"].disable()
+                    digitvalue /= 2

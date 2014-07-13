@@ -76,7 +76,9 @@ class MissionMode(game.Mode):
                     mission_to_play = initial_missions[0]
                     self.log.info("Setting mission "+mission_to_play+" to available")
                     self.game.utilities.set_player_stats(mission_to_play,0)
-                    self.game.utilities.display_text(txt=self.mission_name[mission_to_play],txt2="READY",time=3,blink=0)
+                    #self.game.utilities.display_text(txt=self.mission_name[mission_to_play],txt2="READY",time=3,blink=0)
+                    anim2 = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha_available.dmd")
+                    self.layer = dmd.AnimatedLayer(frames=anim2.frames, hold=False, repeat=False, frame_time=2)
                     self.game.utilities.set_player_stats('target1',False)
                     self.game.utilities.set_player_stats('target2',False)
                     self.game.utilities.set_player_stats('target3',False)
