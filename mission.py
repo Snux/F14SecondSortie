@@ -180,7 +180,10 @@ class Kill1Mode(game.Mode):
             self.game.utilities.arduino_write_number(display=0,number=960)
             self.game.utilities.arduino_start_count(display=0,direction=1,limit=0,ticks=1)
             self.current_position = random.randint(0,11)
-            self.first_layer = dmd.TextLayer(128/2, -5, font_named("beware11.dmd"),"center").set_text("ALPHA MISSION")
+            anim = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha2.dmd")
+            self.first_layer = dmd.AnimatedLayer(frames=anim.frames, hold=False, repeat=True, frame_time=4)
+
+            #self.first_layer = dmd.TextLayer(128/2, -5, font_named("beware11.dmd"),"center").set_text("ALPHA MISSION")
             self.second_layer = dmd.TextLayer(128/2, 14, font_named("Font_CC_5px_az.dmd"),"center").set_text("SHOOT THE MOVING TARGET")
             self.third_layer = dmd.TextLayer(128/2, 20, font_named("Font_CC_5px_az.dmd"),"center").set_text("BEFORE FUEL RUNS OUT")
             self.second_layer.composite_op = 'blacksrc'
