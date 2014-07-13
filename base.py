@@ -40,6 +40,7 @@ class BaseGameMode(game.Mode):
 			#Start Attract Mode
 			self.game.modes.add(self.game.attract_mode)
 			self.game.utilities.releaseStuckBalls()
+                        self.reset()
 			
 	###############################################################
 	# MAIN GAME HANDLING FUNCTIONS
@@ -199,8 +200,35 @@ class BaseGameMode(game.Mode):
 		#### Save Game Audit Data ####
 		self.game.save_game_data()
 
-		self.game.reset()
+		self.reset()
 
+                self.game.modes.add(self.game.attract_mode)
+
+        def reset(self):
+                self.game.ball = 0
+		self.game.old_players = []
+		self.game.old_players = self.game.players[:]
+		self.game.players = []
+		self.game.current_player_index = 0
+
+                self.game.shooter_lane_status = 0
+		self.game.tiltStatus = 0
+
+		#setup high scores
+		self.game.ighscore_categories = []
+
+		#### Classic High Score Data ####
+		cat = highscore.HighScoreCategory()
+		cat.game_data_key = 'ClassicHighScoreData'
+		self.game.highscore_categories.append(cat)
+
+		#### Mileage Champ ####
+		cat = highscore.HighScoreCategory()
+		cat.game_data_key = 'BonusLoops'
+		self.game.highscore_categories.append(cat)
+
+		for category in self.game.highscore_categories:
+			category.load_from_game(self.game)
 	###############################################################
 	# BASE SWITCH HANDLING FUNCTIONS
 	###############################################################		

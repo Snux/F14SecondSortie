@@ -91,7 +91,45 @@ class F14SecondSortie(game.BasicGame):
 		if self.game_data['Time Stamps']['First Boot-Up']=='Not Set':
 			self.game_data['Time Stamps']['First Boot-Up'] = self.game_data['Time Stamps']['Last Boot-Up']
 		self.save_game_data()
+
                 self.reset()
+
+                #### Setup Sound Controller ####
+		self.sound = sound.SoundController(self)
+		self.RegisterSound()
+
+		#### Setup Lamp Controller ####
+		self.lampctrl = procgame.lamps.LampController(self)
+		self.lampctrlflash = procgame.lamps.LampController(self)
+		#self.RegisterLampshows()
+
+		#### software version number ####
+		self.revision = "2.0.0"
+
+		#### Mode Definitions ####
+		self.utilities = UtilitiesMode(self,100)
+		self.trough = Trough(self,0)
+		self.base_mode = BaseGameMode(self,0)
+		self.attract_mode = AttractMode(self,1)
+                self.mission = MissionMode(self,2)
+                self.kill1mission = Kill1Mode(self,3)
+		#self.centerramp_mode = CenterRampMode(self,8)
+		#self.drops_mode = DropTargets(self,9)
+		#self.collect_mode = CollectZones(self,10)
+		#self.spinner_mode = Spinner(self,11)
+		#self.skillshot_mode = SkillshotMode(self,100)
+		self.ballsaver_mode = BallSaver(self,1)
+		#self.tilt = Tilt(self,200)
+		self.bonus_mode = Bonus(self,1000)
+		#self.multiball_mode = Multiball(self,101)
+
+		#### Initial Mode Queue ####
+		self.modes.add(self.utilities)
+		self.modes.add(self.trough)
+		self.modes.add(self.base_mode)
+                self.modes.add(self.mission)
+
+                #self.reset()
 
 	def reset(self):
 		super(F14SecondSortie, self).reset()
@@ -121,41 +159,7 @@ class F14SecondSortie(game.BasicGame):
 		for category in self.highscore_categories:
 			category.load_from_game(self)
 
-		#### Setup Sound Controller ####
-		self.sound = sound.SoundController(self)
-		self.RegisterSound()
-
-		#### Setup Lamp Controller ####
-		self.lampctrl = procgame.lamps.LampController(self)
-		self.lampctrlflash = procgame.lamps.LampController(self)
-		#self.RegisterLampshows()
-
-		#### software version number ####
-		self.revision = "2.0.0"
-
-		#### Mode Definitions ####
-		self.utilities = UtilitiesMode(self,100)
-		self.trough = Trough(self,0)
-		self.base_mode = BaseGameMode(self,0)
-		self.attract_mode = AttractMode(self,1)
-                self.mission = MissionMode(self,2)
-                self.kill1mission = Kill1Mode(self,3)
-		#self.centerramp_mode = CenterRampMode(self,8)
-		#self.drops_mode = DropTargets(self,9)
-		#self.collect_mode = CollectZones(self,10)
-		#self.spinner_mode = Spinner(self,11)
-		#self.skillshot_mode = SkillshotMode(self,100)
-		self.ballsaver_mode = BallSaver(self,1)
-		#self.tilt = Tilt(self,200)
-		self.bonus_mode = Bonus(self,1000)
-		#self.multiball_mode = Multiball(self,101)
 		
-		#### Initial Mode Queue ####
-		self.modes.add(self.utilities)
-		self.modes.add(self.trough)
-		self.modes.add(self.base_mode)
-                self.modes.add(self.mission)
-
 	def save_settings(self):
 			super(F14SecondSortie, self).save_settings(settings_path)
 
