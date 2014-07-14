@@ -382,14 +382,14 @@ class BaseGameMode(game.Mode):
                         self.cancel_delayed(name="rightoff")
                     self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
                     self.delay(name="rightoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Right")
-                    self.bonusXRight = 'on'
+                    self.game.utilities.set_player_stats('bonusXRight','on')
                 else:
-                    if self.bonusXLeft == 'on':
+                    if self.game.utilities.get_player_stats('bonusXLeft') == 'on':
                         self.inc_bonusMultiplier()
                         self.cancel_delayed(name="leftoff")
                     self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
                     self.delay(name="leftoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Left")
-                    self.bonusXLeft = 'on'
+                    self.game.utilities.set_player_stats('bonusXLeft','on')
 
 
         def bonusLaneOff(self,side):
@@ -403,12 +403,12 @@ class BaseGameMode(game.Mode):
         def bonus(self, bonus):
             bonus_now = min(self.game.utilities.get_player_stats('bonus') + bonus,127)
             self.game.utilities.set_player_stats('bonus',bonus_now)
-            self.effects.light_bonus()
+            self.game.utilities.light_bonus()
 
         def inc_bonusMultiplier(self):
             mult = self.game.utilities.get_player_stats('bonus_x')
             if mult < 8:
                 mult += 1
                 self.game.utilities.set_player_stats('bonus_x',mult)
-                self.effects.display_text(txt="BONUS",txt2=str(mult)+"X")
-                self.effects.light_bonus()
+                self.game.utilities.display_text(txt="BONUS",txt2=str(mult)+"X")
+                self.game.utilities.light_bonus()
