@@ -255,6 +255,7 @@ class UtilitiesMode(game.Mode):
 	#### Player Functions ####
 	##########################
 	def set_player_stats(self,id,value):
+                self.log('Player Stats - set '+id+' to '+str(value))
 		if (self.game.ball <> 0):
 			#self.p = self.game.current_player()
 			self.game.current_player().player_stats[id]=value
@@ -262,6 +263,7 @@ class UtilitiesMode(game.Mode):
 	def get_player_stats(self,id):
 		if (self.game.ball <> 0):
 			#self.p = self.game.current_player()
+                        self.log('Player Stats - get '+id+' is '+str(self.game.current_player().player_stats[id]))
 			return self.game.current_player().player_stats[id]
 		else:
 			return False
@@ -298,7 +300,7 @@ class UtilitiesMode(game.Mode):
                         self.game.lamps["bonus"+str(x)+"X"].enable()
 
                 # For the bonus we need to work through the binary value
-                bonus = self.game.utilities.get_player_stats('bonus_x')
+                bonus = self.game.utilities.get_player_stats('bonus')
                 bonusbin = "0"*(7-len(bin(bonus)[2:]))+bin(bonus)[2:]
                 digitvalue=64
                 for digit in list(bonusbin):

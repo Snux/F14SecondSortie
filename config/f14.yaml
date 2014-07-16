@@ -14,7 +14,7 @@ PRGame:
     machineType: wpc
     numBalls: 4
     # Should we attempt to initialise and use the Arduino?
-    arduino: COM6
+    arduino: False
 PRFlippers:
     - flipperLwR
     - flipperLwL

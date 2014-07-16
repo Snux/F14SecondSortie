@@ -323,12 +323,14 @@ class BaseGameMode(game.Mode):
 		#self.game.coils.slingL.pulse(30)
 		self.game.sound.play('slinglow')
 		self.game.utilities.score(100)
+                self.bonus()
 		return procgame.game.SwitchStop
 
 	def sw_slingR_active(self, sw):
 		#self.game.coils.slingR.pulse(30)
 		self.game.sound.play('slinglow')
 		self.game.utilities.score(100)
+                self.bonus()
 		return procgame.game.SwitchStop
 
 	def sw_spinner_active(self, sw):
@@ -372,6 +374,7 @@ class BaseGameMode(game.Mode):
 		self.game.sound.play('outlane')
 
         def bonusLane(self,sw):
+            self.game.utilities.set_player_stats('loop_shots',self.game.utilities.get_player_stats('loop_shots')+1)
             if time.clock() - self.lastBonusLoop < 1:
                 pass
             else:
@@ -400,7 +403,7 @@ class BaseGameMode(game.Mode):
                 self.game.utilities.set_player_stats('bonusXLeft','off')
                 self.game.lamps["bonusXLeft"].disable()
 
-        def bonus(self, bonus):
+        def bonus(self, bonus=1):
             bonus_now = min(self.game.utilities.get_player_stats('bonus') + bonus,127)
             self.game.utilities.set_player_stats('bonus',bonus_now)
             self.game.utilities.light_bonus()
