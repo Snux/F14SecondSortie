@@ -27,6 +27,8 @@ import locale
 import os
 import logging
 from time import strftime
+import procgame.dmd
+from procgame.dmd import font_named
 
 ###################################
 # MODE IMPORTS
@@ -61,7 +63,8 @@ settings_template_path = curr_file_path + "/config/settings_template.yaml"
 game_machine_yaml = curr_file_path + "/config/f14.yaml"
 game_music_path = curr_file_path + "/assets/music/"
 game_sound_path = curr_file_path + "/assets/sound/"
-game_lampshows = curr_file_path + "/lamps/"
+game_dmd_path = curr_file_path + "/assets/dmd/"
+game_lampshows = curr_file_path + "/assets/lamps/"
 fnt_path = "/shared/dmd/"
 
 ballsPerGame = 3 # this will eventually be called from the config file
@@ -97,6 +100,9 @@ class F14SecondSortie(game.BasicGame):
                 #### Setup Sound Controller ####
 		self.sound = sound.SoundController(self)
 		self.RegisterSound()
+
+                #### Pre-load animations
+                self.RegisterAnimations()
 
 		#### Setup Lamp Controller ####
 		self.lampctrl = procgame.lamps.LampController(self)
@@ -188,6 +194,31 @@ class F14SecondSortie(game.BasicGame):
 		self.lampctrl.register_show('attract1', game_lampshows + 'attract_random.lampshow')
 		self.lampctrl.register_show('center_ramp_1', game_lampshows + 'center_ramp_complete.lampshow')
 		self.lampctrlflash.register_show('bonus_total', game_lampshows + 'bonus_total.lampshow')
+
+        def RegisterAnimations(self):
+
+                # Scrolling 3D text when a mode is lit
+                self.dmd_assets={}
+
+                self.dmd_assets['alpha_available'] = dmd.Animation().load(game_dmd_path +'alpha_available.dmd')
+                self.dmd_assets['bravo_available'] = dmd.Animation().load(game_dmd_path +'bravo_available.dmd')
+                self.dmd_assets['charlie_available'] = dmd.Animation().load(game_dmd_path +'charlie_available.dmd')
+                self.dmd_assets['delta_available'] = dmd.Animation().load(game_dmd_path +'delta_available.dmd')
+                self.dmd_assets['echo_available'] = dmd.Animation().load(game_dmd_path +'echo_available.dmd')
+                self.dmd_assets['fox_available'] = dmd.Animation().load(game_dmd_path +'fox_available.dmd')
+                self.dmd_assets['golf_available'] = dmd.Animation().load(game_dmd_path +'golf_available.dmd')
+
+                # Spinning mission text, displayed when mission active
+                self.dmd_assets['alpha_spin'] = dmd.Animation().load(game_dmd_path +'alpha_rotate.dmd')
+                self.dmd_assets['bravo_spin'] = dmd.Animation().load(game_dmd_path +'bravo_rotate.dmd')
+                self.dmd_assets['charlie_spin'] = dmd.Animation().load(game_dmd_path +'charlie_rotate.dmd')
+                self.dmd_assets['delta_spin'] = dmd.Animation().load(game_dmd_path +'delta_rotate.dmd')
+                self.dmd_assets['echo_spin'] = dmd.Animation().load(game_dmd_path +'echo_rotate.dmd')
+                self.dmd_assets['fox_spin'] = dmd.Animation().load(game_dmd_path +'fox_rotate.dmd')
+                self.dmd_assets['golf_spin'] = dmd.Animation().load(game_dmd_path +'golf_rotate.dmd')
+
+                self.dmd_assets['ball_saved'] = dmd.Animation().load(game_dmd_path +'ball_saved.dmd')
+                
 
 	def create_player(self, name):
 		return Player(name)

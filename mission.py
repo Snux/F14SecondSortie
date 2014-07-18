@@ -35,13 +35,13 @@ class MissionMode(game.Mode):
 			#self.superSpinnerLit = False
 			#self.superSpinnerEnabled = False
                         self.kill_list=['kill1','kill2','kill3','kill4','kill5','kill6','kill7']
-                        self.mission_name= {'kill1' : 'Alpha',
-                                            'kill2' : 'Bravo',
-                                            'kill3' : 'Charlie',
-                                            'kill4' : 'Delta',
-                                            'kill5' : 'Echo',
-                                            'kill6' : 'Foxtrot',
-                                            'kill7' : 'Golf'
+                        self.mission_name= {'kill1' : 'alpha',
+                                            'kill2' : 'bravo',
+                                            'kill3' : 'charlie',
+                                            'kill4' : 'delta',
+                                            'kill5' : 'echo',
+                                            'kill6' : 'foxtrot',
+                                            'kill7' : 'golf'
                                             }
                         
 
@@ -77,8 +77,10 @@ class MissionMode(game.Mode):
                     self.log.info("Setting mission "+mission_to_play+" to available")
                     self.game.utilities.set_player_stats(mission_to_play,0)
                     #self.game.utilities.display_text(txt=self.mission_name[mission_to_play],txt2="READY",time=3,blink=0)
-                    anim2 = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha_available.dmd")
-                    self.layer = dmd.AnimatedLayer(frames=anim2.frames, hold=False, repeat=False, frame_time=2)
+                    #anim2 = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha_available.dmd")
+                    #anim2 = dmd.Animation().load(self.game.dmd_assets[self.mission_name[mission_to_play]+'_available'])
+                    #self.first_layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['alpha_available'].frames, hold=False, repeat=True, frame_time=4)
+                    self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[self.mission_name[mission_to_play]+'_available'].frames, hold=False, repeat=False, frame_time=2)
                     self.game.utilities.set_player_stats('target1',False)
                     self.game.utilities.set_player_stats('target2',False)
                     self.game.utilities.set_player_stats('target3',False)

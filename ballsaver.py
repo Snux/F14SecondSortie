@@ -21,6 +21,8 @@
 import procgame.game
 from procgame import *
 import pinproc
+import procgame.dmd
+import logging
 
 class BallSaver(game.Mode):
 	def __init__(self, game, priority):
@@ -29,7 +31,9 @@ class BallSaver(game.Mode):
 			self.ballSaverTime = 15 #This needs to be moved to pull from the configuration file
 			self.ballSaverGracePeriodThreshold = 3 #This needs to be moved to pull from the configuration file
 			self.ballSaveLampsActive = True #Probably should move to mode started instead of init...
-			self.ballSavedEarly = False 
+			self.ballSavedEarly = False
+                        self.log = logging.getLogger('f14.ballsave')
+
 
 	############################
 	#### Standard Functions ####
@@ -70,6 +74,8 @@ class BallSaver(game.Mode):
 		self.update_lamps()
 		self.game.modes.remove(self)
 
+        
+
 	def startBallSaverTimers(self):
 		self.game.utilities.set_player_stats('ballsave_timer_active',True)
 		self.delay(name='ballsaver',delay=self.ballSaverTime,handler=self.stopBallSaverMode)
@@ -87,8 +93,8 @@ class BallSaver(game.Mode):
 		self.game.utilities.acCoilPulse(coilname='ballReleaseShooterLane_flasher2',pulsetime=100)
 
 	def saveBall(self):
-		self.game.utilities.display_text(txt='BALL SAVED',time=3)
-
+		#self.game.utilities.display_text(txt='BALL SAVED',time=3)
+                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=True, repeat=False, frame_time=2)
 		#Stop Skillshot
 		#self.game.modes.remove(self.game.skillshot_mode)
 
@@ -137,8 +143,9 @@ class BallSaver(game.Mode):
 	## These will set the ball in play when tripped
 	##################################################
 	def sw_rampEntry_active(self, sw):
-		if (self.game.utilities.get_player_stats('ballsave_timer_active') == False):
+                if (self.game.utilities.get_player_stats('ballsave_timer_active') == False):
 			self.startBallSaverTimers()
+                        self.log.info("Ramp made, ball save active, start timer")
 		return procgame.game.SwitchContinue
 
 	##################################################
