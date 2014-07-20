@@ -309,3 +309,15 @@ class UtilitiesMode(game.Mode):
                     else:
                         self.game.lamps["bonus"+str(digitvalue)+"K"].disable()
                     digitvalue /= 2
+
+        def inc_bonusMultiplier(self):
+            mult = self.game.utilities.get_player_stats('bonus_x')
+            if mult < 8:
+                mult += 1
+                self.game.utilities.set_player_stats('bonus_x',mult)
+                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['bonus'+str(mult)+'x'].frames, hold=False, repeat=False, frame_time=2)
+                #self.game.utilities.display_text(txt="BONUS",txt2=str(mult)+"X")
+                self.game.utilities.light_bonus()
+        
+        def ball_saved_animation(self):
+                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=False, repeat=False, frame_time=2)

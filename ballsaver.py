@@ -94,8 +94,11 @@ class BallSaver(game.Mode):
 
 	def saveBall(self):
 		#self.game.utilities.display_text(txt='BALL SAVED',time=3)
-                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=True, repeat=False, frame_time=2)
-		#Stop Skillshot
+                #self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=True, repeat=False, frame_time=2)
+
+                # Display the animiation via the utils because this mode will quit immediately
+                self.game.utilities.ball_saved_animation()
+                #Stop Skillshot
 		#self.game.modes.remove(self.game.skillshot_mode)
 
 		#self.game.sound.play('ball_saved')

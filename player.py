@@ -97,3 +97,17 @@ class Player(procgame.game.Player):
                         self.player_stats['target4']=False
                         self.player_stats['target5']=False
                         self.player_stats['target6']=False
+
+                        
+                        self.player_stats['lowerLeftT']=False
+                        self.player_stats['lowerLeftO']=False
+                        self.player_stats['lowerLeftM']=False
+                        self.player_stats['upperLeftT']=False
+                        self.player_stats['upperLeftO']=False
+                        self.player_stats['upperLeftM']=False
+                        self.player_stats['upperRightC']=False
+                        self.player_stats['upperRightA']=False
+                        self.player_stats['upperRightT']=False
+                        self.player_stats['lowerRightC']=False
+                        self.player_stats['lowerRightA']=False
+                        self.player_stats['lowerRightT']=False

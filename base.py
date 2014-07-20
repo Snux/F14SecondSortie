@@ -74,7 +74,10 @@ class BaseGameMode(game.Mode):
                     if switch.name.find('target', 0) != -1:
                         self.add_switch_handler(name=switch.name, event_type='active', \
 				delay=0.01, handler=self.target1_6)
-
+                    if switch.name[0:5] in ('upper','lower'):
+                        self.add_switch_handler(name=switch.name, event_type='active', \
+                                delay=0.01, handler=self.targetTOMCAT)
+                        
                 self.add_switch_handler(name='bonusXRight',event_type='active', \
                                 delay=0.01, handler=self.bonusLane)
                 self.add_switch_handler(name='bonusXLeft',event_type='active', \
@@ -381,14 +384,14 @@ class BaseGameMode(game.Mode):
                 self.lastBonusLoop=time.clock()
                 if sw.name[6:]=="Right":
                     if self.game.utilities.get_player_stats('bonusXRight') == 'on':
-                        self.inc_bonusMultiplier()
+                        self.game.utilities.inc_bonusMultiplier()
                         self.cancel_delayed(name="rightoff")
                     self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
                     self.delay(name="rightoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Right")
                     self.game.utilities.set_player_stats('bonusXRight','on')
                 else:
                     if self.game.utilities.get_player_stats('bonusXLeft') == 'on':
-                        self.inc_bonusMultiplier()
+                        self.game.utilities.inc_bonusMultiplier()
                         self.cancel_delayed(name="leftoff")
                     self.game.lamps[sw.name].schedule(schedule=0x0F0F0F0F, cycle_seconds=2.0, now=True)
                     self.delay(name="leftoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Left")
@@ -408,10 +411,19 @@ class BaseGameMode(game.Mode):
             self.game.utilities.set_player_stats('bonus',bonus_now)
             self.game.utilities.light_bonus()
 
-        def inc_bonusMultiplier(self):
-            mult = self.game.utilities.get_player_stats('bonus_x')
-            if mult < 8:
-                mult += 1
-                self.game.utilities.set_player_stats('bonus_x',mult)
-                self.game.utilities.display_text(txt="BONUS",txt2=str(mult)+"X")
-                self.game.utilities.light_bonus()
+        
+        def targetTOMCAT(self,sw):
+            if self.game.utilities.get_player_stats(sw.name) == False:
+                self.game.utilities.set_player_stats(sw.name, True)
+                self.game.utilities.flickerOn(sw.name)
+            #self.tomcatTargets[sw.name]=True
+            #self.game.sound.play('tomcat')
+            #if sw.name[0:5]=="upper":
+            #    otherside="lower"+sw.name[5:]
+            #else:
+            #    otherside="upper"+sw.name[5:]
+            #self.tomcatTargets[otherside]=True
+            self.game.utilities.score(500)
+            self.bonus()
+            
+                #self.game.effects.flickerOn(otherside)

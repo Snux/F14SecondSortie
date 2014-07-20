@@ -217,6 +217,14 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['fox_spin'] = dmd.Animation().load(game_dmd_path +'fox_rotate.dmd')
                 self.dmd_assets['golf_spin'] = dmd.Animation().load(game_dmd_path +'golf_rotate.dmd')
 
+                # Bonus multiplier awarded
+                self.dmd_assets['bonus2x'] = dmd.Animation().load(game_dmd_path +'bonus2x.dmd')
+                self.dmd_assets['bonus3x'] = dmd.Animation().load(game_dmd_path +'bonus3x.dmd')
+                self.dmd_assets['bonus4x'] = dmd.Animation().load(game_dmd_path +'bonus4x.dmd')
+                self.dmd_assets['bonus5x'] = dmd.Animation().load(game_dmd_path +'bonus5x.dmd')
+                self.dmd_assets['bonus6x'] = dmd.Animation().load(game_dmd_path +'bonus6x.dmd')
+                self.dmd_assets['bonus7x'] = dmd.Animation().load(game_dmd_path +'bonus7x.dmd')
+                self.dmd_assets['bonus8x'] = dmd.Animation().load(game_dmd_path +'bonus8x.dmd')
                 self.dmd_assets['ball_saved'] = dmd.Animation().load(game_dmd_path +'ball_saved.dmd')
                 
 
