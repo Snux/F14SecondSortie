@@ -187,6 +187,8 @@ class F14SecondSortie(game.BasicGame):
                 self.sound.register_sound('explode2', game_sound_path+"explode2.wav")
                 self.sound.register_sound('shoot1', game_sound_path+"shoot1.wav")
                 self.sound.register_music('dangerzone',game_music_path+"Kenny Loggins - Danger Zone.mp3")
+                self.sound.register_music('shooterlane',game_music_path+"Tomcat shooter.mp3")
+                self.sound.register_music('tomcatmain',game_music_path+"Tomcat main.mp3")
 		
 		self.sound.set_volume(10)
 
@@ -226,6 +228,13 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['bonus7x'] = dmd.Animation().load(game_dmd_path +'bonus7x.dmd')
                 self.dmd_assets['bonus8x'] = dmd.Animation().load(game_dmd_path +'bonus8x.dmd')
                 self.dmd_assets['ball_saved'] = dmd.Animation().load(game_dmd_path +'ball_saved.dmd')
+
+                # Various spinning jets
+                self.dmd_assets['f14_roll1'] = dmd.Animation().load(game_dmd_path +'f14_roll1.dmd')
+                self.dmd_assets['f14_roll2'] = dmd.Animation().load(game_dmd_path +'f14_roll2.dmd')
+                self.dmd_assets['f14_roll3'] = dmd.Animation().load(game_dmd_path +'f14_roll3.dmd')
+                self.dmd_assets['f14_roll4'] = dmd.Animation().load(game_dmd_path +'f14_roll4.dmd')
+
                 
 
 	def create_player(self, name):

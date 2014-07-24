@@ -236,7 +236,7 @@ class UtilitiesMode(game.Mode):
 	def stopShooterLaneMusic(self):
 		if (self.game.shooter_lane_status == 1):
 			self.game.sound.stop_music()
-			#self.game.sound.play_music('main',loops=-1)
+			self.game.sound.play_music('tomcatmain',loops=-1)
 			self.game.shooter_lane_status = 0
 
         def flickerOn(self,lamp,duration=0.75,schedule=0x55555555):
@@ -320,4 +320,7 @@ class UtilitiesMode(game.Mode):
                 self.game.utilities.light_bonus()
         
         def ball_saved_animation(self):
-                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=False, repeat=False, frame_time=2)
+            self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=False, repeat=False, frame_time=2)
+
+        def play_animation(self,file,frametime=2):
+            self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[file].frames, hold=False, repeat=False, frame_time=frametime)

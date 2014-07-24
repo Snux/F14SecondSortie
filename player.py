@@ -73,6 +73,7 @@ class Player(procgame.game.Player):
 			## Count of completed missions
 			self.player_stats['kills_completed']=0
                         self.player_stats['target1-6_completed']=0
+                        self.player_stats['tomcat_completed']=0
                         self.player_stats['next_mission']='None'
                         self.player_stats['mission_in_progress']='None'
 

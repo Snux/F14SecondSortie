@@ -119,7 +119,7 @@ class BaseGameMode(game.Mode):
                 self.game.update_lamps()
 
 		#### Start Shooter Lane Music ####
-		self.game.sound.play_music('dangerzone',loops=-1)
+		self.game.sound.play_music('shooterlane',loops=-1)
 		self.game.shooter_lane_status = 1
 
 		#### Debug Info ####
@@ -134,6 +134,12 @@ class BaseGameMode(game.Mode):
                             self.game.lamps[switch.name].enable()
                         else:
                             self.game.lamps[switch.name].disable()
+                    if switch.name[0:5] in ('upper','lower'):
+                        if self.game.utilities.get_player_stats(switch.name):
+                            self.game.lamps[switch.name].enable()
+                        else:
+                            self.game.lamps[switch.name].disable()
+
 
 	def finish_ball(self):
                 self.game.modes.remove(self.game.kill1mission)
@@ -376,6 +382,12 @@ class BaseGameMode(game.Mode):
 	def sw_outlaneRight_closed(self, sw):
 		self.game.sound.play('outlane')
 
+        def sw_yagov_closed(self, sw):
+                self.game.utilities.log('Yagov hit','info')
+                self.game.utilities.play_animation('f14_roll2',frametime=4)
+                self.game.coils['yagovKickBack'].pulse(100)
+		self.game.sound.play('outlane')
+
         def bonusLane(self,sw):
             self.game.utilities.set_player_stats('loop_shots',self.game.utilities.get_player_stats('loop_shots')+1)
             if time.clock() - self.lastBonusLoop < 1:
@@ -415,7 +427,14 @@ class BaseGameMode(game.Mode):
         def targetTOMCAT(self,sw):
             if self.game.utilities.get_player_stats(sw.name) == False:
                 self.game.utilities.set_player_stats(sw.name, True)
-                self.game.utilities.flickerOn(sw.name)
+                count = self.game.utilities.get_player_stats('tomcat_completed')
+                count += 1
+                self.game.utilities.set_player_stats('tomcat_completed',count)
+                if count == 12:
+                    # This will light lock for multiball
+                    pass
+                else:
+                    self.game.utilities.flickerOn(sw.name)
             #self.tomcatTargets[sw.name]=True
             #self.game.sound.play('tomcat')
             #if sw.name[0:5]=="upper":
