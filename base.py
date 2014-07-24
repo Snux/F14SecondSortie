@@ -24,7 +24,7 @@ import procgame.game
 from procgame import *
 import time
 #import pinproc
-#import random
+import random
 #import time
 #import sys
 #import locale
@@ -382,11 +382,22 @@ class BaseGameMode(game.Mode):
 	def sw_outlaneRight_closed(self, sw):
 		self.game.sound.play('outlane')
 
+        def sw_spinner_closed(self, sw):
+		self.game.sound.play('spinner')
+                self.game.utilities.score(10)
+
+
         def sw_yagov_closed(self, sw):
-                self.game.utilities.log('Yagov hit','info')
-                self.game.utilities.play_animation('f14_roll2',frametime=4)
+                count=self.game.utilities.get_player_stats('yagov_shots')
+                count += 1
+                self.game.utilities.set_player_stats('yagov_shots',count)
+                if count == 1:
+                    display_text = '1 YAGOV SHOT'
+                else:
+                    display_text = str(count)+' YAGOV SHOTS'
+                self.game.utilities.play_animation('f14_roll'+random.choice(['2','5','6']),frametime=5,txt=display_text,txtPos='after')
                 self.game.coils['yagovKickBack'].pulse(100)
-		self.game.sound.play('outlane')
+		self.game.sound.play('machine_gun_short')
 
         def bonusLane(self,sw):
             self.game.utilities.set_player_stats('loop_shots',self.game.utilities.get_player_stats('loop_shots')+1)
@@ -425,6 +436,7 @@ class BaseGameMode(game.Mode):
 
         
         def targetTOMCAT(self,sw):
+            self.game.sound.play('shoot1')
             if self.game.utilities.get_player_stats(sw.name) == False:
                 self.game.utilities.set_player_stats(sw.name, True)
                 count = self.game.utilities.get_player_stats('tomcat_completed')

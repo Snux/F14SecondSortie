@@ -322,5 +322,19 @@ class UtilitiesMode(game.Mode):
         def ball_saved_animation(self):
             self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=False, repeat=False, frame_time=2)
 
-        def play_animation(self,file,frametime=2):
-            self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[file].frames, hold=False, repeat=False, frame_time=frametime)
+        def play_animation(self,file,frametime=2,txt=None,txtPos='over'):
+            if txt==None:
+                self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[file].frames, hold=False, repeat=False, frame_time=frametime)
+            elif txtPos=='over':
+                self.anim_layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[file].frames, hold=False, repeat=False, frame_time=frametime)
+                self.text_layer = dmd.TextLayer(128/2, 26, font_named("Font_CC_5px_az.dmd"), "center").set_text(txt,seconds=2)
+                self.text_layer.composite_op = 'blacksrc'
+                self.layer = dmd.GroupedLayer(128, 32, [self.anim_layer,self.text_layer])
+            elif txtPos=='after':
+                self.after_text = txt
+                self.layer_build = dmd.AnimatedLayer(frames=self.game.dmd_assets[file].frames, hold=False, repeat=False, frame_time=frametime)
+                self.layer_build.add_frame_listener(-1,self.display_text_after_anim)
+                self.layer=self.layer_build
+
+        def display_text_after_anim(self):
+                self.display_text(txt=self.after_text)

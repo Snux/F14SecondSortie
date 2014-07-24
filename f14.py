@@ -189,6 +189,9 @@ class F14SecondSortie(game.BasicGame):
                 self.sound.register_music('dangerzone',game_music_path+"Kenny Loggins - Danger Zone.mp3")
                 self.sound.register_music('shooterlane',game_music_path+"Tomcat shooter.mp3")
                 self.sound.register_music('tomcatmain',game_music_path+"Tomcat main.mp3")
+                self.sound.register_sound('spinner', game_sound_path+"spinner.wav")
+                self.sound.register_sound('machine_gun_short', game_sound_path+"machine_gun_short.wav")
+                self.sound.register_sound('machine_gun_long', game_sound_path+"machine_gun_long.wav")
 		
 		self.sound.set_volume(10)
 
@@ -234,6 +237,11 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['f14_roll2'] = dmd.Animation().load(game_dmd_path +'f14_roll2.dmd')
                 self.dmd_assets['f14_roll3'] = dmd.Animation().load(game_dmd_path +'f14_roll3.dmd')
                 self.dmd_assets['f14_roll4'] = dmd.Animation().load(game_dmd_path +'f14_roll4.dmd')
+                self.dmd_assets['f14_roll5'] = dmd.Animation().load(game_dmd_path +'f14_roll5.dmd')
+                self.dmd_assets['f14_roll6'] = dmd.Animation().load(game_dmd_path +'f14_roll6.dmd')
+                self.dmd_assets['f14_roll7'] = dmd.Animation().load(game_dmd_path +'f14_roll7.dmd')
+                self.dmd_assets['f14_roll8'] = dmd.Animation().load(game_dmd_path +'f14_roll8.dmd')
+                self.dmd_assets['f14_roll9'] = dmd.Animation().load(game_dmd_path +'f14_roll9.dmd')
 
                 
 
