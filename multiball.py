@@ -1,26 +1,21 @@
-#################################################################################
-##     _________    ____  ________  _______ __  _____    __ __ __________  __
-##    / ____/   |  / __ \/_  __/ / / / ___// / / /   |  / //_// ____/ __ \/ /
-##   / __/ / /| | / /_/ / / / / /_/ /\__ \/ /_/ / /| | / ,<  / __/ / /_/ / / 
-##  / /___/ ___ |/ _, _/ / / / __  /___/ / __  / ___ |/ /| |/ /___/ _, _/_/  
-## /_____/_/  |_/_/ |_| /_/ /_/ /_//____/_/ /_/_/  |_/_/ |_/_____/_/ |_(_)   
-##     ___    ______________________  _____ __  ______  ________ __
-##    /   |  / ____/_  __/ ____/ __ \/ ___// / / / __ \/ ____/ //_/
-##   / /| | / /_    / / / __/ / /_/ /\__ \/ /_/ / / / / /   / ,<   
-##  / ___ |/ __/   / / / /___/ _, _/___/ / __  / /_/ / /___/ /| |  
-## /_/  |_/_/     /_/ /_____/_/ |_|/____/_/ /_/\____/\____/_/ |_|                     
-##                                                     
-## A P-ROC Project by Scott Danesi, Copyright 2013-2014
-## Built on the PyProcGame Framework from Adam Preble and Gerry Stellenberg
-#################################################################################
+#####################################################################################
+##     ____   _______   _________________  _  _____    ________  ___  ______________
+##    / __/__<  / / /  / __/ __/ ___/ __ \/ |/ / _ \  / __/ __ \/ _ \/_  __/  _/ __/
+##   / _//___/ /_  _/ _\ \/ _// /__/ /_/ /    / // / _\ \/ /_/ / , _/ / / _/ // _/
+##  /_/     /_/ /_/  /___/___/\___/\____/_/|_/____/ /___/\____/_/|_| /_/ /___/___/
+##
+## A P-ROC Project by Mark Sunnucks
+## Built on PyProcGame from Adam Preble and Gerry Stellenberg
+## Thanks to Scott Danesi for inspiration from his Earthshaker Aftershock
+#####################################################################################
+
 
 #################################################################################
-##     __  _____  ____  ______________  ___    __    __ 
-##    /  |/  / / / / / /_  __/  _/ __ )/   |  / /   / / 
-##   / /|_/ / / / / /   / /  / // __  / /| | / /   / /  
-##  / /  / / /_/ / /___/ / _/ // /_/ / ___ |/ /___/ /___
-## /_/  /_/\____/_____/_/ /___/_____/_/  |_/_____/_____/
-## 
+#     __  ___     ____  _ __        ____
+#    /  |/  /_ __/ / /_(_) /  ___ _/ / /
+#   / /|_/ / // / / __/ / _ \/ _ `/ / /
+#  /_/  /_/\_,_/_/\__/_/_.__/\_,_/_/_/
+#
 #################################################################################
 
 import procgame.game
@@ -28,16 +23,19 @@ from procgame import *
 import pinproc
 from random import choice
 from random import seed
+import logger
 
 class Multiball(game.Mode):
 	def __init__(self, game, priority):
 			super(Multiball, self).__init__(game, priority)
 			self.ballsLocked = 0
-			self.ballLock1Lit = False
-			self.ballLock2Lit = False
-			self.ballLock3Lit = False
+			self.upperLock = 'off'
+			self.middleLock = 'off'
+			self.lowerLock = 'off'
+
 			self.multiballStarting = False
 			self.multiballIntroLength = 11.287
+                        self.log = logging.getLogger('f14.multiball')
 
 	def mode_started(self):
 		self.getUserStats()
@@ -48,36 +46,43 @@ class Multiball(game.Mode):
 		#self.game.update_lamps()
 
 	def update_lamps(self):
-		print "Update Lamps: Multiball"
 		self.disableLockLamps()
-		if (self.ballLock1Lit == True):
-			self.game.lamps.dropHoleLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
-			self.game.lamps.rightRampLock.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
-			print "Lock 1 is Lit"
-		elif (self.ballLock2Lit == True):
-			self.game.lamps.dropHoleLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
-			self.game.lamps.rightRampLock.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
-			print "Lock 2 is Lit"
-		elif (self.ballLock3Lit == True):
-			self.game.lamps.dropHoleLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
-			self.game.lamps.rightRampLock.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
-			print "Lock 3 is Lit"
+
+		if (self.upperLock == 'lit'):
+			self.game.lamps.upperLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
+			self.game.lamps.lockOn.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
+		elif (self.upperLock == 'locked'):
+			self.game.lamps.upperLock.enable()
+
+                if (self.middleLock == 'lit'):
+			self.game.lamps.middleLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
+			self.game.lamps.lockOn.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
+		elif (self.middleLock == 'locked'):
+			self.game.lamps.middleLock.enable()
+
+                if (self.lowerLock == 'lit'):
+			self.game.lamps.lowerLock.schedule(schedule=0xFF00FF00, cycle_seconds=0, now=True)
+			self.game.lamps.lockOn.schedule(schedule=0x00FF00FF, cycle_seconds=0, now=True)
+		elif (self.lowerLock == 'locked'):
+			self.game.lamps.lowerLock.enable()
+			
 			
 	def disableLockLamps(self):
-		self.game.lamps.rightRampLock.disable()
-		self.game.lamps.ejectLock.disable()
-		self.game.lamps.dropHoleLock.disable()
+		self.game.lamps.lowerLock.disable()
+		self.game.lamps.middleLock.disable()
+		self.game.lamps.upperLock.disable()
+                self.game.lamps.lockOn.disable()
 
 	def getUserStats(self):
-		self.ballLock1Lit = self.game.utilities.get_player_stats('lock1_lit')
-		self.ballLock2Lit = self.game.utilities.get_player_stats('lock2_lit')
-		self.ballLock3Lit = self.game.utilities.get_player_stats('lock3_lit')
+		self.upperLock = self.game.utilities.get_player_stats('upper_lock')
+		self.middleLock = self.game.utilities.get_player_stats('middle_lock')
+		self.lowerLock = self.game.utilities.get_player_stats('lower_lock')
 		self.ballsLocked = self.game.utilities.get_player_stats('balls_locked')
-		print "Lock 1: " + str(self.game.utilities.get_player_stats('lock1_lit'))
-		print "Lock 2: " + str(self.game.utilities.get_player_stats('lock2_lit'))
-		print "Lock 3: " + str(self.game.utilities.get_player_stats('lock3_lit'))
-		print "Balls Locked: " + str(self.game.utilities.get_player_stats('balls_locked'))
-
+                self.log.info("Upper lock : "+self.upperLock)
+                self.log.info("Middle lock : "+self.middleLock)
+                self.log.info("Lower lock : "+self.lowerLock)
+                self.log.info("Balls locked : "+self.ballsLocked)
+		
 	def liteLock(self,callback):
 		self.callback = callback
 		if (self.ballsLocked == 0):
@@ -92,20 +97,7 @@ class Multiball(game.Mode):
 			self.getUserStats()
 		self.update_lamps()
 
-	def lockBall1(self):
-		self.game.utilities.set_player_stats('balls_locked',1)
-		self.game.utilities.set_player_stats('lock1_lit',False)
-		self.getUserStats()
-		self.update_lamps()
-		self.callback()
-
-	def lockBall2(self):
-		self.game.utilities.set_player_stats('balls_locked',2)
-		self.game.utilities.set_player_stats('lock2_lit',False)
-		self.getUserStats()
-		self.update_lamps()
-		self.callback()
-
+	
 	def startMultiball(self):
 		self.multiballStarting = True
 		self.game.utilities.set_player_stats('multiball_running',True)
@@ -145,12 +137,58 @@ class Multiball(game.Mode):
 		self.callback()
 
 	def resetMultiballStats(self):
-		self.game.utilities.set_player_stats('lock1_lit',False)
-		self.game.utilities.set_player_stats('lock2_lit',False)
-		self.game.utilities.set_player_stats('lock3_lit',False)
+		self.game.utilities.set_player_stats('upperLock','off')
+		self.game.utilities.set_player_stats('middleLock','off')
+		self.game.utilities.set_player_stats('lowerLock','off')
 		self.game.utilities.set_player_stats('balls_locked',0)
 		self.getUserStats()
-		
+
+        def sw_vUK_closed_for_1s(self, sw):
+                if (self.upperLock == 'lit'):
+                    self.game.coils.upperDivertor.enable()
+                elif (self.middleLock == 'lit'):
+                    self.game.coils.lowerDivertor.enable()
+                self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+
+        def sw_rightEject_closed_for_1s(self,sw):
+                if (self.lowerLock == 'lit'):
+                    self.ballsLocked += 1
+                    self.game.utilities.set_player_stats('lower_lock','locked')
+                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
+                    self.getUserStats()
+                    self.update_lamps()
+                else:
+                    self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+		return procgame.game.SwitchStop
+
+        def sw_rightCentreEject_closed_for_1s(self,sw):
+                if (self.upperLock == 'lit'):
+                    self.game.coils.upperDivertor.disable()
+                    self.ballsLocked += 1
+                    self.game.utilities.set_player_stats('upper_lock','locked')
+                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
+                    self.getUserStats()
+                    self.update_lamps()
+                else:
+                    self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
+
+                return procgame.game.SwitchStop
+
+        def sw_leftCentreEject_closed_for_1s(self,sw):
+                if (self.middleLock == 'lit'):
+                    self.game.coils.lowerDivertor.disable()
+                    self.ballsLocked += 1
+                    self.game.utilities.set_player_stats('middle_lock','locked')
+                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
+                    self.getUserStats()
+                    self.update_lamps()
+                else:
+                    self.game.coils.centreLeftEject.pulse(50)
+
+
+		return procgame.game.SwitchStop
+
+
 	def sw_underPlayfieldDrop1_active(self, sw):
 		if (self.ballLock1Lit == True):
 			self.lockBall1()
