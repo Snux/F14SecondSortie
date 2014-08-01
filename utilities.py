@@ -284,6 +284,7 @@ class UtilitiesMode(game.Mode):
 		else:
 			return 0
 
+        
         def update_lamps(self):
                 self.light_bonus()
 

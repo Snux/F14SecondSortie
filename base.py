@@ -398,6 +398,8 @@ class BaseGameMode(game.Mode):
                 self.game.utilities.play_animation('f14_roll'+random.choice(['2','5','6']),frametime=5,txt=display_text,txtPos='after')
                 self.game.coils['yagovKickBack'].pulse(100)
 		self.game.sound.play('machine_gun_short')
+                self.game.lampctrl.play_show('f14fireboth', repeat=False,callback=self.game.update_lamps)
+                #self.delay(name="stop_show",event_type=None,delay=2.0,handler=self.game.lampctrl.stop_show)
 
         def bonusLane(self,sw):
             self.game.utilities.set_player_stats('loop_shots',self.game.utilities.get_player_stats('loop_shots')+1)

@@ -101,7 +101,7 @@ class AttractMode(game.Mode):
 		anim = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/f14launch.dmd")
                 self.takeoff_layer = dmd.AnimatedLayer(frames=anim.frames, hold=False, repeat=False, frame_time=5)
                 anim2 = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha2.dmd")
-                self.first_layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=False, repeat=True, frame_time=4)
+                self.first_layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['second_sortie_rotate'].frames, hold=False, repeat=True, frame_time=4)
 
 
                 self.second_layer = dmd.TextLayer(128/2, 14, font_named("Font_CC_5px_az.dmd"),"center").set_text("SHOOT THE MOVING TARGET")
@@ -109,8 +109,8 @@ class AttractMode(game.Mode):
                 self.second_layer.composite_op = 'blacksrc'
                 self.third_layer.composite_op = 'blacksrc'
 
-                self.f14_splash_layer = dmd.GroupedLayer(128, 32, [self.first_layer,self.second_layer,self.third_layer])
-                self.log.info("Get splash")
+                #self.f14_splash_layer = dmd.GroupedLayer(128, 32, [self.first_layer,self.second_layer,self.third_layer])
+                self.f14_splash_layer = self.first_layer
                 #self.f14_splash_layer = dmd.FrameLayer(opaque=True, frame=dmd.Animation().load('/P-ROC/games/F14SecondSortie/assets/dmd/f14bw2.dmd').frames[0])
                 self.f14_sunset_layer = dmd.FrameLayer(opaque=True, frame=dmd.Animation().load('/P-ROC/games/F14SecondSortie/assets/dmd/f14sun.dmd').frames[0])
                 self.f14_layer = dmd.FrameLayer(opaque=True, frame=dmd.Animation().load('/P-ROC/games/F14SecondSortie/assets/dmd/tomcat20beware.dmd').frames[0])

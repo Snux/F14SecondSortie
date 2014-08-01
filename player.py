@@ -45,6 +45,7 @@ class Player(procgame.game.Player):
                         self.player_stats['bonusXLeft']='off'
 			self.player_stats['center_shots']=0
                         self.player_stats['yagov_shots']=0
+                        self.player_stats['kickback_lit']=False
 
 			### Kickback Stats ####################################
 			self.player_stats['kickback_active']=False

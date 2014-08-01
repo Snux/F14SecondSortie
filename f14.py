@@ -107,7 +107,7 @@ class F14SecondSortie(game.BasicGame):
 		#### Setup Lamp Controller ####
 		self.lampctrl = procgame.lamps.LampController(self)
 		self.lampctrlflash = procgame.lamps.LampController(self)
-		#self.RegisterLampshows()
+		self.RegisterLampshows()
 
 		#### software version number ####
 		self.revision = "2.0.0"
@@ -196,9 +196,9 @@ class F14SecondSortie(game.BasicGame):
 		self.sound.set_volume(10)
 
 	def RegisterLampshows(self):
-		self.lampctrl.register_show('attract1', game_lampshows + 'attract_random.lampshow')
-		self.lampctrl.register_show('center_ramp_1', game_lampshows + 'center_ramp_complete.lampshow')
-		self.lampctrlflash.register_show('bonus_total', game_lampshows + 'bonus_total.lampshow')
+		self.lampctrl.register_show('f14fireboth', game_lampshows + 'f14fireboth.lampshow')
+		#self.lampctrl.register_show('center_ramp_1', game_lampshows + 'center_ramp_complete.lampshow')
+		#self.lampctrlflash.register_show('bonus_total', game_lampshows + 'bonus_total.lampshow')
 
         def RegisterAnimations(self):
 
@@ -242,6 +242,8 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['f14_roll7'] = dmd.Animation().load(game_dmd_path +'f14_roll7.dmd')
                 self.dmd_assets['f14_roll8'] = dmd.Animation().load(game_dmd_path +'f14_roll8.dmd')
                 self.dmd_assets['f14_roll9'] = dmd.Animation().load(game_dmd_path +'f14_roll9.dmd')
+
+                self.dmd_assets['second_sortie_rotate'] = dmd.Animation().load(game_dmd_path +'second_sortie_rotate.dmd')
 
                 
 
