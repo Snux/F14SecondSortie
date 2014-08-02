@@ -106,7 +106,7 @@ class BallSaver(game.Mode):
 		#These are from the original code
 		#self.kickBallToTrough()
 		#self.kickBallToShooterLane()
-		self.game.trough.launch_balls(num=1)
+		self.game.trough.launch_balls(num=1,autolaunch=True)
 		self.stopBallSaverMode()
 
 	def saveBallEarly(self): #Need to work on this...

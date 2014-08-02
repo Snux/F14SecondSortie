@@ -103,6 +103,9 @@ class Trough(procgame.game.Mode):
 		# Install outhole switch handler.
 		self.add_switch_handler(name=self.outhole_switchname, event_type='active', delay=0.75, handler=self.outhole_switch_handler)
 
+                # Install shooter lane handler
+                self.add_switch_handler(name=self.shooter_lane_switchname, event_type='active', delay=0.75, handler=self.shooter_lane_switch_handler)
+
 		# Reset variables
 		self.num_balls_in_play = 0
 		self.num_balls_locked = 0
@@ -251,7 +254,7 @@ class Trough(procgame.game.Mode):
 	# Either initiate a new launch or add another ball to the count of balls
 	# being launched.  Make sure to keep a separate count for stealth launches
 	# that should not increase num_balls_in_play.
-	def launch_balls(self, num, callback=None, stealth=False):
+	def launch_balls(self, num, callback=None, stealth=False, autolaunch=False):
 		"""Launches balls into play.
 
 			'num': Number of balls to be launched.  
@@ -269,6 +272,7 @@ class Trough(procgame.game.Mode):
 		"""
 
 		self.num_balls_to_launch += num
+                self.autolaunch = autolaunch
 		if stealth:
 			self.num_balls_to_stealth_launch += num
 		if not self.launch_in_progress:
@@ -298,12 +302,18 @@ class Trough(procgame.game.Mode):
 				self.delay(name='launch', event_type=None, delay=1.0, handler=self.common_launch_code)
 			else:
 				self.launch_in_progress = False
-				if self.launch_callback:
+                                if self.launch_callback:
 					self.launch_callback()
 		# Otherwise, wait 1 second before trying again.
 		else:
 			self.delay(name='launch', event_type=None, delay=1.0, \
 				   handler=self.common_launch_code)
 
-	def mode_stopped(self):
+	def shooter_lane_switch_handler(self,sw):
+            if self.autolaunch == True:
+                self.log.info("Shooter lane autolaunch = "+str(self.autolaunch))
+                self.game.coils.autoLaunch.pulse(100)
+                self.autolaunch=False
+
+        def mode_stopped(self):
 		self.cancel_delayed('check_switches')

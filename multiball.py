@@ -99,31 +99,44 @@ class Multiball(game.Mode):
 
 	
 	def startMultiball(self):
+                self.log.info("Start multiball")
 		self.multiballStarting = True
 		self.game.utilities.set_player_stats('multiball_running',True)
 		self.resetMultiballStats()
-		self.game.collect_mode.incrementActiveZoneLimit()
+		#self.game.collect_mode.incrementActiveZoneLimit()
 		self.getUserStats()
 		self.update_lamps()
 		self.multiballIntro()
 
 	def multiballIntro(self):
+                self.log.info("Multiball intro")
 		self.game.utilities.disableGI()
 		self.game.sound.stop_music()
 		# Sound FX #
-		self.game.sound.play('main_loop_tape_stop')
-		self.game.sound.play('earthquake_1')
-		self.game.sound.play_music('multiball_intro',loops=1,music_volume=.5)
-		self.game.coils.quakeMotor.schedule(schedule=0x08080808,cycle_seconds=-1,now=True)
+		#self.game.sound.play('main_loop_tape_stop')
+		#self.game.sound.play('earthquake_1')
+		#self.game.sound.play_music('multiball_intro',loops=1,music_volume=.5)
+		#self.game.coils.quakeMotor.schedule(schedule=0x08080808,cycle_seconds=-1,now=True)
+                self.game.utilities.play_animation('second_sortie_rotate')
 		self.resetMultiballStats()
-		self.delay(delay=self.multiballIntroLength,handler=self.multiballRun)
+		self.delay(delay=2,handler=self.multiballRun)
 
 	def multiballRun(self):
+                self.log.info("Multiball run")
 		self.game.utilities.enableGI()
-		self.game.sound.play('centerRampComplete')
-		self.game.sound.play_music('multiball_loop',loops=-1,music_volume=.6)
-		self.game.utilities.acCoilPulse(coilname='bottomBallPopper_RightRampFlashers1',pulsetime=50)
-		self.game.trough.launch_balls(num=2)
+
+                # Make sure the trough knows how many balls are locked
+                self.game.trough.num_balls_locked = 0
+                self.balls_locked = 0
+
+		#self.game.sound.play('centerRampComplete')
+		self.game.sound.play_music('dangerzone',loops=-1,music_volume=.6)
+
+                #kick the balls out
+		self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+                self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
+                self.game.coils.centreLeftEject.pulse(50)
+		self.game.trough.launch_balls(num=1,autolaunch=True)
 		self.multiballStarting = False
 		self.game.update_lamps()
 
@@ -157,9 +170,7 @@ class Multiball(game.Mode):
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
-                else:
-                    self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
-		return procgame.game.SwitchStop
+                return procgame.game.SwitchContinue
 
         def sw_rightCentreEject_closed_for_1s(self,sw):
                 if (self.upperLock == 'lit'):
@@ -169,10 +180,8 @@ class Multiball(game.Mode):
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
-                else:
-                    self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
-
-                return procgame.game.SwitchStop
+                
+                return procgame.game.SwitchContinue
 
         def sw_leftCentreEject_closed_for_1s(self,sw):
                 if (self.middleLock == 'lit'):
@@ -183,10 +192,9 @@ class Multiball(game.Mode):
                     self.getUserStats()
                     self.update_lamps()
                 else:
-                    self.game.coils.centreLeftEject.pulse(50)
+                    
 
-
-		return procgame.game.SwitchStop
+		return procgame.game.SwitchContinue
 
 
 	def sw_underPlayfieldDrop1_active(self, sw):

@@ -297,7 +297,8 @@ class BaseGameMode(game.Mode):
 
 
         def sw_rightEject_closed_for_1s(self,sw):
-                self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+                if self.game.utilities.get_player_stats('lower_lock') != 'locked':
+                    self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
 		return procgame.game.SwitchStop
 
         def target1_6(self,sw):
@@ -367,11 +368,11 @@ class BaseGameMode(game.Mode):
 	#############################
 
 
-	def sw_shooter_closed_for_1s(self, sw):
-		if (self.game.utilities.get_player_stats('ball_in_play') == True):
-			#Kick the ball into play
-			self.game.utilities.launch_ball()
-		return procgame.game.SwitchStop
+	#def sw_shooter_closed_for_1s(self, sw):
+	#	if (self.game.utilities.get_player_stats('ball_in_play') == True):
+	#		#Kick the ball into play
+	#		self.game.utilities.launch_ball()
+	#	return procgame.game.SwitchStop
 
 	#############################
 	## Outlane Switches
