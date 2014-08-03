@@ -119,11 +119,11 @@ PRSwitches:
         number: S33
     rampEntry:
         number: S34
-    rightEject:
+    lowerEject:
         number: S35
-    leftCentreEject:
+    middleEject:
         number: S36
-    rightCentreEject:
+    upperEject:
         number: S37
     vUK:
         number: S38
@@ -137,11 +137,11 @@ PRSwitches:
         number: S44
     unused45:
         number: S45
-    bottomRampMade:
+    lowerRampMade:
         number: S46
-    centerRampMade:
+    middleRampMade:
         number: S47
-    topRampMade:
+    upperRampMade:
         number: S48
     lowerLeftT:
         number: S51
@@ -212,17 +212,17 @@ PRCoils:
         number: C03
     unusedC4_flasher4:
         number: C04
-    centreRightEject_flasher5:
+    upperEject_flasher5:
         number: C05
     knocker_flasher6:
         number: C06
-    rightEject_flasher7:
+    lowerEject_flasher7:
         number: C07
     unusedC8_flasher8:
         number: C08
     flasher9:
         number: C09
-    centreLeftEject:
+    middleEject:
         number: C10
     gi:
         number: C11

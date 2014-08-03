@@ -23,7 +23,7 @@ from procgame import *
 import pinproc
 from random import choice
 from random import seed
-import logger
+import logging
 
 class Multiball(game.Mode):
 	def __init__(self, game, priority):
@@ -81,19 +81,18 @@ class Multiball(game.Mode):
                 self.log.info("Upper lock : "+self.upperLock)
                 self.log.info("Middle lock : "+self.middleLock)
                 self.log.info("Lower lock : "+self.lowerLock)
-                self.log.info("Balls locked : "+self.ballsLocked)
+                self.log.info("Balls locked : "+str(self.ballsLocked))
 		
-	def liteLock(self,callback):
-		self.callback = callback
+	def liteLock(self):
+	#	self.callback = callback
 		if (self.ballsLocked == 0):
-			self.game.utilities.set_player_stats('lock1_lit',True)
-			print "Setting Ball 1 Lock to Lit"
+			self.game.utilities.set_player_stats('middle_lock','lit')
 			self.getUserStats()
 		elif (self.ballsLocked == 1):
-			self.game.utilities.set_player_stats('lock2_lit',True)
+			self.game.utilities.set_player_stats('upper_lock','lit')
 			self.getUserStats()
 		elif (self.ballsLocked == 2):
-			self.game.utilities.set_player_stats('lock3_lit',True)
+			self.game.utilities.set_player_stats('lower_lock','lit')
 			self.getUserStats()
 		self.update_lamps()
 
@@ -156,23 +155,19 @@ class Multiball(game.Mode):
 		self.game.utilities.set_player_stats('balls_locked',0)
 		self.getUserStats()
 
-        def sw_vUK_closed_for_1s(self, sw):
-                if (self.upperLock == 'lit'):
-                    self.game.coils.upperDivertor.enable()
-                elif (self.middleLock == 'lit'):
-                    self.game.coils.lowerDivertor.enable()
-                self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
-
-        def sw_rightEject_closed_for_1s(self,sw):
+        
+        def sw_lowerEject_closed_for_1s(self,sw):
                 if (self.lowerLock == 'lit'):
                     self.ballsLocked += 1
                     self.game.utilities.set_player_stats('lower_lock','locked')
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
-                return procgame.game.SwitchContinue
+                    self.game.trough.launch_balls(num=1,stealth=True)
+                    self.startMultiball()
+                
 
-        def sw_rightCentreEject_closed_for_1s(self,sw):
+        def sw_upperEject_closed_for_1s(self,sw):
                 if (self.upperLock == 'lit'):
                     self.game.coils.upperDivertor.disable()
                     self.ballsLocked += 1
@@ -180,10 +175,9 @@ class Multiball(game.Mode):
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
+                    self.game.trough.launch_balls(num=1,stealth=True)
                 
-                return procgame.game.SwitchContinue
-
-        def sw_leftCentreEject_closed_for_1s(self,sw):
+        def sw_middleEject_closed_for_1s(self,sw):
                 if (self.middleLock == 'lit'):
                     self.game.coils.lowerDivertor.disable()
                     self.ballsLocked += 1
@@ -191,27 +185,8 @@ class Multiball(game.Mode):
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
-                else:
+                    self.game.trough.launch_balls(num=1,stealth=True)
                     
-
-		return procgame.game.SwitchContinue
-
-
-	def sw_underPlayfieldDrop1_active(self, sw):
-		if (self.ballLock1Lit == True):
-			self.lockBall1()
-		elif (self.ballLock2Lit == True):
-			self.lockBall2()
-		elif (self.ballLock3Lit == True):
-			self.startMultiball()
-		else:
-			pass
-
-	def sw_ballPopperBottom_closed(self, sw):
-		if(self.multiballStarting == True):
-			return procgame.game.SwitchStop
-		else:
-			return procgame.game.SwitchContinue
 
 	def sw_outhole_closed_for_500ms(self, sw):
 		#if (self.game.trough.num_balls_in_play == 2):

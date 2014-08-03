@@ -42,10 +42,11 @@ from player import *
 from ballsaver import *
 from bonus import *
 from mission import *
+from locks import *
 #from droptargets import *
 #from collectzones import *
 #from spinner import *
-#from multiball import *
+from multiball import *
 from trough import *
 
 # Used to put commas in the score.
@@ -118,6 +119,7 @@ class F14SecondSortie(game.BasicGame):
 		self.base_mode = BaseGameMode(self,0)
 		self.attract_mode = AttractMode(self,1)
                 self.mission = MissionMode(self,2)
+                self.locks = LocksMode(self,50)
                 self.kill1mission = Kill1Mode(self,3)
 		#self.centerramp_mode = CenterRampMode(self,8)
 		#self.drops_mode = DropTargets(self,9)
@@ -127,7 +129,7 @@ class F14SecondSortie(game.BasicGame):
 		self.ballsaver_mode = BallSaver(self,1)
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,1000)
-		#self.multiball_mode = Multiball(self,101)
+		self.multiball_mode = Multiball(self,101)
 
 		#### Initial Mode Queue ####
 		self.modes.add(self.utilities)

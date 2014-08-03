@@ -28,16 +28,18 @@ import random
 #import time
 #import sys
 #import locale
+import logging
 
 #from bonus import *
 
 class BaseGameMode(game.Mode):
 	def __init__(self, game, priority):
 			super(BaseGameMode, self).__init__(game, priority)
+                        self.log = logging.getLogger('f14.base')
 			
 			
 	def mode_started(self):
-                        self.game.utilities.log('Base mode start','info')
+                        self.log.info('Base mode start')
 			#Start Attract Mode
 			self.game.modes.add(self.game.attract_mode)
 			self.game.utilities.releaseStuckBalls()
@@ -101,7 +103,7 @@ class BaseGameMode(game.Mode):
 		#self.game.modes.add(self.game.drops_mode)
 		#self.game.modes.add(self.game.collect_mode)
 		#self.game.modes.add(self.game.spinner_mode)
-		#self.game.modes.add(self.game.multiball_mode)
+		self.game.modes.add(self.game.multiball_mode)
 
 		#### Enable Flippers ####
 		self.game.coils.flipperEnable.enable()
@@ -174,7 +176,7 @@ class BaseGameMode(game.Mode):
 		#### Remove Ball Modes ####
 		#self.game.modes.remove(self.game.tilt)
 		#self.game.modes.remove(self.game.spinner_mode)
-		#self.game.modes.remove(self.game.multiball_mode)
+		self.game.modes.remove(self.game.multiball_mode)
 
 		#self.game.sound.fadeout_music(time_ms=1000) #This is causing delay issues with the AC Relay
 		self.game.sound.stop_music()
@@ -284,7 +286,7 @@ class BaseGameMode(game.Mode):
 		
 	def sw_outhole_closed_for_1s(self, sw):
 		### Ball handling ###
-                self.game.utilities.log('Base outhole call','info')
+                self.log.info("Base mode outhole - balls in play is "+str(self.game.trough.num_balls_in_play))
 		if self.game.trough.num_balls_in_play == 1: #Last ball in play
 			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
 			#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
@@ -293,12 +295,13 @@ class BaseGameMode(game.Mode):
 
 	def sw_vUK_closed_for_1s(self, sw):
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+                self.game.locks.transitStart()
 		return procgame.game.SwitchStop
 
 
-        def sw_rightEject_closed_for_1s(self,sw):
+        def sw_lowerEject_closed_for_1s(self,sw):
                 if self.game.utilities.get_player_stats('lower_lock') != 'locked':
-                    self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+                    self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
 		return procgame.game.SwitchStop
 
         def target1_6(self,sw):
@@ -316,13 +319,32 @@ class BaseGameMode(game.Mode):
                     self.game.mission.completed1_6()
 
                 
-        def sw_rightCentreEject_closed_for_1s(self,sw):
-                self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
-		return procgame.game.SwitchStop
+        def sw_upperEject_closed_for_1s(self,sw):
+                if self.game.utilities.get_player_stats('upper_lock') != 'locked':
+                    self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+		
+        def sw_middleEject_closed_for_1s(self,sw):
+                if self.game.utilities.get_player_stats('middle_lock') != 'locked':
+                    self.game.coils.middleEject.pulse(50)
 
-        def sw_leftCentreEject_closed_for_1s(self,sw):
-                self.game.coils.centreLeftEject.pulse(50)
-		return procgame.game.SwitchStop
+        ## This is emergency code for the 3 ramp switches.  If a ramp switch is triggered and there is a ball in the lock already
+        ## we need to kick it out otherwise we'll jam the lock up and stop the game.  This should in theory not be required when
+        ## all game play possibilities have been coded, but for now it's safer :)
+        def sw_lowerRampMade_active(self,sw):
+            if self.game.switches.lowerEject.isclosed() == True:
+                self.log.info("Emergency kick lower lock")
+                self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+
+        def sw_middleRampMade_active(self,sw):
+            if self.game.switches.middleEject.isclosed() == True:
+                self.log.info("Emergency kick middle lock")
+                self.game.coils.middleEject.pulse(50)
+
+        def sw_upperRampMade_active(self,sw):
+            if self.game.switches.upperEject.isclosed() == True:
+                self.log.info("Emergency kick upper lock")
+                self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+
 
 	def sw_jetBumper_active(self, sw):
 		#self.game.sound.play('jet')
@@ -356,7 +378,11 @@ class BaseGameMode(game.Mode):
 	##################################################
 	def sw_rampEntry_active(self, sw):
 		self.game.utilities.setBallInPlay(True)
+                
                 return procgame.game.SwitchStop
+
+        def sw_leftRescue_active(self, sw):
+            self.game.multiball_mode.liteLock()
 
 	def sw_shooter_open(self, sw):
 		# This will play the car take off noise when the ball leaves the shooter lane

@@ -54,9 +54,9 @@ class UtilitiesMode(game.Mode):
 			self.ACNameArray.append('ballReleaseShooterLane_flasher2')
 			self.ACNameArray.append('upKicker_flasher3')
 			self.ACNameArray.append('unusedC4_flasher4')
-			self.ACNameArray.append('centreRightEject_flasher5')
+			self.ACNameArray.append('upperEject_flasher5')
 			self.ACNameArray.append('knocker_flasher6')
-			self.ACNameArray.append('rightEject_flasher7')
+			self.ACNameArray.append('lowerEject_flasher7')
                         self.ACNameArray.append('unusedC8_flasher8')
 
                         ## Open up the Arduino COM port if one is specified.
