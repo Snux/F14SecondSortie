@@ -76,7 +76,7 @@ class BaseGameMode(game.Mode):
                     if switch.name.find('target', 0) != -1:
                         self.add_switch_handler(name=switch.name, event_type='active', \
 				delay=0.01, handler=self.target1_6)
-                    if switch.name[0:5] in ('upper','lower'):
+                    if switch.name[0:5] in self.game.tomcatTargetIndex:
                         self.add_switch_handler(name=switch.name, event_type='active', \
                                 delay=0.01, handler=self.targetTOMCAT)
                         
@@ -136,7 +136,7 @@ class BaseGameMode(game.Mode):
                             self.game.lamps[switch.name].enable()
                         else:
                             self.game.lamps[switch.name].disable()
-                    if switch.name[0:5] in ('upper','lower'):
+                    if switch.name[0:5] in self.game.tomcatTargetIndex:
                         if self.game.utilities.get_player_stats(switch.name):
                             self.game.lamps[switch.name].enable()
                         else:
@@ -284,7 +284,7 @@ class BaseGameMode(game.Mode):
 		#will put launcher in here eventually
 		pass
 		
-	def sw_outhole_closed_for_1s(self, sw):
+	def sw_outhole_active(self, sw):
 		### Ball handling ###
                 self.log.info("Base mode outhole - balls in play is "+str(self.game.trough.num_balls_in_play))
 		if self.game.trough.num_balls_in_play == 1: #Last ball in play
@@ -295,14 +295,14 @@ class BaseGameMode(game.Mode):
 
 	def sw_vUK_closed_for_1s(self, sw):
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
-                self.game.locks.transitStart()
+                self.game.locks.transitStart('base')
 		return procgame.game.SwitchStop
 
 
-        def sw_lowerEject_closed_for_1s(self,sw):
-                if self.game.utilities.get_player_stats('lower_lock') != 'locked':
-                    self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
-		return procgame.game.SwitchStop
+        #def sw_lowerEject_closed_for_1s(self,sw):
+        #        if self.game.utilities.get_player_stats('lower_lock') != 'locked':
+        #            self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+#		return procgame.game.SwitchStop
 
         def target1_6(self,sw):
             if self.game.utilities.get_player_stats(sw.name):
@@ -319,31 +319,15 @@ class BaseGameMode(game.Mode):
                     self.game.mission.completed1_6()
 
                 
-        def sw_upperEject_closed_for_1s(self,sw):
-                if self.game.utilities.get_player_stats('upper_lock') != 'locked':
-                    self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+        #def sw_upperEject_closed_for_1s(self,sw):
+        #        if self.game.utilities.get_player_stats('upper_lock') != 'locked':
+        #            self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
 		
-        def sw_middleEject_closed_for_1s(self,sw):
-                if self.game.utilities.get_player_stats('middle_lock') != 'locked':
-                    self.game.coils.middleEject.pulse(50)
+        #def sw_middleEject_closed_for_1s(self,sw):
+        #        if self.game.utilities.get_player_stats('middle_lock') != 'locked':
+        #            self.game.coils.middleEject.pulse(50)
 
-        ## This is emergency code for the 3 ramp switches.  If a ramp switch is triggered and there is a ball in the lock already
-        ## we need to kick it out otherwise we'll jam the lock up and stop the game.  This should in theory not be required when
-        ## all game play possibilities have been coded, but for now it's safer :)
-        def sw_lowerRampMade_active(self,sw):
-            if self.game.switches.lowerEject.isclosed() == True:
-                self.log.info("Emergency kick lower lock")
-                self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
-
-        def sw_middleRampMade_active(self,sw):
-            if self.game.switches.middleEject.isclosed() == True:
-                self.log.info("Emergency kick middle lock")
-                self.game.coils.middleEject.pulse(50)
-
-        def sw_upperRampMade_active(self,sw):
-            if self.game.switches.upperEject.isclosed() == True:
-                self.log.info("Emergency kick upper lock")
-                self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+        
 
 
 	def sw_jetBumper_active(self, sw):

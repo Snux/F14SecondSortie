@@ -131,7 +131,7 @@ PRSwitches:
         number: S41
     rightRescue:
         number: S42
-    unused43:
+    debug:
         number: S43
     jetBumper:
         number: S44

@@ -50,7 +50,7 @@ class MissionMode(game.Mode):
 			
 	#def sw_rightEject_closed_for_1s(self, sw):
         def sw_vUK_closed_for_1s(self, sw):
-            self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
+            #self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
             #self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
                 self.game.modes.add(self.game.kill1mission)
@@ -162,14 +162,12 @@ class Kill1Mode(game.Mode):
             self.target_speed = 1
 
             for switch in self.game.switches:
-                if switch.name[0:5] in ('upper','lower'):
+                if switch.name[0:5] in self.game.tomcatTargetIndex:
                     self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
                     self.tomcatTargets[switch.name]=False
-                    #self.tomcatTargetIndex[target_index] = switch.name
+                    
                     target_index += 1
-            self.tomcatTargetIndex = (["lowerLeftT","lowerLeftO","lowerLeftM","upperLeftT","upperLeftO","upperLeftM",
-                                        "upperRightC","upperRightA","upperRightT","lowerRightC","lowerRightA","lowerRightT"])
-
+            
             
 
         def mode_started(self):
@@ -198,13 +196,13 @@ class Kill1Mode(game.Mode):
             self.delay(name='fuel_out',delay=30,handler=self.fuel_out)
 
         def move_target(self):
-            self.game.lamps[self.tomcatTargetIndex[self.current_position]].disable()
+            self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].disable()
             self.current_position += random.choice([-1,1])
             if self.current_position == 12:
                 self.current_position = 0
             elif self.current_position == -1:
                 self.current_position = 11
-            self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
+            self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].enable()
             mission_text = list("------------")
             mission_text[self.current_position] = '+'
             self.third_layer= dmd.TextLayer(128/2, 24, font_named("Font_CC_7px_az.dmd"), "center").set_text(''.join(mission_text))
@@ -237,7 +235,7 @@ class Kill1Mode(game.Mode):
             pass
 
         def targetTOMCAT(self,sw):
-            if sw.name == self.tomcatTargetIndex[self.current_position]:
+            if sw.name == self.game.tomcatTargetIndex[self.current_position]:
                 self.game.utilities.score(20000)
                 self.game.utilities.display_text(txt="TARGET HIT",time=3)
                 self.target_speed /= 2

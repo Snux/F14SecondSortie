@@ -93,12 +93,12 @@ class UtilitiesMode(game.Mode):
 		#Checks for balls in locks or outhole and kicks them out
 		if self.game.switches.outhole.is_active()==True and self.game.tiltStatus == 0: #Exception for when in tilt
 			self.game.utilities.acCoilPulse(coilname='outholeKicker_flasher1',pulsetime=50)
-		if self.game.switches.rightEject.is_active()==True:
-			self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
-		if self.game.switches.rightCentreEject.is_active()==True:
-			self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
-		if self.game.switches.leftCentreEject.is_active()==True:
-			self.game.coils.centreLeftEject.pulse(50) #Does not need AC Relay logic
+		if self.game.switches.lowerEject.is_active()==True:
+			self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+		if self.game.switches.upperEject.is_active()==True:
+			self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+		if self.game.switches.middleEject.is_active()==True:
+			self.game.coils.middleEject.pulse(50) #Does not need AC Relay logic
                 if self.game.switches.vUK.is_active()==True:
 			self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
 		if self.game.switches.shooter.is_active()==True:
@@ -255,7 +255,7 @@ class UtilitiesMode(game.Mode):
 	#### Player Functions ####
 	##########################
 	def set_player_stats(self,id,value):
-                self.log('Player Stats - set '+id+' to '+str(value))
+                #self.log('Player Stats - set '+id+' to '+str(value))
 		if (self.game.ball <> 0):
 			#self.p = self.game.current_player()
 			self.game.current_player().player_stats[id]=value
@@ -263,7 +263,7 @@ class UtilitiesMode(game.Mode):
 	def get_player_stats(self,id):
 		if (self.game.ball <> 0):
 			#self.p = self.game.current_player()
-                        self.log('Player Stats - get '+id+' is '+str(self.game.current_player().player_stats[id]))
+                        #self.log('Player Stats - get '+id+' is '+str(self.game.current_player().player_stats[id]))
 			return self.game.current_player().player_stats[id]
 		else:
 			return False

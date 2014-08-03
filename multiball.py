@@ -129,29 +129,33 @@ class Multiball(game.Mode):
                 self.balls_locked = 0
 
 		#self.game.sound.play('centerRampComplete')
-		self.game.sound.play_music('dangerzone',loops=-1,music_volume=.6)
+		self.game.sound.play_music('dangerzone')
 
                 #kick the balls out
-		self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
-                self.game.utilities.acCoilPulse(coilname='centreRightEject_flasher5',pulsetime=50)
-                self.game.coils.centreLeftEject.pulse(50)
+		self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+                self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+                self.game.coils.middleEject.pulse(50)
+
+                # Tell the trough we now now have 3 balls in play, then have it kick another
+                self.game.trough.num_balls_in_play = 3
 		self.game.trough.launch_balls(num=1,autolaunch=True)
+
 		self.multiballStarting = False
 		self.game.update_lamps()
 
 	def stopMultiball(self):
 		self.game.utilities.set_player_stats('multiball_running',False)
 		self.game.sound.stop_music()
-		self.game.sound.play_music('main',loops=-1,music_volume=.5)
+		self.game.sound.play_music('tomcatmain',loops=-1)
 		self.resetMultiballStats()
 		self.game.update_lamps()
-		self.game.coils.quakeMotor.disable()
-		self.callback()
+		#self.callback()
 
 	def resetMultiballStats(self):
-		self.game.utilities.set_player_stats('upperLock','off')
-		self.game.utilities.set_player_stats('middleLock','off')
-		self.game.utilities.set_player_stats('lowerLock','off')
+		self.game.utilities.set_player_stats('upper_lock','off')
+		self.game.utilities.set_player_stats('middle_lock','off')
+		self.game.utilities.set_player_stats('lower_lock','off')
+                self.game.trough.num_balls_locked = 0
 		self.game.utilities.set_player_stats('balls_locked',0)
 		self.getUserStats()
 
@@ -159,18 +163,19 @@ class Multiball(game.Mode):
         def sw_lowerEject_closed_for_1s(self,sw):
                 if (self.lowerLock == 'lit'):
                     self.ballsLocked += 1
+                    self.game.trough.num_balls_locked += 1
                     self.game.utilities.set_player_stats('lower_lock','locked')
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
                     self.update_lamps()
-                    self.game.trough.launch_balls(num=1,stealth=True)
+                    #self.game.trough.launch_balls(num=1,stealth=True)
                     self.startMultiball()
                 
 
         def sw_upperEject_closed_for_1s(self,sw):
                 if (self.upperLock == 'lit'):
-                    self.game.coils.upperDivertor.disable()
                     self.ballsLocked += 1
+                    self.game.trough.num_balls_locked += 1
                     self.game.utilities.set_player_stats('upper_lock','locked')
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
@@ -179,8 +184,8 @@ class Multiball(game.Mode):
                 
         def sw_middleEject_closed_for_1s(self,sw):
                 if (self.middleLock == 'lit'):
-                    self.game.coils.lowerDivertor.disable()
                     self.ballsLocked += 1
+                    self.game.trough.num_balls_locked += 1
                     self.game.utilities.set_player_stats('middle_lock','locked')
                     self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
                     self.getUserStats()
@@ -194,5 +199,9 @@ class Multiball(game.Mode):
 			#self.stopMultiball()
 		return procgame.game.SwitchContinue
 
-
+        def sw_debug_active(self,sw):
+            self.log.info("Balls locked = "+str(self.ballsLocked))
+            self.log.info("Upper lock = "+self.upperLock)
+            self.log.info("Middle lock = "+self.middleLock)
+            self.log.info("Lower lock = "+self.lowerLock)
 

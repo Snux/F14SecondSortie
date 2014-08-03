@@ -101,7 +101,7 @@ class Trough(procgame.game.Mode):
 			#self.add_switch_handler(name=switch, event_type='active', delay=None, handler=self.early_save_switch_handler)
 
 		# Install outhole switch handler.
-		self.add_switch_handler(name=self.outhole_switchname, event_type='active', delay=0.75, handler=self.outhole_switch_handler)
+		self.add_switch_handler(name=self.outhole_switchname, event_type='active', delay=0, handler=self.outhole_switch_handler)
 
                 # Install shooter lane handler
                 self.add_switch_handler(name=self.shooter_lane_switchname, event_type='active', delay=0.75, handler=self.shooter_lane_switch_handler)
@@ -123,10 +123,10 @@ class Trough(procgame.game.Mode):
 
 		self.launch_callback = None
 
-		#self.debug()
+		self.debug()
 
 	def debug(self):
-		self.game.set_status(str(self.num_balls_in_play) + "," + str(self.num_balls_locked)+ "," + str(self.num_balls()))
+		self.log.info("Play "+str(self.num_balls_in_play) + ", locked " + str(self.num_balls_locked)+ ", trough " + str(self.num_balls()))
 		self.delay(name='launch', event_type=None, delay=1.0, handler=self.debug)
 
 	def state_str(self):
@@ -154,7 +154,7 @@ class Trough(procgame.game.Mode):
 			self.delay(delay=1,handler=self.checkForEndOfMultiball)
 
 	def checkForEndOfMultiball(self):
-		if (self.num_balls() >= 2):
+		if (self.num_balls() >= 3):
 			self.game.multiball_mode.stopMultiball()
 
 	# Switches will change states a lot as balls roll down the trough.
@@ -206,6 +206,9 @@ class Trough(procgame.game.Mode):
 				num_trough_balls_if_multiball_drain = \
 					num_trough_balls_if_ball_ending - \
 					(self.num_balls_in_play - 1)
+                                self.log.info("Ball ending = "+str(num_trough_balls_if_ball_ending)+ \
+                                    ", Multiball ending = "+str(num_trough_balls_if_multiball_ending) + \
+                                    ", Multiball drain = "+str(num_trough_balls_if_multiball_drain))
 
 
 				# The ball should end if all of the balls 
@@ -235,9 +238,10 @@ class Trough(procgame.game.Mode):
 						self.num_balls_in_play = 2
 					# otherwise subtract 1
 					else:
-						self.num_balls_in_play -= 1
-					if self.drain_callback:
-						self.drain_callback()
+                                #else:
+                                            self.num_balls_in_play -= 1
+				#	if self.drain_callback:
+				#		self.drain_callback()
 
 	# Count the number of balls in the trough by counting active trough switches.
 	def num_balls(self):
@@ -317,3 +321,8 @@ class Trough(procgame.game.Mode):
 
         def mode_stopped(self):
 		self.cancel_delayed('check_switches')
+
+        def sw_debug_active(self,sw):
+            self.log.info("Balls in play = "+str(self.num_balls_in_play))
+            self.log.info("Balls in trough = "+str(self.num_balls()))
+        

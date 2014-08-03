@@ -79,6 +79,9 @@ class F14SecondSortie(game.BasicGame):
 		super(F14SecondSortie, self).__init__(pinproc.MachineTypeWPC95)
 		self.load_config(game_machine_yaml)
 
+                self.tomcatTargetIndex = (["lowerLeftT","lowerLeftO","lowerLeftM","upperLeftT","upperLeftO","upperLeftM",
+                                        "upperRightC","upperRightA","upperRightT","lowerRightC","lowerRightA","lowerRightT"])
+
                 
         	self.logging_enabled = True
 		self.balls_per_game = ballsPerGame
@@ -136,6 +139,7 @@ class F14SecondSortie(game.BasicGame):
 		self.modes.add(self.trough)
 		self.modes.add(self.base_mode)
                 self.modes.add(self.mission)
+                self.modes.add(self.locks)
 
                 #self.reset()
 

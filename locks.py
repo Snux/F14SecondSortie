@@ -104,6 +104,30 @@ class LocksMode(game.Mode):
             self.setDivertors()
 
 
+        ## This is emergency code for the 3 ramp switches.  If a ramp switch is triggered and there is a ball in the lock already
+        ## we need to kick it out otherwise we'll jam the lock up and stop the game.  This should in theory not be required when
+        ## all game play possibilities have been coded, but for now it's safer :)
+        def sw_lowerRampMade_active(self,sw):
+            if self.game.switches.lowerEject.is_active() == True:
+                self.log.info("Emergency kick lower lock")
+                self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+            else:
+                self.log.info("No action, lower lock is empty")
 
 
+        def sw_middleRampMade_active(self,sw):
+            if self.game.switches.middleEject.is_active() == True:
+                self.log.info("Emergency kick middle lock")
+                self.game.coils.middleEject.pulse(50)
+            else:
+                self.log.info("No action, middle lock is empty")
 
+        def sw_upperRampMade_active(self,sw):
+            if self.game.switches.upperEject.is_active() == True:
+                self.log.info("Emergency kick upper lock")
+                self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+            else:
+                self.log.info("No action, upper lock is empty")
+
+        def sw_debug_active(self,sw):
+            self.log.info("Balls in transit = "+str(self.ballInTransit))
