@@ -240,22 +240,6 @@ class AttractMode(game.Mode):
 			i = i + 1
 		
 	
-	################################
-	#### Switch Handler Section ####
-	################################
-	
-	def sw_outhole_closed(self, sw):
-		#This will eventually be moved to the Trough mode
-		return procgame.game.SwitchStop
-
-	def sw_outhole_active_for_1s(self, sw):
-		#This will eventually be moved to the Trough mode
-		self.game.coils.acSelect.disable()
-		self.game.coils.flipperEnable.disable()
-		self.game.coils.outholeKicker_CaptiveFlashers.pulse(50)
-		self.game.alpha_score_display.set_text("GAME OVER",0)
-		self.game.alpha_score_display.set_text("PRESS START",1)
-		return procgame.game.SwitchStop
 	
 	#######################################################################
 	#### Jet, Sling and Skillshot Switch Handling #########################

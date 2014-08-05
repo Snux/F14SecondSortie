@@ -146,12 +146,16 @@ class Trough(procgame.game.Mode):
 
 		#add handler for outhole
 	def outhole_switch_handler(self,sw):
-		self.log.info('outhole switch handler called')
-		#if self.game.switches[self.outhole_switchname].is_active(seconds=1.0):
-		#self.game.switched_coils.drive(self.outhole_coilname)
+		self.log.info('Outhole switch handler')
+
+                # Kick the ball into the trough
 		self.game.utilities.acCoilPulse('outholeKicker_flasher1')
 		if(self.game.utilities.get_player_stats('multiball_running') == True):
 			self.delay(delay=1,handler=self.checkForEndOfMultiball)
+                if self.game.trough.num_balls_in_play == 1: #Last ball in play
+			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
+			#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
+			self.delay('finishBall',delay=1,handler=self.game.base_mode.finish_ball)
 
 	def checkForEndOfMultiball(self):
 		if (self.num_balls() >= 3):
@@ -189,6 +193,7 @@ class Trough(procgame.game.Mode):
 
 				if (temp_num_balls - \
 				    self.num_balls_to_launch) >= balls_in_trough:
+                                        self.log.info("Trough thinks it needs another ball to launch")
 					self.launch_balls(1, self.ball_save_callback, \
 							  stealth=True)
 				else:

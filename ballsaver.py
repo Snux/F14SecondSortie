@@ -106,6 +106,7 @@ class BallSaver(game.Mode):
 		#These are from the original code
 		#self.kickBallToTrough()
 		#self.kickBallToShooterLane()
+                self.log.info("Launch ball auto due to ball saver")
 		self.game.trough.launch_balls(num=1,autolaunch=True)
 		self.stopBallSaverMode()
 
@@ -120,10 +121,11 @@ class BallSaver(game.Mode):
 		#These are from the original code
 		#self.kickBallToTrough()
 		#self.kickBallToShooterLane()
+                self.log.info("Launch ball manual due to ball saver")
 		self.game.trough.launch_balls(num=1)
 		self.stopBallSaverMode()
 
-	def sw_outhole_closed_for_100ms(self, sw):
+	def sw_outhole_active(self, sw):
 		if (self.game.utilities.get_player_stats('ballsave_active') == True):
 			self.saveBall()
 			self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchStop','info')

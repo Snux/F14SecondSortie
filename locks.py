@@ -36,29 +36,30 @@ class LocksMode(game.Mode):
 	"""docstring for Bonus"""
 	def __init__(self, game, priority):
 			super(LocksMode, self).__init__(game, priority)
-			self.kill_list=['kill1','kill2','kill3','kill4','kill5','kill6','kill7']
-                        self.mission_name= {'kill1' : 'alpha',
-                                            'kill2' : 'bravo',
-                                            'kill3' : 'charlie',
-                                            'kill4' : 'delta',
-                                            'kill5' : 'echo',
-                                            'kill6' : 'foxtrot',
-                                            'kill7' : 'golf'
-                                            }
-
-
+			
                         #setup logging
                         self.log = logging.getLogger('f14.locks')
                         
                         # Various info
-                        
+
                         # Is there a ball heading towards the divertor ramp
                         self.ballInTransit = False
+
+                        # Is the ball which is coming into a lock just a replacement for an existing one?
+                        self.ballReplacement = False
 
                         # Add a handler for the ramp entry switch
                         self.add_switch_handler(name='rampEntry',event_type='active',delay=0.01, handler=self.transitStart)
 
+                        # All the locks can be routed to the same handler
+                        self.add_switch_handler(name='upperEject',event_type='active',delay=0.1, handler=self.lockhandler)
+                        self.add_switch_handler(name='middleEject',event_type='active',delay=0.1, handler=self.lockhandler)
+                        self.add_switch_handler(name='lowerEject',event_type='active',delay=0.1, handler=self.lockhandler)
 
+                        # All the ramp switches route to the same handler
+                        self.add_switch_handler(name='upperRampMade',event_type='active',delay=0.01,handler=self.ramphandler)
+                        self.add_switch_handler(name='middleRampMade',event_type='active', delay=0.01, handler=self.ramphandler)
+                        self.add_switch_handler(name='lowerRampMade',event_type='active', delay = 0.01, handler=self.ramphandler)
 
 
         # Used to indicate that a ball is heading towards the divertors.  Either called from this modes switch handler on the
@@ -103,31 +104,53 @@ class LocksMode(game.Mode):
             self.ballInTransit = False
             self.setDivertors()
 
-
-        ## This is emergency code for the 3 ramp switches.  If a ramp switch is triggered and there is a ball in the lock already
-        ## we need to kick it out otherwise we'll jam the lock up and stop the game.  This should in theory not be required when
-        ## all game play possibilities have been coded, but for now it's safer :)
-        def sw_lowerRampMade_active(self,sw):
-            if self.game.switches.lowerEject.is_active() == True:
-                self.log.info("Emergency kick lower lock")
+        ## This routine gets called when a ball is rolling down one of the ramps towards a lock
+        ## It will take care of kicking out the ball which is already in the lock, if required
+        ## If it does do the kickout, it sets a flag to indicate that which is used by the
+        ## lock handler
+        def ramphandler(self,sw):
+            self.log.info("Ramp handler called for "+sw.name)
+            if sw.name == 'lowerRampMade' and self.game.switches.lowerEject.is_active() == True:
                 self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
-            else:
-                self.log.info("No action, lower lock is empty")
-
-
-        def sw_middleRampMade_active(self,sw):
-            if self.game.switches.middleEject.is_active() == True:
-                self.log.info("Emergency kick middle lock")
+                self.ballReplacement = True
+            elif sw.name == 'middleRampMade' and self.game.switches.middleEject.is_active() == True:
                 self.game.coils.middleEject.pulse(50)
-            else:
-                self.log.info("No action, middle lock is empty")
-
-        def sw_upperRampMade_active(self,sw):
-            if self.game.switches.upperEject.is_active() == True:
-                self.log.info("Emergency kick upper lock")
+                self.ballReplacement = True
+            elif sw.name == 'upperRampMade' and self.game.switches.upperEject.is_active() == True:
                 self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+                self.ballReplacement = True
+            if self.ballReplacement == True:
+                self.log.info("Ball kicked from lock")
             else:
-                self.log.info("No action, upper lock is empty")
+                self.log.info("No action required from ramp switch")
 
+
+        ## This routine is called whenever a ball lands in a lock
+        ## Code could get quite complex, but is easier centrally here than scattered across all
+        ## the various modes
+        def lockhandler(self,sw):
+            self.log.info("Lock handler called for "+sw.name)
+            if sw.name == 'upperEject':
+                if self.game.utilities.get_player_stats('upper_lock') == 'lit':
+                    self.game.multiball_mode.lock_ball('upper',self.ballReplacement)
+                elif self.ballReplacement == False:
+                    self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+            if sw.name == 'middleEject':
+                if self.game.utilities.get_player_stats('middle_lock') == 'lit':
+                    self.game.multiball_mode.lock_ball('middle',self.ballReplacement)
+                elif self.ballReplacement == False:
+                    self.game.coils.middleEject.pulse(50)
+            if sw.name == 'lowerEject':
+                if self.game.utilities.get_player_stats('lower_lock') == 'lit':
+                    self.game.multiball_mode.lock_ball('lower',self.ballReplacement)
+                elif self.ballReplacement == False:
+                    self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+            self.ballReplacement = False
+            self.ballInTransit = False
+            self.setDivertors()
+
+
+
+        
         def sw_debug_active(self,sw):
             self.log.info("Balls in transit = "+str(self.ballInTransit))

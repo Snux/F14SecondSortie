@@ -112,6 +112,7 @@ class BaseGameMode(game.Mode):
 		self.game.utilities.enableGI()
 
 		#### Kick Out Ball ####
+                self.log.info("Launch ball manual, ball starting")
 		self.game.trough.launch_balls(num=1)
 
 
@@ -284,14 +285,14 @@ class BaseGameMode(game.Mode):
 		#will put launcher in here eventually
 		pass
 		
-	def sw_outhole_active(self, sw):
-		### Ball handling ###
-                self.log.info("Base mode outhole - balls in play is "+str(self.game.trough.num_balls_in_play))
-		if self.game.trough.num_balls_in_play == 1: #Last ball in play
-			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
-			#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
-			self.delay('finishBall',delay=1,handler=self.finish_ball)
-		return procgame.game.SwitchStop
+	#def sw_outhole_active(self, sw):
+	#	### Ball handling ###
+         #       self.log.info("Base mode outhole - balls in play is "+str(self.game.trough.num_balls_in_play))
+	#	if self.game.trough.num_balls_in_play == 1: #Last ball in play
+	#		self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
+	#		#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
+	#		self.delay('finishBall',delay=1,handler=self.finish_ball)
+	#	return procgame.game.SwitchStop
 
 	def sw_vUK_closed_for_1s(self, sw):
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)

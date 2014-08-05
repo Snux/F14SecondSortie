@@ -126,7 +126,8 @@ class Multiball(game.Mode):
 
                 # Make sure the trough knows how many balls are locked
                 self.game.trough.num_balls_locked = 0
-                self.balls_locked = 0
+                self.game.utilities.set_player_stats('balls_locked',0)
+                self.getUserStats()
 
 		#self.game.sound.play('centerRampComplete')
 		self.game.sound.play_music('dangerzone')
@@ -138,12 +139,14 @@ class Multiball(game.Mode):
 
                 # Tell the trough we now now have 3 balls in play, then have it kick another
                 self.game.trough.num_balls_in_play = 3
+                self.log.info("Launch ball auto due to multiball")
 		self.game.trough.launch_balls(num=1,autolaunch=True)
 
 		self.multiballStarting = False
 		self.game.update_lamps()
 
 	def stopMultiball(self):
+                self.log.info("Stop multiball")
 		self.game.utilities.set_player_stats('multiball_running',False)
 		self.game.sound.stop_music()
 		self.game.sound.play_music('tomcatmain',loops=-1)
@@ -159,46 +162,27 @@ class Multiball(game.Mode):
 		self.game.utilities.set_player_stats('balls_locked',0)
 		self.getUserStats()
 
-        
-        def sw_lowerEject_closed_for_1s(self,sw):
-                if (self.lowerLock == 'lit'):
-                    self.ballsLocked += 1
-                    self.game.trough.num_balls_locked += 1
-                    self.game.utilities.set_player_stats('lower_lock','locked')
-                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
-                    self.getUserStats()
-                    self.update_lamps()
-                    #self.game.trough.launch_balls(num=1,stealth=True)
-                    self.startMultiball()
-                
+        # Called from lock handler when a ball stops in a lock and it was lit
+        def lock_ball(self,location,replacement):
+            self.log.info("Locking ball in location "+location)
+            self.ballsLocked += 1
+            self.game.utilities.set_player_stats(location+'_lock','locked')
+            self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
+            self.getUserStats()
+            self.update_lamps()
+            # Only lock ball physically and launch another if a ball wasn't already cleared
+            # from the lock to make space for this one.
+            if self.ballsLocked == 3:
+                self.startMultiball()
+            elif replacement == False:
+                self.game.trough.num_balls_locked += 1
+                self.log.info("Launch ball manual as ball locked")
+                self.game.trough.launch_balls(num=1,stealth=True)
 
-        def sw_upperEject_closed_for_1s(self,sw):
-                if (self.upperLock == 'lit'):
-                    self.ballsLocked += 1
-                    self.game.trough.num_balls_locked += 1
-                    self.game.utilities.set_player_stats('upper_lock','locked')
-                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
-                    self.getUserStats()
-                    self.update_lamps()
-                    self.game.trough.launch_balls(num=1,stealth=True)
-                
-        def sw_middleEject_closed_for_1s(self,sw):
-                if (self.middleLock == 'lit'):
-                    self.ballsLocked += 1
-                    self.game.trough.num_balls_locked += 1
-                    self.game.utilities.set_player_stats('middle_lock','locked')
-                    self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
-                    self.getUserStats()
-                    self.update_lamps()
-                    self.game.trough.launch_balls(num=1,stealth=True)
+
                     
 
-	def sw_outhole_closed_for_500ms(self, sw):
-		#if (self.game.trough.num_balls_in_play == 2):
-			#Last ball - Need to stop multiball
-			#self.stopMultiball()
-		return procgame.game.SwitchContinue
-
+	
         def sw_debug_active(self,sw):
             self.log.info("Balls locked = "+str(self.ballsLocked))
             self.log.info("Upper lock = "+self.upperLock)
