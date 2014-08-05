@@ -144,10 +144,16 @@ class Multiball(game.Mode):
 
 		self.multiballStarting = False
 		self.game.update_lamps()
+                self.multiball_reminder()
+
+        def multiball_reminder(self):
+                self.game.utilities.play_animation('tomcat_multiball_rotate')
+		self.delay(name='reminder', event_type=None, delay=4.0, handler=self.multiball_reminder)
 
 	def stopMultiball(self):
                 self.log.info("Stop multiball")
 		self.game.utilities.set_player_stats('multiball_running',False)
+                self.cancel_delayed('reminder')
 		self.game.sound.stop_music()
 		self.game.sound.play_music('tomcatmain',loops=-1)
 		self.resetMultiballStats()

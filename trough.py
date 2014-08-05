@@ -108,7 +108,10 @@ class Trough(procgame.game.Mode):
 
 		# Reset variables
 		self.num_balls_in_play = 0
+
+                # This is the number of balls physically sitting in locks, so not in play and not in the trough
 		self.num_balls_locked = 0
+
 		self.num_balls_to_launch = 0
 		self.num_balls_to_stealth_launch = 0
 		self.launch_in_progress = False
@@ -150,12 +153,24 @@ class Trough(procgame.game.Mode):
 
                 # Kick the ball into the trough
 		self.game.utilities.acCoilPulse('outholeKicker_flasher1')
-		if(self.game.utilities.get_player_stats('multiball_running') == True):
+
+                if(self.game.utilities.get_player_stats('multiball_running') == True):
 			self.delay(delay=1,handler=self.checkForEndOfMultiball)
-                if self.game.trough.num_balls_in_play == 1: #Last ball in play
+                if (self.game.utilities.get_player_stats('ballsave_active') == True):
+			self.game.ballsaver_mode.saveBall()
+                elif self.num_balls_in_play == 1: #Last ball in play
 			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
-			#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
 			self.delay('finishBall',delay=1,handler=self.game.base_mode.finish_ball)
+
+                # Schedule a call for one second from now to check the outhole again in case its jammed
+                self.delay('outhole_rekick',delay=1.0,handler=self.outhole_rekick)
+
+        # Called one second after the outhole is handled.  Will call the handler again if there is still
+        # a ball in the outhole
+        def outhole_rekick(self):
+            if self.game.switches.outhole.is_closed() == True:
+                self.outhole_switch_handler('Dummy')
+
 
 	def checkForEndOfMultiball(self):
 		if (self.num_balls() >= 3):
@@ -247,6 +262,7 @@ class Trough(procgame.game.Mode):
                                             self.num_balls_in_play -= 1
 				#	if self.drain_callback:
 				#		self.drain_callback()
+                                self.num_balls_in_play = 4 - self.num_balls() - self.num_balls_locked
 
 	# Count the number of balls in the trough by counting active trough switches.
 	def num_balls(self):

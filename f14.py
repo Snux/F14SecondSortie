@@ -260,6 +260,8 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['f14_roll9'] = dmd.Animation().load(game_dmd_path +'f14_roll9.dmd')
 
                 self.dmd_assets['second_sortie_rotate'] = dmd.Animation().load(game_dmd_path +'second_sortie_rotate.dmd')
+                self.dmd_assets['tomcat_multiball_rotate'] = dmd.Animation().load(game_dmd_path +'tomcat_multiball_rotate.dmd')
+
 
                 
 

@@ -125,14 +125,14 @@ class BallSaver(game.Mode):
 		self.game.trough.launch_balls(num=1)
 		self.stopBallSaverMode()
 
-	def sw_outhole_active(self, sw):
-		if (self.game.utilities.get_player_stats('ballsave_active') == True):
-			self.saveBall()
-			self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchStop','info')
-			return procgame.game.SwitchStop
-		else:
-			self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchContinue','info')
-			return procgame.game.SwitchContinue
+	#def sw_outhole_active(self, sw):
+	#	if (self.game.utilities.get_player_stats('ballsave_active') == True):
+	#		self.saveBall()
+	#		self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchStop','info')
+	#		return procgame.game.SwitchStop
+	#	else:
+	#		self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchContinue','info')
+	#		return procgame.game.SwitchContinue
 
 	#def sw_outhole_closed(self, sw):
 		#if (self.game.utilities.get_player_stats('ballsave_active') == True):
