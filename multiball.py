@@ -117,10 +117,7 @@ class Multiball(game.Mode):
 		self.game.sound.stop_music()
 		# Sound FX #
 		#self.game.sound.play('main_loop_tape_stop')
-		#self.game.sound.play('earthquake_1')
-		#self.game.sound.play_music('multiball_intro',loops=1,music_volume=.5)
-		#self.game.coils.quakeMotor.schedule(schedule=0x08080808,cycle_seconds=-1,now=True)
-                self.game.utilities.play_animation('second_sortie_rotate')
+		self.game.utilities.play_animation('second_sortie_rotate')
 		self.resetMultiballStats()
 		self.delay(delay=2,handler=self.multiballRun)
 

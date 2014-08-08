@@ -118,34 +118,13 @@ class BallSaver(game.Mode):
 
 		self.game.sound.play('ball_saved')
 
-		#These are from the original code
-		#self.kickBallToTrough()
-		#self.kickBallToShooterLane()
                 self.log.info("Launch ball manual due to ball saver")
 		self.game.trough.launch_balls(num=1)
 		self.stopBallSaverMode()
 
-	#def sw_outhole_active(self, sw):
-	#	if (self.game.utilities.get_player_stats('ballsave_active') == True):
-	#		self.saveBall()
-	#		self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchStop','info')
-	#		return procgame.game.SwitchStop
-	#	else:
-	#		self.game.utilities.log('BALLSAVE - Ouhole closed for 1s - SwitchContinue','info')
-	#		return procgame.game.SwitchContinue
-
-	#def sw_outhole_closed(self, sw):
-		#if (self.game.utilities.get_player_stats('ballsave_active') == True):
-			#self.game.utilities.log('BALLSAVE - Ouhole closed - SwitchStop - Disabling timers','info')
-			#self.cancel_delayed('ballsaver')
-			#return procgame.game.SwitchStop
-		#else:
-			#self.game.utilities.log('BALLSAVE - Ouhole closed - SwitchContinue','info')
-			#return procgame.game.SwitchContinue
-
+	
 	##################################################
-	## Skillshot Switches
-	## These will set the ball in play when tripped
+	## Ramp entry switch will mark the ball as in progress
 	##################################################
 	def sw_rampEntry_active(self, sw):
                 if (self.game.utilities.get_player_stats('ballsave_timer_active') == False):
@@ -153,11 +132,3 @@ class BallSaver(game.Mode):
                         self.log.info("Ramp made, ball save active, start timer")
 		return procgame.game.SwitchContinue
 
-	##################################################
-	## Early Ballsave Switches
-	## These will save the ball early if the trough has enough balls to support
-	## WORK IN PROGRESS
-	##################################################
-
-	#def sw_rightOutlane_active(self, sw):
-		#if (self.game.utilities.get_player_stats('ballsave_active') == True):

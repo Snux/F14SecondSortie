@@ -30,11 +30,7 @@ class MissionMode(game.Mode):
 	"""docstring for Bonus"""
 	def __init__(self, game, priority):
 			super(MissionMode, self).__init__(game, priority)
-			#self.superSpinnerSpins = self.game.user_settings['Feature']['Super Spinner Spins']
-			#self.superSpinnerTime = self.game.user_settings['Feature']['Super Spinner Time']
-			#self.superSpinnerLit = False
-			#self.superSpinnerEnabled = False
-                        self.kill_list=['kill1','kill2','kill3','kill4','kill5','kill6','kill7']
+			self.kill_list=['kill1','kill2','kill3','kill4','kill5','kill6','kill7']
                         self.mission_name= {'kill1' : 'alpha',
                                             'kill2' : 'bravo',
                                             'kill3' : 'charlie',
@@ -48,10 +44,7 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 			
-	#def sw_rightEject_closed_for_1s(self, sw):
-        def sw_vUK_closed_for_1s(self, sw):
-            #self.game.utilities.acCoilPulse(coilname='rightEject_flasher7',pulsetime=50)
-            #self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+	def sw_vUK_closed_for_1s(self, sw):
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
                 self.game.modes.add(self.game.kill1mission)
             return procgame.game.SwitchStop
@@ -76,10 +69,6 @@ class MissionMode(game.Mode):
                     mission_to_play = initial_missions[0]
                     self.log.info("Setting mission "+mission_to_play+" to available")
                     self.game.utilities.set_player_stats(mission_to_play,0)
-                    #self.game.utilities.display_text(txt=self.mission_name[mission_to_play],txt2="READY",time=3,blink=0)
-                    #anim2 = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha_available.dmd")
-                    #anim2 = dmd.Animation().load(self.game.dmd_assets[self.mission_name[mission_to_play]+'_available'])
-                    #self.first_layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['alpha_available'].frames, hold=False, repeat=True, frame_time=4)
                     self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets[self.mission_name[mission_to_play]+'_available'].frames, hold=False, repeat=False, frame_time=2)
                     self.game.utilities.set_player_stats('target1',False)
                     self.game.utilities.set_player_stats('target2',False)
@@ -172,7 +161,6 @@ class Kill1Mode(game.Mode):
 
         def mode_started(self):
             self.log.info("kill 1 starting")
-            #self.game.utilities.display_text(txt="Start 1",time=3)
             self.game.utilities.set_player_stats('mission_in_progress','kill1')
             self.game.utilities.set_player_stats('kill1',1)
             self.game.update_lamps()
@@ -185,7 +173,6 @@ class Kill1Mode(game.Mode):
             anim = dmd.Animation().load("/P-ROC/games/F14SecondSortie/assets/dmd/alpha2.dmd")
             self.first_layer = dmd.AnimatedLayer(frames=anim.frames, hold=False, repeat=True, frame_time=4)
 
-            #self.first_layer = dmd.TextLayer(128/2, -5, font_named("beware11.dmd"),"center").set_text("ALPHA MISSION")
             self.second_layer = dmd.TextLayer(128/2, 14, font_named("Font_CC_5px_az.dmd"),"center").set_text("SHOOT THE MOVING TARGET")
             self.third_layer = dmd.TextLayer(128/2, 20, font_named("Font_CC_5px_az.dmd"),"center").set_text("BEFORE FUEL RUNS OUT")
             self.second_layer.composite_op = 'blacksrc'

@@ -310,7 +310,7 @@ class Trough(procgame.game.Mode):
 		"""
 
                 if self.game.locks.restageLock != 'none':
-                    self.game.utilities.play_animation('f14front',txt='Relock balls - please wait')
+                    self.game.utilities.play_animation('f14roll',txt='RELOCK BALLS - PLEASE WAIT')
 		self.num_balls_to_launch += num
                 self.autolaunch = autolaunch
 		if stealth:

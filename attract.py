@@ -79,15 +79,11 @@ class AttractMode(game.Mode):
 
                 self.game.utilities.write_arduino('D'+chr(0)+chr(0)+chr(0)+chr(0)+chr(0))
 
-		#### Cancel Display Script ####
-		#self.game.alpha_score_display.cancel_script()
-
+		
 		#### Enable AC Relay for Flashers ####
 		#### This is only needed for using lampshows that contain flashers on the AC Relay ####
 		self.game.coils.acSelect.enable()
 
-		#### Disable Backbox Lighting ####
-		#self.game.utilities.setBackboxLED()
 			
 	def setDisplayContent(self):
 		#### Script List Variable Initialization ####
@@ -240,34 +236,3 @@ class AttractMode(game.Mode):
 			i = i + 1
 		
 	
-	
-	#######################################################################
-	#### Jet, Sling and Skillshot Switch Handling #########################
-	#### Stop the switches from registering during Attract Mode ###########
-	#######################################################################
-#	def sw_jetLeft_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_jetRight_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_jetTop_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_slingL_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_slingR_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_onRamp25k_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_onRamp50k_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_onRamp100k_active(self, sw):
-#		return procgame.game.SwitchStop
-#
-#	def sw_onRampBypass_active(self, sw):
-#		return procgame.game.SwitchStop

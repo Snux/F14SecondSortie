@@ -134,11 +134,6 @@ class F14SecondSortie(game.BasicGame):
                 self.mission = MissionMode(self,2)
                 self.locks = LocksMode(self,50)
                 self.kill1mission = Kill1Mode(self,3)
-		#self.centerramp_mode = CenterRampMode(self,8)
-		#self.drops_mode = DropTargets(self,9)
-		#self.collect_mode = CollectZones(self,10)
-		#self.spinner_mode = Spinner(self,11)
-		#self.skillshot_mode = SkillshotMode(self,100)
 		self.ballsaver_mode = BallSaver(self,1)
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,1000)
@@ -151,8 +146,7 @@ class F14SecondSortie(game.BasicGame):
                 self.modes.add(self.mission)
                 self.modes.add(self.locks)
 
-                #self.reset()
-
+                
 	def reset(self):
 		super(F14SecondSortie, self).reset()
                 
@@ -189,8 +183,6 @@ class F14SecondSortie(game.BasicGame):
 			super(F14SecondSortie, self).save_game_data(game_data_path)
 
 	def RegisterSound(self):
-		# Sound Settings:
-		#self.sound.music_volume_offset = 10 #This will be hardcoded at 10 since I have external volume controls I will be using
 		# Music Registration
 		self.sound.register_sound('startup', game_sound_path+"Jet_F14_TakeOff.wav")
                 self.sound.register_sound('inbound', game_sound_path+"inbound.wav")
@@ -213,9 +205,7 @@ class F14SecondSortie(game.BasicGame):
 
 	def RegisterLampshows(self):
 		self.lampctrl.register_show('f14fireboth', game_lampshows + 'f14fireboth.lampshow')
-		#self.lampctrl.register_show('center_ramp_1', game_lampshows + 'center_ramp_complete.lampshow')
-		#self.lampctrlflash.register_show('bonus_total', game_lampshows + 'bonus_total.lampshow')
-
+		
         def RegisterAnimations(self):
 
                 # Scrolling 3D text when a mode is lit

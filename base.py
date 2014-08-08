@@ -50,7 +50,7 @@ class BaseGameMode(game.Mode):
 	# MAIN GAME HANDLING FUNCTIONS
 	###############################################################
 	def start_game(self):
-		self.game.utilities.log('Start Game','info')
+		self.log.info('Start Game')
 
 		#Reset Prior Game Scores
 		self.game.game_data['LastGameScores']['LastPlayer1Score'] = ' '
@@ -67,10 +67,7 @@ class BaseGameMode(game.Mode):
 		self.game.ball = 1
 
 		self.start_ball()
-		#self.game.sound.play('game_start_rev')
-		#self.delay(delay=1.2,handler=self.game.sound.play,param='game_start')
-		#self.game.sound.play('game_start')
-
+		
                 # Set up some handlers for the main playfield switches.
                 for switch in self.game.switches:
                     if switch.name.find('target', 0) != -1:
@@ -86,12 +83,12 @@ class BaseGameMode(game.Mode):
                                 delay=0.01, handler=self.bonusLane)
                 self.game.utilities.arduino_blank_all()
 
-		self.game.utilities.log('Game Started')
+		self.log.info('Game Started')
 
         # Initial ball start routine.  Saves audit then calls to the restage code to see if
         # extra balls need locking
 	def start_ball(self):
-		self.game.utilities.log('Start Ball','info')
+		self.log.info('Start Ball')
 
 		#### Update Audits ####
 		self.game.game_data['Audits']['Balls Played'] += 1
@@ -179,11 +176,11 @@ class BaseGameMode(game.Mode):
 		#save game audit data
 		self.game.save_game_data()
 
-		self.game.utilities.log("End of Ball " + str(self.game.ball) + " Called",'info')
-		self.game.utilities.log("Total Players: " + str(len(self.game.players)),'info')
-		self.game.utilities.log("Current Player: " + str(self.game.current_player_index),'info')
-		self.game.utilities.log("Balls Per Game: " + str(self.game.balls_per_game),'info')
-		self.game.utilities.log("Current Ball: " + str(self.game.ball),'info')
+		self.log.info("End of Ball " + str(self.game.ball) + " Called")
+		self.log.info("Total Players: " + str(len(self.game.players)))
+		self.log.info("Current Player: " + str(self.game.current_player_index))
+		self.log.info("Balls Per Game: " + str(self.game.balls_per_game))
+		self.log.info("Current Ball: " + str(self.game.ball))
 
 		#### Remove Ball Modes ####
 		#self.game.modes.remove(self.game.tilt)
@@ -214,7 +211,7 @@ class BaseGameMode(game.Mode):
 
 
 	def end_game(self):
-		self.game.utilities.log('Game Ended','info')
+		self.log.info('Game Ended')
 
 		#### Disable Flippers ####
 		self.game.coils.flipperEnable.disable()
@@ -263,7 +260,7 @@ class BaseGameMode(game.Mode):
 	###############################################################		
 		
 	def sw_startButton_active_for_20ms(self, sw):
-		self.game.utilities.log('Start Game','info')
+		self.log.info('Start Game')
 		
 		#Trough is full!
 		if self.game.ball == 0:
@@ -275,8 +272,6 @@ class BaseGameMode(game.Mode):
 			else:
 				#missing balls
 				self.game.utilities.releaseStuckBalls()
-				#self.game.alpha_score_display.set_text("MISSING PINBALLS",0)
-				#self.game.alpha_score_display.set_text("PLEASE WAIT",1)
 		elif self.game.ball == 1 and len(self.game.players) < 4:
 			self.game.add_player()
 			if (len(self.game.players) == 2):
@@ -292,30 +287,14 @@ class BaseGameMode(game.Mode):
 			pass		
 		return procgame.game.SwitchStop
 
-	def sw_startButton_active_for_1s(self, sw):
-		#will put launcher in here eventually
-		pass
-		
-	#def sw_outhole_active(self, sw):
-	#	### Ball handling ###
-         #       self.log.info("Base mode outhole - balls in play is "+str(self.game.trough.num_balls_in_play))
-	#	if self.game.trough.num_balls_in_play == 1: #Last ball in play
-	#		self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
-	#		#self.game.utilities.acCoilPulse('outholeKicker_CaptiveFlashers')
-	#		self.delay('finishBall',delay=1,handler=self.finish_ball)
-	#	return procgame.game.SwitchStop
-
+	
 	def sw_vUK_closed_for_1s(self, sw):
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
                 self.game.locks.transitStart('base')
 		return procgame.game.SwitchStop
 
 
-        #def sw_lowerEject_closed_for_1s(self,sw):
-        #        if self.game.utilities.get_player_stats('lower_lock') != 'locked':
-        #            self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
-#		return procgame.game.SwitchStop
-
+        
         def target1_6(self,sw):
             if self.game.utilities.get_player_stats(sw.name):
                 self.game.utilities.score(100)
@@ -329,18 +308,6 @@ class BaseGameMode(game.Mode):
                 # If we've lit all 6, need to add the
                 if completed == 6:
                     self.game.mission.completed1_6()
-
-                
-        #def sw_upperEject_closed_for_1s(self,sw):
-        #        if self.game.utilities.get_player_stats('upper_lock') != 'locked':
-        #            self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
-		
-        #def sw_middleEject_closed_for_1s(self,sw):
-        #        if self.game.utilities.get_player_stats('middle_lock') != 'locked':
-        #            self.game.coils.middleEject.pulse(50)
-
-        
-
 
 	def sw_jetBumper_active(self, sw):
 		#self.game.sound.play('jet')
@@ -361,12 +328,6 @@ class BaseGameMode(game.Mode):
                 self.bonus()
 		return procgame.game.SwitchStop
 
-	def sw_spinner_active(self, sw):
-		#self.game.utilities.acFlashPulse(coilname='dropReset_CenterRampFlashers2',pulsetime=40)
-		#self.game.coils.dropReset_CenterRampFlashers2.pulse(40)
-		#self.game.sound.play('spinner')
-		#self.game.utilities.score(100)
-		return procgame.game.SwitchStop
 
 	##################################################
 	## Skillshot Switches
@@ -385,16 +346,6 @@ class BaseGameMode(game.Mode):
 		if (self.game.utilities.get_player_stats('ball_in_play') == False):
 			self.game.sound.play('shoot1')
 
-	#############################
-	## Zone Switches
-	#############################
-
-
-	#def sw_shooter_closed_for_1s(self, sw):
-	#	if (self.game.utilities.get_player_stats('ball_in_play') == True):
-	#		#Kick the ball into play
-	#		self.game.utilities.launch_ball()
-	#	return procgame.game.SwitchStop
 
 	#############################
 	## Outlane Switches

@@ -35,12 +35,6 @@ import player
 from player import *
 
 
-#ser.setPort("COM6")
-#ser.baudrate=115200
-#ser.open()
-#time.sleep(1)
-#ser.write("G"+chr(1)+chr(255)+chr(0)+chr(255)+chr(0))
-#time.sleep(1)
 class UtilitiesMode(game.Mode):
 	def __init__(self, game, priority):
 			super(UtilitiesMode, self).__init__(game, priority)
@@ -59,6 +53,8 @@ class UtilitiesMode(game.Mode):
 			self.ACNameArray.append('lowerEject_flasher7')
                         self.ACNameArray.append('unusedC8_flasher8')
 
+                        self.log = logging.getLogger('f14.utilities')
+
                         ## Open up the Arduino COM port if one is specified.
                         self.sect_dict = self.game.config['PRGame']
                         if (self.sect_dict['arduino'] != False) :
@@ -67,17 +63,7 @@ class UtilitiesMode(game.Mode):
                             time.sleep(2)
                         
 
-	#######################
-	#### Log Functions ####
-	#######################
-	def log(self,text,level='info'):
-		if (level == 'error'):
-			logging.error(text)
-		elif (level == 'warning'):
-			logging.warning(text)
-		else:
-			logging.info(text)
-		#print level + " - " + text
+	
 
 
 	#################################
@@ -200,33 +186,33 @@ class UtilitiesMode(game.Mode):
         ######################
         def write_arduino(self,servalue):
                 if (self.sect_dict['arduino'] != False):
-                    #self.log('Arduino "%s"' % (servalue[0]))
+                    
                     if len(servalue) == 6:
                         self.ser.write(servalue)
                     else:
-                        self.log('Length error')
+                        self.log.info('Length error')
                     if len(self.ser.read()) == 1:
-                        self.log('Got handshake')
+                        self.log.info('Got handshake')
                     else:
-                        self.log('Handshake failed - disable Arduino')
+                        self.log.info('Handshake failed - disable Arduino')
                         self.sect_dict['arduino'] = False
 
         def arduino_start_count(self,display,direction,limit,ticks):
             self.write_arduino('C'+chr(display)+chr(direction)+chr(limit/256)+chr(limit % 256)+chr(ticks))
 
         def arduino_blank(self,display):
-            self.log('Arduino - blank display '+str(display))
+            self.log.info('Arduino - blank display '+str(display))
             self.write_arduino('W'+chr(display)+'    ')
 
         def arduino_write_alpha(self,display,text):
-            self.log('Arduino - write '+text+' to display '+str(display))
+            self.log.info('Arduino - write '+text+' to display '+str(display))
             self.write_arduino('A'+chr(display)+text)
 
         def arduino_write_number(self,display,number):
             self.write_arduino('N'+chr(display)+chr(number / 256)+chr(number % 256)+'  ')
 
         def arduino_blank_all(self):
-            self.log('Arduino - clear all displays')
+            self.log.info('Arduino - clear all displays')
             for i in range (0,6):
                 self.arduino_blank(display=i)
 
