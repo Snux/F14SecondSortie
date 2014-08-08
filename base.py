@@ -87,13 +87,24 @@ class BaseGameMode(game.Mode):
                 self.game.utilities.arduino_blank_all()
 
 		self.game.utilities.log('Game Started')
-		
+
+        # Initial ball start routine.  Saves audit then calls to the restage code to see if
+        # extra balls need locking
 	def start_ball(self):
 		self.game.utilities.log('Start Ball','info')
 
 		#### Update Audits ####
 		self.game.game_data['Audits']['Balls Played'] += 1
 		self.game.save_game_data()
+
+                ## Now we need to check if the number of balls physically locked on the playfield
+                ## is at least the number of balls that this player has locked before.  In multiplayer
+                ## games it's possible for one player to empty locks that another player has filled.
+                ## So we may need to re-fill some locks to get the player back to a fair number
+                self.game.locks.check_for_restage()
+
+        ## This actually gets the ball started and is called by the locks restage code once locks have been sorted out
+        def start_ball_actual(self):
 
 		#### Queue Ball Modes ####
 		#self.game.modes.add(self.game.skillshot_mode)

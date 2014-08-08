@@ -262,6 +262,17 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['second_sortie_rotate'] = dmd.Animation().load(game_dmd_path +'second_sortie_rotate.dmd')
                 self.dmd_assets['tomcat_multiball_rotate'] = dmd.Animation().load(game_dmd_path +'tomcat_multiball_rotate.dmd')
 
+                self.dmd_assets['ball_1_locked'] = dmd.Animation().load(game_dmd_path +'ball_1_locked.dmd')
+                self.dmd_assets['ball_2_locked'] = dmd.Animation().load(game_dmd_path +'ball_2_locked.dmd')
+                self.dmd_assets['ball_3_locked'] = dmd.Animation().load(game_dmd_path +'ball_3_locked.dmd')
+                self.dmd_assets['lock_is_lit'] = dmd.Animation().load(game_dmd_path +'lock_is_lit.dmd')
+
+                # Various video captures
+                self.dmd_assets['f14missile1'] = dmd.Animation().load(game_dmd_path +'f14missile1.dmd')
+                self.dmd_assets['f14missile2'] = dmd.Animation().load(game_dmd_path +'f14missile2.dmd')
+                self.dmd_assets['f14roll'] = dmd.Animation().load(game_dmd_path +'f14roll.dmd')
+                self.dmd_assets['f14landing'] = dmd.Animation().load(game_dmd_path +'f14landing.dmd')
+                self.dmd_assets['f14front'] = dmd.Animation().load(game_dmd_path +'f14front.dmd')
 
                 
 

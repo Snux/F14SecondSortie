@@ -85,16 +85,20 @@ class Multiball(game.Mode):
 		
 	def liteLock(self):
 	#	self.callback = callback
-		if (self.ballsLocked == 0):
-			self.game.utilities.set_player_stats('middle_lock','lit')
-			self.getUserStats()
-		elif (self.ballsLocked == 1):
-			self.game.utilities.set_player_stats('upper_lock','lit')
-			self.getUserStats()
-		elif (self.ballsLocked == 2):
-			self.game.utilities.set_player_stats('lower_lock','lit')
-			self.getUserStats()
-		self.update_lamps()
+                if self.game.utilities.get_player_stats('multiball_running') ==  False:
+                    if (self.ballsLocked == 0):
+                            self.game.utilities.set_player_stats('middle_lock','lit')
+                            self.game.utilities.play_animation('lock_is_lit',frametime=2)
+                            self.getUserStats()
+                    elif (self.ballsLocked == 1):
+                            self.game.utilities.set_player_stats('upper_lock','lit')
+                            self.game.utilities.play_animation('lock_is_lit',frametime=2)
+                            self.getUserStats()
+                    elif (self.ballsLocked == 2):
+                            self.game.utilities.set_player_stats('lower_lock','lit')
+                            self.game.utilities.play_animation('lock_is_lit',frametime=2)
+                            self.getUserStats()
+                    self.update_lamps()
 
 	
 	def startMultiball(self):
@@ -172,6 +176,7 @@ class Multiball(game.Mode):
         def lock_ball(self,location,replacement):
             self.log.info("Locking ball in location "+location)
             self.ballsLocked += 1
+            self.game.utilities.play_animation('ball_'+str(self.ballsLocked)+'_locked',frametime=2)
             self.game.utilities.set_player_stats(location+'_lock','locked')
             self.game.utilities.set_player_stats('balls_locked',self.ballsLocked)
             self.getUserStats()
@@ -181,7 +186,7 @@ class Multiball(game.Mode):
             if self.ballsLocked == 3:
                 self.startMultiball()
             elif replacement == False:
-                self.game.trough.num_balls_locked += 1
+                #self.game.trough.num_balls_locked += 1
                 self.log.info("Launch ball manual as ball locked")
                 self.game.trough.launch_balls(num=1,stealth=True)
 

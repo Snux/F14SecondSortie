@@ -48,6 +48,9 @@ class LocksMode(game.Mode):
                         # Is the ball which is coming into a lock just a replacement for an existing one?
                         self.ballReplacement = False
 
+                        # Are we currently trying to restage a ball
+                        self.restageLock = 'none'
+
                         # Add a handler for the ramp entry switch
                         self.add_switch_handler(name='rampEntry',event_type='active',delay=0.01, handler=self.transitStart)
 
@@ -84,7 +87,18 @@ class LocksMode(game.Mode):
                 self.game.coils.upperDivertor.disable()
                 self.game.coils.lowerDivertor.disable()
             else:
-                if self.game.utilities.get_player_stats('upper_lock') == 'lit':
+                if self.restageLock == 'upper':
+                    self.log.info("Setting upper divertor to restage upper lock")
+                    self.game.coils.upperDivertor.enable()
+                    self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
+                elif self.restageLock == 'middle':
+                    self.log.info("Setting lower divertor to restage middle lock")
+                    self.game.coils.lowerDivertor.enable()
+                    self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
+                elif self.restageLock == 'lower':
+                    self.log.info("No divertor set, restage lower lock")
+
+                elif self.game.utilities.get_player_stats('upper_lock') == 'lit' :
                     self.log.info("Setting upper divertor as upper lock is lit")
                     self.game.coils.upperDivertor.enable()
                     self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
@@ -130,25 +144,53 @@ class LocksMode(game.Mode):
         ## the various modes
         def lockhandler(self,sw):
             self.log.info("Lock handler called for "+sw.name)
-            if sw.name == 'upperEject':
-                if self.game.utilities.get_player_stats('upper_lock') == 'lit':
-                    self.game.multiball_mode.lock_ball('upper',self.ballReplacement)
-                elif self.ballReplacement == False:
-                    self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
-            if sw.name == 'middleEject':
-                if self.game.utilities.get_player_stats('middle_lock') == 'lit':
-                    self.game.multiball_mode.lock_ball('middle',self.ballReplacement)
-                elif self.ballReplacement == False:
-                    self.game.coils.middleEject.pulse(50)
-            if sw.name == 'lowerEject':
-                if self.game.utilities.get_player_stats('lower_lock') == 'lit':
-                    self.game.multiball_mode.lock_ball('lower',self.ballReplacement)
-                elif self.ballReplacement == False:
-                    self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
+            # If we were restaging a missing locked ball, then we succeeded.
+            if self.restageLock != 'none':
+                self.log.info("Restaged "+self.restageLock+" lock")
+                # Reset the indicator to say we're not staging now
+                self.restageLock = 'none'
+                # Call the restage check again in a second to see if we're good to go
+                self.delay(name='check_staging', event_type=None, delay=1.0, handler=self.check_for_restage)
+            else:
+                if sw.name == 'upperEject':
+                    if self.game.utilities.get_player_stats('upper_lock') == 'lit':
+                        self.game.multiball_mode.lock_ball('upper',self.ballReplacement)
+                    elif self.ballReplacement == False:
+                        self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
+                if sw.name == 'middleEject':
+                    if self.game.utilities.get_player_stats('middle_lock') == 'lit':
+                        self.game.multiball_mode.lock_ball('middle',self.ballReplacement)
+                    elif self.ballReplacement == False:
+                        self.game.coils.middleEject.pulse(50)
+                if sw.name == 'lowerEject':
+                    if self.game.utilities.get_player_stats('lower_lock') == 'lit':
+                        self.game.multiball_mode.lock_ball('lower',self.ballReplacement)
+                    elif self.ballReplacement == False:
+                        self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
             self.ballReplacement = False
             self.ballInTransit = False
             self.setDivertors()
 
+            # Force the trough to recount the locked balls, after we've waited half a second for balls to clear and switches to settle
+            self.delay(name='lock_count', event_type=None, delay=0.50, handler=self.game.trough.lock_count)
+            
+            
+
+        # Called at the start of a ball if the number of locked balls is not enough for
+        # this player.  Will autolaunch balls to locks.
+        def check_for_restage(self):
+            # Work through the locks for the player and see if there is a ball there.
+            if self.game.utilities.get_player_stats('upper_lock') == 'locked' and self.game.switches.upperEject.is_closed() == False:
+                self.restageLock = 'upper'
+                self.game.trough.launch_balls(num=1,stealth=True,autolaunch=True)
+            elif self.game.utilities.get_player_stats('middle_lock') == 'locked' and self.game.switches.middleEject.is_closed() == False:
+                self.restageLock = 'middle'
+                self.game.trough.launch_balls(num=1,stealth=True,autolaunch=True)
+            elif self.game.utilities.get_player_stats('lower_lock') == 'locked' and self.game.switches.lowerEject.is_closed() == False:
+                self.restageLock = 'lower'
+                self.game.trough.launch_balls(num=1,stealth=True,autolaunch=True)
+            else:
+                self.game.base_mode.start_ball_actual()
 
 
         

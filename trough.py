@@ -22,6 +22,7 @@ import procgame.game
 import procgame.dmd
 import logging
 
+## There is a lot of unused code in this module left over from various older projects.  Needs work !
 
 class Trough(procgame.game.Mode):
 	"""Manages trough by providing the following functionality:
@@ -107,6 +108,8 @@ class Trough(procgame.game.Mode):
                 self.add_switch_handler(name=self.shooter_lane_switchname, event_type='active', delay=0.75, handler=self.shooter_lane_switch_handler)
 
 		# Reset variables
+
+                # This is the number of balls not in the trough or locks, so physically in play
 		self.num_balls_in_play = 0
 
                 # This is the number of balls physically sitting in locks, so not in play and not in the trough
@@ -129,7 +132,7 @@ class Trough(procgame.game.Mode):
 		self.debug()
 
 	def debug(self):
-		self.log.info("Play "+str(self.num_balls_in_play) + ", locked " + str(self.num_balls_locked)+ ", trough " + str(self.num_balls()))
+		self.log.info("Play "+str(self.num_balls_in_play) + ", locked " + str(self.num_balls_locked)+ ", trough " + str(self.num_balls())+", player locks "+str(self.game.utilities.get_player_stats('balls_locked')))
 		self.delay(name='launch', event_type=None, delay=1.0, handler=self.debug)
 
 	def state_str(self):
@@ -273,6 +276,16 @@ class Trough(procgame.game.Mode):
 				ball_count += 1
 		return ball_count
 
+        # Perform physical lock count.  Tracking this in software can be error prone if one scenario is missed
+        # and there is always the possibility that a ball might bounce somewhere unexpected.  If we actually
+        # count the locks with a ball in by checking the switches then we should be good.
+        def lock_count(self):
+            lock_count = 0
+            for switch in ['lowerEject','middleEject','upperEject']:
+                if self.game.switches[switch].is_active():
+                    lock_count += 1
+            self.num_balls_locked = lock_count
+
 	def is_full(self):
 		return self.num_balls() == self.game.num_balls_total
 
@@ -296,6 +309,8 @@ class Trough(procgame.game.Mode):
 			stealth should be used.
 		"""
 
+                if self.game.locks.restageLock != 'none':
+                    self.game.utilities.play_animation('f14front',txt='Relock balls - please wait')
 		self.num_balls_to_launch += num
                 self.autolaunch = autolaunch
 		if stealth:
