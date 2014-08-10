@@ -157,22 +157,25 @@ class Trough(procgame.game.Mode):
                 # Kick the ball into the trough
 		self.game.utilities.acCoilPulse('outholeKicker_flasher1')
 
-                if(self.game.utilities.get_player_stats('multiball_running') == True):
-			self.delay(delay=1,handler=self.checkForEndOfMultiball)
-                if (self.game.utilities.get_player_stats('ballsave_active') == True):
-			self.game.ballsaver_mode.saveBall()
-                elif self.num_balls_in_play == 1: #Last ball in play
-			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
-			self.delay('finishBall',delay=1,handler=self.game.base_mode.finish_ball)
-
-                # Schedule a call for one second from now to check the outhole again in case its jammed
-                self.delay('outhole_rekick',delay=1.0,handler=self.outhole_rekick)
+                # Schedule a call for one second from now to let things settle
+                self.delay('outhole_recheck',delay=1.5,handler=self.outhole_recheck)
 
         # Called one second after the outhole is handled.  Will call the handler again if there is still
-        # a ball in the outhole
-        def outhole_rekick(self):
+        # a ball in the outhole, otherwise will continue with rest of outhole processing
+        def outhole_recheck(self):
             if self.game.switches.outhole.is_closed() == True:
                 self.outhole_switch_handler('Dummy')
+            else:
+                self.log.info('Outhole process check')
+                if(self.game.utilities.get_player_stats('multiball_running') == True):
+			self.checkForEndOfMultiball()
+                # If ball save is active, save it but wait first for one second for the trough to settle
+                if (self.game.utilities.get_player_stats('ballsave_active') == True):
+			self.game.ballsaver_mode.saveBall()
+                elif self.num_balls_in_play == 0: #Last ball in play
+			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
+			self.game.base_mode.finish_ball()
+
 
 
 	def checkForEndOfMultiball(self):
@@ -188,6 +191,7 @@ class Trough(procgame.game.Mode):
 		self.delay(name='check_switches', event_type=None, delay=0.50, handler=self.check_switches)
 
 	def check_switches(self):
+                self.log.info('Trough settled')
 		if self.num_balls_in_play > 0:
 			# Base future calculations on how many balls the machine 
 			# thinks are currently installed.

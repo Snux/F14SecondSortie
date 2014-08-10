@@ -44,10 +44,10 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 			
-	def sw_vUK_closed_for_1s(self, sw):
+	def sw_vUK_active(self, sw):
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
                 self.game.modes.add(self.game.kill1mission)
-            return procgame.game.SwitchStop
+                return procgame.game.SwitchStop
 
         # Called by the base mode when lamps 1-6 have been lit.
         ## Per mission status

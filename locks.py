@@ -23,6 +23,17 @@
 # lock handling we'll handle it all here so it'll be easier to track things.
 #
 #################################################################################
+#
+# Within the player variables, each lock can have one of the following statuses
+#
+# 'off'     - lock is not in use
+# 'lit'     - lock can be shot for, related red light blinking
+# 'locked'  - ball is locked here, red light steady
+# 'landing' - during multiball, lock is available for landing, blinking blue lamp
+# 'landed'  - during multiball, lock has been reached for landing, steady blue
+#
+#################################################################################
+
 
 import procgame
 from procgame import *
@@ -82,11 +93,13 @@ class LocksMode(game.Mode):
 
         # Used to decide which divertor (or none) to activate, which will decide where the ball will go
         def setDivertors(self):
+            # If there is no ball on the way, switch the divertors off
             if self.ballInTransit == False:
                 self.log.info("Switching divertors off")
                 self.game.coils.upperDivertor.disable()
                 self.game.coils.lowerDivertor.disable()
             else:
+                # If we are restaging a lock at the start of a ball, deal with that first
                 if self.restageLock == 'upper':
                     self.log.info("Setting upper divertor to restage upper lock")
                     self.game.coils.upperDivertor.enable()
@@ -97,16 +110,16 @@ class LocksMode(game.Mode):
                     self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
                 elif self.restageLock == 'lower':
                     self.log.info("No divertor set, restage lower lock")
-
-                elif self.game.utilities.get_player_stats('upper_lock') == 'lit' :
+                # Otherwise we need to see if that lock is waiting for lock or landing
+                elif self.game.utilities.get_player_stats('upper_lock') == 'lit' or self.game.utilities.get_player_stats('upper_landing') == 'landing':
                     self.log.info("Setting upper divertor as upper lock is lit")
                     self.game.coils.upperDivertor.enable()
                     self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
-                elif self.game.utilities.get_player_stats('middle_lock') == 'lit':
+                elif self.game.utilities.get_player_stats('middle_lock') == 'lit' or self.game.utilities.get_player_stats('middle_landing') == 'landing':
                     self.log.info("Setting lower divertor as middle lock is lit")
                     self.game.coils.lowerDivertor.enable()
                     self.delay(name='failsafe', event_type=None, delay=5000, handler=self.failsafe)
-                elif self.game.utilities.get_player_stats('lower_lock') == 'lit':
+                elif self.game.utilities.get_player_stats('lower_lock') == 'lit' or self.game.utilities.get_player_stats('lower_landing') == 'landing':
                     self.log.info("Leaving for lower ramp as lock is lit")
                 else:
                     self.log.info("No locks - choosing divertor")
@@ -153,22 +166,26 @@ class LocksMode(game.Mode):
                 self.delay(name='check_staging', event_type=None, delay=1.0, handler=self.check_for_restage)
             else:
                 if sw.name == 'upperEject':
-                    if self.game.utilities.get_player_stats('upper_lock') == 'lit':
+                    if (self.game.multiball_mode.skipLanding == False and (
+                    self.game.utilities.get_player_stats('upper_lock') == 'lit' or self.game.utilities.get_player_stats('upper_landing') == 'landing' )):
                         self.game.multiball_mode.lock_ball('upper',self.ballReplacement)
                     elif self.ballReplacement == False:
                         self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
                 if sw.name == 'middleEject':
-                    if self.game.utilities.get_player_stats('middle_lock') == 'lit':
+                    if (self.game.multiball_mode.skipLanding == False and (
+                    self.game.utilities.get_player_stats('middle_lock') == 'lit' or self.game.utilities.get_player_stats('middle_landing') == 'landing')):
                         self.game.multiball_mode.lock_ball('middle',self.ballReplacement)
                     elif self.ballReplacement == False:
                         self.game.coils.middleEject.pulse(50)
                 if sw.name == 'lowerEject':
-                    if self.game.utilities.get_player_stats('lower_lock') == 'lit':
+                    if (self.game.multiball_mode.skipLanding == False and (
+                    self.game.utilities.get_player_stats('lower_lock') == 'lit' or self.game.utilities.get_player_stats('lower_landing') == 'landing' )):
                         self.game.multiball_mode.lock_ball('lower',self.ballReplacement)
                     elif self.ballReplacement == False:
                         self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
             self.ballReplacement = False
             self.ballInTransit = False
+            self.game.multiball_mode.skipLanding = False
             self.setDivertors()
 
             # Force the trough to recount the locked balls, after we've waited half a second for balls to clear and switches to settle

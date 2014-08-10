@@ -30,7 +30,7 @@ class BallSaver(game.Mode):
 
 			self.ballSaverTime = 15 #This needs to be moved to pull from the configuration file
 			self.ballSaverGracePeriodThreshold = 3 #This needs to be moved to pull from the configuration file
-			self.ballSaveLampsActive = True #Probably should move to mode started instead of init...
+			#self.ballSaveLampsActive = True #Probably should move to mode started instead of init...
 			self.ballSavedEarly = False
                         self.log = logging.getLogger('f14.ballsave')
 

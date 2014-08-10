@@ -276,6 +276,7 @@ class BaseGameMode(game.Mode):
 			self.game.add_player()
 			if (len(self.game.players) == 2):
 				#self.game.sound.play('player_2_vox')
+                                
 				self.game.utilities.display_text(txt='PLAYER 2',txt2='ADDED',time=1)
 			elif (len(self.game.players) == 3):
 				#self.game.sound.play('player_3_vox')
@@ -288,7 +289,7 @@ class BaseGameMode(game.Mode):
 		return procgame.game.SwitchStop
 
 	
-	def sw_vUK_closed_for_1s(self, sw):
+	def sw_vUK_active(self, sw):
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
                 self.game.locks.transitStart('base')
 		return procgame.game.SwitchStop

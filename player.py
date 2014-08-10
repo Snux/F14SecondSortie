@@ -62,6 +62,10 @@ class Player(procgame.game.Player):
 			self.player_stats['multiball_running']=False
 			self.player_stats['jackpot_lit']=False
 			self.player_stats['balls_locked']=0
+                        self.player_stats['balls_landed']=0
+                        self.player_stats['upper_landing']='off'
+                        self.player_stats['middle_landing']='off'
+                        self.player_stats['lower_landing']='off'
 
 			### Right Ramp Stats #####################################
 			self.player_stats['fault_visits']=0
