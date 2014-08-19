@@ -157,9 +157,8 @@ class Multiball(game.Mode):
 		self.game.utilities.acCoilPulse(coilname='lowerEject_flasher7',pulsetime=50)
                 self.game.utilities.acCoilPulse(coilname='upperEject_flasher5',pulsetime=50)
                 self.game.coils.middleEject.pulse(50)
-                self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
-                self.game.locks.transitStart('base')
-
+                self.kickVUK()
+                
                 # We know one ball will arrive in the landing from the vUK at the start but
                 # it doesn't count
                 self.skipLanding = True
@@ -257,6 +256,20 @@ class Multiball(game.Mode):
                 if self.game.utilities.get_player_stats('balls_locked') == 3:
                     self.startMultiball()
                     return procgame.game.SwitchStop
+                elif (self.game.utilities.get_player_stats('lower_lock') == 'lit' or
+                      self.game.utilities.get_player_stats('middle_lock') == 'lit' or
+                      self.game.utilities.get_player_stats('upper_lock') == 'lit' ):
+                         self.game.lampctrlflash.play_show('topstrobe',repeat=False)
+                         # Let the lampshow play etc, then kick the ball after 1.5 seconds.
+                         self.game.utilities.play_animation('lock_on',frametime=1,txt='MISSILE LOCK ON')
+                         self.game.sound.play('lock_on')
+                         self.delay(name='kickvuk', event_type=None, delay=1.5, handler=self.kickVUK)
+                         return procgame.game.SwitchStop
+
+        def kickVUK(self):
+            self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+            self.game.locks.transitStart('base')
+
 
 
 

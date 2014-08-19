@@ -58,6 +58,7 @@ from locks import *
 #from spinner import *
 from multiball import *
 from trough import *
+from kickback import *
 
 # Used to put commas in the score.
 locale.setlocale(locale.LC_ALL, "")
@@ -135,6 +136,7 @@ class F14SecondSortie(game.BasicGame):
                 self.locks = LocksMode(self,50)
                 self.kill1mission = Kill1Mode(self,3)
 		self.ballsaver_mode = BallSaver(self,1)
+                self.kickback_mode = KickbackMode(self,1)
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,1000)
 		self.multiball_mode = Multiball(self,101)
@@ -145,6 +147,7 @@ class F14SecondSortie(game.BasicGame):
 		self.modes.add(self.base_mode)
                 self.modes.add(self.mission)
                 self.modes.add(self.locks)
+
 
                 
 	def reset(self):
@@ -200,12 +203,15 @@ class F14SecondSortie(game.BasicGame):
                 self.sound.register_sound('spinner', game_sound_path+"spinner.wav")
                 self.sound.register_sound('machine_gun_short', game_sound_path+"machine_gun_short.wav")
                 self.sound.register_sound('machine_gun_long', game_sound_path+"machine_gun_long.wav")
+                self.sound.register_sound('lock_on', game_sound_path+"lock_on.mp3")
 		
 		self.sound.set_volume(10)
 
 	def RegisterLampshows(self):
 		self.lampctrl.register_show('f14fireboth', game_lampshows + 'f14fireboth.lampshow')
-		
+		self.lampctrlflash.register_show('topstrobe', game_lampshows + 'topstrobe.lampshow')
+                self.lampctrl.register_show('wipeleftright', game_lampshows + 'wipeleftright.lampshow')
+
         def RegisterAnimations(self):
 
                 # Scrolling 3D text when a mode is lit
@@ -256,6 +262,7 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['ball_2_locked'] = dmd.Animation().load(game_dmd_path +'ball_2_locked.dmd')
                 self.dmd_assets['ball_3_locked'] = dmd.Animation().load(game_dmd_path +'ball_3_locked.dmd')
                 self.dmd_assets['lock_is_lit'] = dmd.Animation().load(game_dmd_path +'lock_is_lit.dmd')
+                self.dmd_assets['lock_on'] = dmd.Animation().load(game_dmd_path +'lock_on.dmd')
 
                 # Various video captures
                 self.dmd_assets['f14missile1'] = dmd.Animation().load(game_dmd_path +'f14missile1.dmd')

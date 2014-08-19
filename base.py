@@ -52,6 +52,9 @@ class BaseGameMode(game.Mode):
 	def start_game(self):
 		self.log.info('Start Game')
 
+                # Reset trough counters in case they got messed up somehow.
+                self.game.trough.balls_locked = 0
+                self.game.trough.num_balls_in_play = 0
 		#Reset Prior Game Scores
 		self.game.game_data['LastGameScores']['LastPlayer1Score'] = ' '
 		self.game.game_data['LastGameScores']['LastPlayer2Score'] = ' '
@@ -108,6 +111,7 @@ class BaseGameMode(game.Mode):
 		#self.game.modes.add(self.game.centerramp_mode)
 		#self.game.modes.add(self.game.tilt)
 		self.game.modes.add(self.game.ballsaver_mode)
+                self.game.modes.add(self.game.kickback_mode)
 		#self.game.modes.add(self.game.drops_mode)
 		#self.game.modes.add(self.game.collect_mode)
 		#self.game.modes.add(self.game.spinner_mode)
@@ -163,6 +167,7 @@ class BaseGameMode(game.Mode):
 	def end_ball(self):
 		#Remove Bonus
 		self.game.modes.remove(self.game.bonus_mode)
+                self.game.modes.remove(self.game.kickback_mode)
                 
 
 		#update games played stats
@@ -297,6 +302,7 @@ class BaseGameMode(game.Mode):
 
         
         def target1_6(self,sw):
+            self.game.lampctrl.play_show('wipeleftright',repeat=False)
             if self.game.utilities.get_player_stats(sw.name):
                 self.game.utilities.score(100)
             else:
