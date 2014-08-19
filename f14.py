@@ -271,6 +271,9 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['f14landing'] = dmd.Animation().load(game_dmd_path +'f14landing.dmd')
                 self.dmd_assets['f14front'] = dmd.Animation().load(game_dmd_path +'f14front.dmd')
 
+                self.dmd_assets['rescue_active'] = dmd.Animation().load(game_dmd_path +'rescue_active.dmd')
+                self.dmd_assets['ball_rescued'] = dmd.Animation().load(game_dmd_path +'ball_rescued.dmd')
+
                 
 
 	def create_player(self, name):

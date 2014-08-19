@@ -39,23 +39,30 @@ class KickbackMode(game.Mode):
 	def mode_started(self):
 
 		## This mode gets started when a ball starts
+
+                ## After the kick back has activated, there is a short grace period before it de-activates
                 self.kickback_grace=False
-                
+
+                # which side is currently lit
                 self.rescue = 'off'
                 self.rescueRight()
 
+        # Light the right rescue lamp
         def rescueRight(self):
             self.rescue = 'right'
             self.update_lamps()
             self.delay(name='rescue', event_type=None, delay=1, handler=self.rescueLeft)
 
+        # Light the left rescue lamp
         def rescueLeft(self):
             self.rescue = 'left'
             self.update_lamps()
             self.delay(name='rescue', event_type=None, delay=1, handler=self.rescueRight)
 
+        # Set the kick back is active
         def enable_kickback(self):
             self.game.utilities.set_player_stats('kickback_lit',True)
+            self.game.utilities.play_animation('rescue_active',frametime=1)
             self.update_lamps()
         
         def update_lamps(self):
@@ -75,6 +82,7 @@ class KickbackMode(game.Mode):
                 else:
                     self.game.lamps.rightRescue.disable()
 
+        # If the left rescue target is hit, and it's lit, enable the kickback
         def sw_leftRescue_active(self,sw):
             if self.rescue == 'left':
                 if self.game.utilities.get_player_stats('kickback_lit')==False:
@@ -86,19 +94,27 @@ class KickbackMode(game.Mode):
                     self.enable_kickback()
 
 
+        # If the ball drains down the left outlane
         def sw_outlaneLeft_active(self,sw):
-            if self.game.utilities.get_player_stats('kickback_lit')==True:
-                self.game.coils.rescueKickBack.pulse(100)
-                self.kickback_grace=True
-                self.update_lamps()
-                self.delay(name='grace', event_type=None, delay=2, handler=self.grace_finished)
 
+            # If the kickback is enabled
+            if self.game.utilities.get_player_stats('kickback_lit')==True:
+                # Fire the kickback
+                self.game.coils.rescueKickBack.pulse(100)
+                # If we're not in the grace period already, then schedule it
+                if self.kickback_grace == False:
+                    self.delay(name='grace', event_type=None, delay=2, handler=self.grace_finished)
+                    self.kickback_grace=True
+                self.update_lamps()
+                self.game.utilities.play_animation('ball_rescued',frametime=1)
+
+        # At the end of the grace period, switch the kickback off
         def grace_finished(self):
             self.kickback_grace=False
             self.game.utilities.set_player_stats('kickback_lit',False)
             self.update_lamps()
 
-
+        # This mode gets started and stopped on each ball, so at the end of the mode cancel any grace
 	def mode_stopped(self):
             if self.kickback_grace == True:
                 self.cancel_delayed('grace')

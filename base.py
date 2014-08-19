@@ -345,8 +345,8 @@ class BaseGameMode(game.Mode):
                 
                 return procgame.game.SwitchStop
 
-        def sw_leftRescue_active(self, sw):
-            self.game.multiball_mode.liteLock()
+        #def sw_leftRescue_active(self, sw):
+        #    self.game.multiball_mode.liteLock()
 
 	def sw_shooter_open(self, sw):
 		# This will play the car take off noise when the ball leaves the shooter lane
