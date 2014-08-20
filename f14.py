@@ -47,15 +47,11 @@ from base import *
 from attract import *
 from utilities import *
 from tilt import *
-from centerramp import *
 from player import *
 from ballsaver import *
 from bonus import *
 from mission import *
 from locks import *
-#from droptargets import *
-#from collectzones import *
-#from spinner import *
 from multiball import *
 from trough import *
 from kickback import *
