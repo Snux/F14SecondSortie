@@ -103,10 +103,11 @@ class Multiball(game.Mode):
                 self.game.lamps.lockOn.disable()
                 self.game.lamps.landing.disable()
 
-		
+
+        # This will be called from the base mode whenever all the TOMCAT targets have been lit.
+        # It will decide which lock to light - this can be made more complex later
 	def liteLock(self):
-	#	self.callback = callback
-                if self.game.utilities.get_player_stats('multiball_running') ==  False:
+	        if self.game.utilities.get_player_stats('multiball_running') ==  False:
                     if (self.game.utilities.get_player_stats('balls_locked') == 0):
                             self.game.utilities.set_player_stats('middle_lock','lit')
                             self.game.utilities.play_animation('lock_is_lit',frametime=2)
@@ -125,7 +126,6 @@ class Multiball(game.Mode):
 		self.game.utilities.set_player_stats('multiball_running',True)
 		self.resetMultiballStats()
                 self.setupLanding()
-		#self.game.collect_mode.incrementActiveZoneLimit()
 		self.update_lamps()
 		self.multiballIntro()
 

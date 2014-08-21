@@ -76,7 +76,7 @@ class BaseGameMode(game.Mode):
                     if switch.name.find('target', 0) != -1:
                         self.add_switch_handler(name=switch.name, event_type='active', \
 				delay=0.01, handler=self.target1_6)
-                    if switch.name[0:5] in self.game.tomcatTargetIndex:
+                    if switch.name in self.game.tomcatTargetIndex:
                         self.add_switch_handler(name=switch.name, event_type='active', \
                                 delay=0.01, handler=self.targetTOMCAT)
                         
@@ -149,7 +149,7 @@ class BaseGameMode(game.Mode):
                             self.game.lamps[switch.name].enable()
                         else:
                             self.game.lamps[switch.name].disable()
-                    if switch.name[0:5] in self.game.tomcatTargetIndex:
+                    if switch.name in self.game.tomcatTargetIndex:
                         if self.game.utilities.get_player_stats(switch.name):
                             self.game.lamps[switch.name].enable()
                         else:
@@ -302,9 +302,11 @@ class BaseGameMode(game.Mode):
 
         
         def target1_6(self,sw):
-            self.game.lampctrl.play_show('wipeleftright',repeat=False)
+            #self.game.lampctrl.play_show('wipeleftright',repeat=False)
+            # if the target was already lit, just score something
             if self.game.utilities.get_player_stats(sw.name):
                 self.game.utilities.score(100)
+            # otherwise switch the lamp on, note that we hit it and increment the counter
             else:
                 self.game.utilities.score(1000)
                 self.game.utilities.flickerOn(sw.name)   # switch on the lamp at the target
@@ -312,7 +314,7 @@ class BaseGameMode(game.Mode):
                 completed = self.game.utilities.get_player_stats('target1-6_completed') + 1
                 
                 self.game.utilities.set_player_stats('target1-6_completed',completed)
-                # If we've lit all 6, need to add the
+                # If we've lit all 6, need to let the mission handler know.
                 if completed == 6:
                     self.game.mission.completed1_6()
 
@@ -367,8 +369,12 @@ class BaseGameMode(game.Mode):
 		self.game.sound.play('spinner')
                 self.game.utilities.score(10)
 
+        # Yagov kickback handling.
+        def sw_yagov_active(self, sw):
+                # Fire the coil
+                self.game.coils['yagovKickBack'].pulse(100)
 
-        def sw_yagov_closed(self, sw):
+                # increment the shot counter
                 count=self.game.utilities.get_player_stats('yagov_shots')
                 count += 1
                 self.game.utilities.set_player_stats('yagov_shots',count)
@@ -376,14 +382,19 @@ class BaseGameMode(game.Mode):
                     display_text = '1 YAGOV SHOT'
                 else:
                     display_text = str(count)+' YAGOV SHOTS'
+                # display the shot counter with a rendom animation
                 self.game.utilities.play_animation('f14_roll'+random.choice(['2','5','6']),frametime=5,txt=display_text,txtPos='after')
-                self.game.coils['yagovKickBack'].pulse(100)
+
+                # Make some sound and lights :)
 		self.game.sound.play('machine_gun_short')
                 self.game.lampctrl.play_show('f14fireboth', repeat=False,callback=self.game.update_lamps)
                 
 
+        # The bonus multiplier should increase when the loop is hit in the same direction twice within a few seconds
         def bonusLane(self,sw):
+            # increment the loop shot counter, we'll use this some day for a champion score or something
             self.game.utilities.set_player_stats('loop_shots',self.game.utilities.get_player_stats('loop_shots')+1)
+
             if time.clock() - self.lastBonusLoop < 1:
                 pass
             else:
@@ -403,7 +414,7 @@ class BaseGameMode(game.Mode):
                     self.delay(name="leftoff",event_type=None,delay=4.0,handler=self.bonusLaneOff,param="Left")
                     self.game.utilities.set_player_stats('bonusXLeft','on')
 
-
+        # called when the
         def bonusLaneOff(self,side):
             if side == "Right":
                 self.game.utilities.set_player_stats('bonusXRight','off')
@@ -412,6 +423,7 @@ class BaseGameMode(game.Mode):
                 self.game.utilities.set_player_stats('bonusXLeft','off')
                 self.game.lamps["bonusXLeft"].disable()
 
+        # Increment the bonus counter if we didn't hit the max of 127
         def bonus(self, bonus=1):
             bonus_now = min(self.game.utilities.get_player_stats('bonus') + bonus,127)
             self.game.utilities.set_player_stats('bonus',bonus_now)
@@ -420,24 +432,35 @@ class BaseGameMode(game.Mode):
         
         def targetTOMCAT(self,sw):
             self.game.sound.play('shoot1')
+            # If this target isn't already lit
             if self.game.utilities.get_player_stats(sw.name) == False:
+                # Set it as lit
                 self.game.utilities.set_player_stats(sw.name, True)
+                # and increment the total number lit
                 count = self.game.utilities.get_player_stats('tomcat_completed')
-                count += 1
+                count += 2
                 self.game.utilities.set_player_stats('tomcat_completed',count)
+                # If 12 are lit, that's all of them
                 if count == 12:
                     # This will light lock for multiball
-                    pass
+                    self.game.multiball_mode.liteLock()
+                    # reset the counter
+                    self.game.utilities.set_player_stats('tomcat_completed',0)
+                    # and reset each switch too
+                    for switch in self.game.tomcatTargetIndex:
+                        self.game.utilities.set_player_stats(switch,False)
+                    self.update_lamps()
+                # If not 12, then flicker this lamp on
                 else:
                     self.game.utilities.flickerOn(sw.name)
-            #self.tomcatTargets[sw.name]=True
-            #self.game.sound.play('tomcat')
-            #if sw.name[0:5]=="upper":
-            #    otherside="lower"+sw.name[5:]
-            #else:
-            #    otherside="upper"+sw.name[5:]
-            #self.tomcatTargets[otherside]=True
+                    # and also the matching lamp
+                    if sw.name[0:5]=="upper":
+                        otherside="lower"+sw.name[5:]
+                    else:
+                        otherside="upper"+sw.name[5:]
+                    self.game.utilities.set_player_stats(otherside, True)
+                    self.game.utilities.flickerOn(otherside)
             self.game.utilities.score(500)
             self.bonus()
             
-                #self.game.effects.flickerOn(otherside)
+            
