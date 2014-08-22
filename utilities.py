@@ -240,11 +240,13 @@ class UtilitiesMode(game.Mode):
 	##########################
 	#### Player Functions ####
 	##########################
-	def set_player_stats(self,id,value):
+	def set_player_stats(self,id,value,mode='set'):
                 #self.log('Player Stats - set '+id+' to '+str(value))
 		if (self.game.ball <> 0):
-			#self.p = self.game.current_player()
-			self.game.current_player().player_stats[id]=value
+			if mode == 'set':
+                            self.game.current_player().player_stats[id] = value
+                        if mode == 'add':
+                            self.game.current_player().player_stats[id] = self.game.current_player().player_stats[id] + value
 
 	def get_player_stats(self,id):
 		if (self.game.ball <> 0):

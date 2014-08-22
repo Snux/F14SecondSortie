@@ -29,6 +29,8 @@ import random
 #import sys
 #import locale
 import logging
+import procgame.dmd
+from procgame.dmd import font_named
 
 #from bonus import *
 
@@ -45,6 +47,7 @@ class BaseGameMode(game.Mode):
 			self.game.utilities.releaseStuckBalls()
                         self.reset()
                         self.lastBonusLoop = time.clock()
+                        self.info_on=False
 			
 	###############################################################
 	# MAIN GAME HANDLING FUNCTIONS
@@ -128,10 +131,12 @@ class BaseGameMode(game.Mode):
 		self.game.trough.launch_balls(num=1)
 
 
+
 		#### Enable GI in case it is disabled from TILT ####
 		self.game.utilities.enableGI()
 
                 self.game.update_lamps()
+
 
 		#### Start Shooter Lane Music ####
 		self.game.sound.play_music('shooterlane',loops=-1)
@@ -154,6 +159,10 @@ class BaseGameMode(game.Mode):
                             self.game.lamps[switch.name].enable()
                         else:
                             self.game.lamps[switch.name].disable()
+            if self.game.utilities.get_player_stats('extra_ball_lit') == True:
+                self.game.lamps.extraBall.schedule(schedule=0xFF00FF00)
+            else:
+                self.game.lamps.extraBall.disable()
 
 
 	def finish_ball(self):
@@ -195,7 +204,11 @@ class BaseGameMode(game.Mode):
 		#self.game.sound.fadeout_music(time_ms=1000) #This is causing delay issues with the AC Relay
 		self.game.sound.stop_music()
 
-		if self.game.current_player_index == len(self.game.players) - 1:
+                if self.game.utilities.get_player_stats('extra_balls') > 0:
+                        self.game.utilities.play_animation('shoot_again')
+                        self.game.lamps.flyAgain.schedule(schedule=0xFF00FF00)
+                        self.start_ball()
+                elif self.game.current_player_index == len(self.game.players) - 1:
 			#Last Player or Single Player Drained
 			#print "Last player or single player drained"
 			if self.game.ball == self.game.balls_per_game:
@@ -344,7 +357,11 @@ class BaseGameMode(game.Mode):
 	##################################################
 	def sw_rampEntry_active(self, sw):
 		self.game.utilities.setBallInPlay(True)
-                
+
+                # Stop the flashing extra ball lamp, if there was one.
+                self.game.trough.extra_ball = False
+                self.game.trough.update_lamps()
+
                 return procgame.game.SwitchStop
 
         #def sw_leftRescue_active(self, sw):
@@ -371,19 +388,38 @@ class BaseGameMode(game.Mode):
 
         # Yagov kickback handling.
         def sw_yagov_active(self, sw):
-                # Fire the coil
+                # Fire the coil as first thing
                 self.game.coils['yagovKickBack'].pulse(100)
+
 
                 # increment the shot counter
                 count=self.game.utilities.get_player_stats('yagov_shots')
                 count += 1
                 self.game.utilities.set_player_stats('yagov_shots',count)
-                if count == 1:
-                    display_text = '1 YAGOV SHOT'
+                
+                # every 5 shots award something
+                if count % 5 == 0:
+                    self.game.utilities.play_animation('f14missile2',frametime=1,txt='YAGOV BONUS - GET THE EXTRA BALL',txtPos='over')
+                    self.game.utilities.set_player_stats('extra_ball_lit',True)
+                    self.update_lamps()
+
+                    pass
+
+                elif self.game.utilities.get_player_stats('extra_ball_lit') == True:
+                    self.game.utilities.set_player_stats('extra_ball_lit',False)
+                    self.game.utilities.set_player_stats('extra_balls',1,mode='add')
+                    self.game.utilities.play_animation('extra_ball',frametime=2)
+                    self.update_lamps()
+
                 else:
-                    display_text = str(count)+' YAGOV SHOTS'
-                # display the shot counter with a rendom animation
-                self.game.utilities.play_animation('f14_roll'+random.choice(['2','5','6']),frametime=5,txt=display_text,txtPos='after')
+                    yagov_bonus = int (count / 5) * 5 + 5
+                    if count == 1:
+                        display_text = '1 YAGOV SHOT'
+                    else:
+                        display_text = str(count)+' YAGOV SHOTS'
+                    display_text = display_text + ' - BONUS AT '+ str(yagov_bonus)
+                    # display the shot counter with a rendom animation
+                    self.game.utilities.play_animation('f14_roll'+random.choice(['2','5','6']),frametime=5,txt=display_text,txtPos='over')
 
                 # Make some sound and lights :)
 		self.game.sound.play('machine_gun_short')
@@ -463,4 +499,47 @@ class BaseGameMode(game.Mode):
             self.game.utilities.score(500)
             self.bonus()
             
-            
+           ####################################################
+	# Info - Information for Instant Info Screens.
+        ####################################################
+
+	def start_info(self):
+		self.info_on = True
+		info_layers = self.get_info_layers()
+		#info_layers.extend(self.crimescenes.get_info_layers())
+		self.game.info.set_layers(info_layers)
+                self.game.info.callback = self.info_callback
+		self.game.modes.add(self.game.info)
+
+	def get_info_layers(self):
+		self.title_layer_0 = dmd.TextLayer(128/2, 9, font_named("04B-03-7px.dmd"), "center").set_text('Extra Balls:')
+		self.value_0_layer = dmd.TextLayer(128/2, 19, font_named("04B-03-7px.dmd"), "center").set_text(str(self.game.utilities.get_player_stats('extra_balls')))
+
+		self.layer_0 = dmd.GroupedLayer(128, 32, [self.title_layer_0, self.value_0_layer])
+		self.title_layer_1a = dmd.TextLayer(128/2, 9, font_named("04B-03-7px.dmd"), "center").set_text('Missions attempted: 10')
+
+		self.title_layer_1b = dmd.TextLayer(128/2, 19, font_named("04B-03-7px.dmd"), "center").set_text('Missions completed: 5')
+
+		self.layer_1 = dmd.GroupedLayer(128, 32, [self.title_layer_1a, self.title_layer_1b])
+
+		return [self.layer_0, self.layer_1]
+
+	def info_callback(self):
+		self.game.modes.remove(self.game.info)
+		self.info_on = False
+
+        ####################################################
+	# End Info
+        ####################################################
+
+        ####################################################
+	# Switch Handlers
+        ####################################################
+
+	def sw_flipperLwL_active_for_6s(self,sw):
+		if not self.info_on:
+			self.start_info()
+
+	def sw_flipperLwR_active_for_6s(self,sw):
+		if not self.info_on:
+			self.start_info()

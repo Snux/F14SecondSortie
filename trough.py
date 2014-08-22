@@ -57,6 +57,8 @@ class Trough(procgame.game.Mode):
 		self.eject_coilname = None				#eject_coilname
 		self.shooter_lane_switchname = None		#shooter_lane_switchname
 		self.drain_callback = drain_callback
+
+                self.extra_ball = False     # Is the ball sitting in the lane an extra ball awarded
                 
 		#populate vars from yaml
 		for switch in self.game.switches.items_tagged('trough'):
@@ -315,6 +317,7 @@ class Trough(procgame.game.Mode):
 
                 if self.game.locks.restageLock != 'none':
                     self.game.utilities.play_animation('f14roll',txt='RELOCK BALLS - PLEASE WAIT')
+
 		self.num_balls_to_launch += num
                 self.autolaunch = autolaunch
 		if stealth:
@@ -333,7 +336,17 @@ class Trough(procgame.game.Mode):
 			self.num_balls_to_launch -= 1
 			#pulse coil
 			self.game.utilities.acCoilPulse(coilname='ballReleaseShooterLane_flasher2',pulsetime=100)
-			#self.game.switched_coils.drive(self.eject_coilname)
+
+                        #If the ball in the shooter lane is an extra ball which a player has been awarded
+                        #then decrement the number of extra balls available and flag the situation so the lamp
+                        #handler can flash the lamp
+			if self.game.utilities.get_player_stats('extra_balls') > 0:
+                            self.game.utilities.set_player_stats('extra_balls',-1,mode='add')
+                            self.extra_ball = True
+                        else:
+                            self.extra_ball = False
+                            
+                        self.update_lamps()
 
 			# Only increment num_balls_in_play if there are no more 
 			# stealth launches to complete.
@@ -358,6 +371,15 @@ class Trough(procgame.game.Mode):
                 self.log.info("Shooter lane autolaunch = "+str(self.autolaunch))
                 self.game.coils.autoLaunch.pulse(100)
                 self.autolaunch=False
+
+        # The trough mode can handle the extra ball lamp
+        def update_lamps(self):
+            if self.extra_ball == True:
+                self.game.lamps.flyAgain.schedule(schedule=0xFF00FF00)
+            elif self.game.utilities.get_player_stats('extra_balls') > 0:
+                self.game.lamps.flyAgain.enable()
+            else:
+                self.game.lamps.flyAgain.disable()
 
         def mode_stopped(self):
 		self.cancel_delayed('check_switches')

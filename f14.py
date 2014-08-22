@@ -55,6 +55,7 @@ from locks import *
 from multiball import *
 from trough import *
 from kickback import *
+from info import *
 
 # Used to put commas in the score.
 locale.setlocale(locale.LC_ALL, "")
@@ -126,6 +127,7 @@ class F14SecondSortie(game.BasicGame):
 		#### Mode Definitions ####
 		self.utilities = UtilitiesMode(self,100)
 		self.trough = Trough(self,0)
+                self.info = Info(self,200)
 		self.base_mode = BaseGameMode(self,0)
 		self.attract_mode = AttractMode(self,1)
                 self.mission = MissionMode(self,2)
@@ -134,7 +136,7 @@ class F14SecondSortie(game.BasicGame):
 		self.ballsaver_mode = BallSaver(self,1)
                 self.kickback_mode = KickbackMode(self,1)
 		#self.tilt = Tilt(self,200)
-		self.bonus_mode = Bonus(self,1000)
+		self.bonus_mode = Bonus(self,102)
 		self.multiball_mode = Multiball(self,101)
 
 		#### Initial Mode Queue ####
@@ -269,6 +271,8 @@ class F14SecondSortie(game.BasicGame):
 
                 self.dmd_assets['rescue_active'] = dmd.Animation().load(game_dmd_path +'rescue_active.dmd')
                 self.dmd_assets['ball_rescued'] = dmd.Animation().load(game_dmd_path +'ball_rescued.dmd')
+                self.dmd_assets['shoot_again'] = dmd.Animation().load(game_dmd_path +'shoot_again.dmd')
+                self.dmd_assets['extra_ball'] = dmd.Animation().load(game_dmd_path +'extra_ball.dmd')
 
                 
 
