@@ -512,17 +512,23 @@ class BaseGameMode(game.Mode):
 		self.game.modes.add(self.game.info)
 
 	def get_info_layers(self):
-		self.title_layer_0 = dmd.TextLayer(128/2, 9, font_named("04B-03-7px.dmd"), "center").set_text('Extra Balls:')
-		self.value_0_layer = dmd.TextLayer(128/2, 19, font_named("04B-03-7px.dmd"), "center").set_text(str(self.game.utilities.get_player_stats('extra_balls')))
+		self.title_layer_0 = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Ball in Play : '+str(self.game.ball))
+		self.value_0_layer = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Extra Balls to Play : '+str(self.game.utilities.get_player_stats('extra_balls')))
 
 		self.layer_0 = dmd.GroupedLayer(128, 32, [self.title_layer_0, self.value_0_layer])
-		self.title_layer_1a = dmd.TextLayer(128/2, 9, font_named("04B-03-7px.dmd"), "center").set_text('Missions attempted: 10')
 
-		self.title_layer_1b = dmd.TextLayer(128/2, 19, font_named("04B-03-7px.dmd"), "center").set_text('Missions completed: 5')
+		self.title_layer_1a = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Missions completed : '+str(self.game.utilities.get_player_stats('kills_completed')))
+		self.title_layer_1b = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Next mission : '+self.game.utilities.get_player_stats('next_mission'))
 
 		self.layer_1 = dmd.GroupedLayer(128, 32, [self.title_layer_1a, self.title_layer_1b])
 
-		return [self.layer_0, self.layer_1]
+                self.title_layer_2a = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Loop shots : '+str(self.game.utilities.get_player_stats('loop_shots')))
+		self.title_layer_2b = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Yagov shots : '+str(self.game.utilities.get_player_stats('yagov_shots')))
+
+		self.layer_2 = dmd.GroupedLayer(128, 32, [self.title_layer_2a, self.title_layer_2b])
+
+
+                return [self.layer_0, self.layer_1, self.layer_2]
 
 	def info_callback(self):
 		self.game.modes.remove(self.game.info)
@@ -540,6 +546,6 @@ class BaseGameMode(game.Mode):
 		if not self.info_on:
 			self.start_info()
 
-	def sw_flipperLwR_active_for_6s(self,sw):
+	def sw_flipperLwR_active_for_3s(self,sw):
 		if not self.info_on:
 			self.start_info()
