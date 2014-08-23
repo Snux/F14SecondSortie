@@ -124,6 +124,7 @@ class Multiball(game.Mode):
                 self.log.info("Start multiball")
 		self.multiballStarting = True
 		self.game.utilities.set_player_stats('multiball_running',True)
+                self.game.utilities.set_player_stats('multiballs_played',1,mode='add')
 		self.resetMultiballStats()
                 self.setupLanding()
 		self.update_lamps()

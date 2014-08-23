@@ -364,9 +364,7 @@ class BaseGameMode(game.Mode):
 
                 return procgame.game.SwitchStop
 
-        #def sw_leftRescue_active(self, sw):
-        #    self.game.multiball_mode.liteLock()
-
+        
 	def sw_shooter_open(self, sw):
 		# This will play the car take off noise when the ball leaves the shooter lane
 		if (self.game.utilities.get_player_stats('ball_in_play') == False):
@@ -397,7 +395,7 @@ class BaseGameMode(game.Mode):
                 count += 1
                 self.game.utilities.set_player_stats('yagov_shots',count)
                 
-                # every 5 shots award something
+                # every 5 shots award something - need to expand this
                 if count % 5 == 0:
                     self.game.utilities.play_animation('f14missile2',frametime=1,txt='YAGOV BONUS - GET THE EXTRA BALL',txtPos='over')
                     self.game.utilities.set_player_stats('extra_ball_lit',True)
@@ -527,8 +525,13 @@ class BaseGameMode(game.Mode):
 
 		self.layer_2 = dmd.GroupedLayer(128, 32, [self.title_layer_2a, self.title_layer_2b])
 
+                self.title_layer_3a = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Multiballs played : '+str(self.game.utilities.get_player_stats('multiballs_played')))
+		self.title_layer_3b = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Balls locked : '+str(self.game.utilities.get_player_stats('balls_locked')))
 
-                return [self.layer_0, self.layer_1, self.layer_2]
+		self.layer_3 = dmd.GroupedLayer(128, 32, [self.title_layer_3a, self.title_layer_3b])
+
+
+                return [self.layer_0, self.layer_1, self.layer_2, self.layer_3]
 
 	def info_callback(self):
 		self.game.modes.remove(self.game.info)
@@ -542,7 +545,7 @@ class BaseGameMode(game.Mode):
 	# Switch Handlers
         ####################################################
 
-	def sw_flipperLwL_active_for_6s(self,sw):
+	def sw_flipperLwL_active_for_3s(self,sw):
 		if not self.info_on:
 			self.start_info()
 

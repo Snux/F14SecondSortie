@@ -36,7 +36,6 @@ class Info(game.Mode):
 		#self.item_layer = dmd.TextLayer(128/2, 15, self.game.fonts['tiny7'], "center")
 		#self.value_layer = dmd.TextLayer(128/2, 23, self.game.fonts['tiny7'], "center")
 
-		#self.title_layer = dmd.TextLayer(128/2, 14, font_named("04B-03-7px.dmd"), "center").set_text("Instant Info")
 		self.info_layer = dmd.GroupedLayer(128, 32, [self.title_layer])
 
 	def set_layers(self, layers):
