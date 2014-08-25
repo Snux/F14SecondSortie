@@ -37,8 +37,8 @@ class Mystery(game.Mode):
 		self.delay_time = 0.200
 		self.award_ptr = 0
 		self.award_ptr_adj = 0
-		self.title_layer.set_text("Missile Award")
-		self.element_layer.set_text("Left Fire btn collects:")
+		self.title_layer.set_text("Sortie Award")
+		self.element_layer.set_text("Left Flipper collects:")
 		self.active = False
 
 	def mode_started(self):

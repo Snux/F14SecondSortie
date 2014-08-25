@@ -1,0 +1,11 @@
+Feature: {Drop Target Time: 15, Jackpot Hold: true, Super Spinner Spins: 10, Super Spinner Time: -1}
+Highscore: {Grand Champion: 350000000, High Score 1: 300000000, High Score 2: 300000000,
+  High Score 3: 250000000, High Score 4: 200000000}
+Replay: {Replay Award: Audit, Replay Boost: 100000, Replay Level 1: 100000, Replay Level 2: 200000,
+  Replay Level 3: 300000, Replay Level 4: 400000, Replay Levels: 2, Replay Percentage: 10,
+  Replay Type: auto, Special: Audit}
+Sound: {Initial volume: 0.5, Music volume offset: 0}
+Standard: {Balls Per Game: 4, Clock Style: AM/PM, Date Style: Euro, Euro. Score Format: 'No',
+  Free Play: 'Yes', Game Restart: true, Maximum Extra Balls: 4, Maximum Extra Balls/Ball In Play: 0,
+  Multiball Ballsaves: 2, Outlane Ball Save: 'No', Show Date and Time: 'Yes', Tilt Warnings: 2,
+  Tournament Play: 'No', Tournament Type: Local}

@@ -236,3 +236,8 @@ class AttractMode(game.Mode):
 			i = i + 1
 		
 	
+        def sw_enter_active(self, sw):
+                for lamp in self.game.lamps:
+			lamp.disable()
+                self.game.modes.add(self.game.service_mode)
+                return True

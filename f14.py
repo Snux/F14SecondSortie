@@ -56,6 +56,7 @@ from multiball import *
 from trough import *
 from kickback import *
 from info import *
+from service import *
 
 # Used to put commas in the score.
 locale.setlocale(locale.LC_ALL, "")
@@ -76,7 +77,7 @@ game_dmd_path = curr_file_path + "/assets/dmd/"
 game_lampshows = curr_file_path + "/assets/lamps/"
 fnt_path = "/shared/dmd/"
 
-ballsPerGame = 3 # this will eventually be called from the config file
+ballsPerGame = 5 # this will eventually be called from the config file
 
 
 ################################################
@@ -138,6 +139,8 @@ class F14SecondSortie(game.BasicGame):
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,102)
 		self.multiball_mode = Multiball(self,101)
+
+                self.service_mode = ServiceMode(self,300,font_named("Font07x5.dmd"),font_named("font_8x6_bold.dmd"),[])
 
 		#### Initial Mode Queue ####
 		self.modes.add(self.utilities)
@@ -202,7 +205,13 @@ class F14SecondSortie(game.BasicGame):
                 self.sound.register_sound('machine_gun_short', game_sound_path+"machine_gun_short.wav")
                 self.sound.register_sound('machine_gun_long', game_sound_path+"machine_gun_long.wav")
                 self.sound.register_sound('lock_on', game_sound_path+"lock_on.mp3")
-		
+
+                self.sound.register_sound('service_enter', game_sound_path+"menu_enter.wav")
+                self.sound.register_sound('service_exit', game_sound_path+"menu_exit.wav")
+                self.sound.register_sound('service_next', game_sound_path+"menu_up.wav")
+                self.sound.register_sound('service_previous', game_sound_path+"menu_down.wav")
+                self.sound.register_sound('service_cancel', game_sound_path+"menu_cancel.wav")
+
 		self.sound.set_volume(10)
 
 	def RegisterLampshows(self):
@@ -274,6 +283,12 @@ class F14SecondSortie(game.BasicGame):
                 self.dmd_assets['shoot_again'] = dmd.Animation().load(game_dmd_path +'shoot_again.dmd')
                 self.dmd_assets['extra_ball'] = dmd.Animation().load(game_dmd_path +'extra_ball.dmd')
 
+                # Service mode
+                self.dmd_assets['coil_test_bgnd'] = dmd.Animation().load(game_dmd_path +'coil_test_bgnd.dmd')
+                self.dmd_assets['service_bgnd'] = dmd.Animation().load(game_dmd_path +'service_bgnd.dmd')
+                self.dmd_assets['switch_test_bgnd'] = dmd.Animation().load(game_dmd_path +'switch_test_bgnd.dmd')
+                self.dmd_assets['switch_test_grid'] = dmd.Animation().load(game_dmd_path +'switch_test_grid.dmd')
+                self.dmd_assets['matrix_square'] = dmd.Animation().load(game_dmd_path +'matrix_square.dmd')
                 
 
 	def create_player(self, name):

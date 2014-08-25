@@ -9,6 +9,9 @@
 ## Thanks to Scott Danesi for inspiration from his Earthshaker Aftershock
 #####################################################################################
 # P-ROC Game Description file for F-14 Tomcat
+#
+#
+# The 'label' tag on each of the coils/switches/lamps is only used to make the service mode look nicer
 PRGame:
     # Treat this as wpc as that's how the P-ROC will see it via the interface board.
     machineType: wpc
@@ -61,140 +64,193 @@ PRSwitches:
     #                  'NC' (normally closed.  Common for optos)
     flipperLwR:
         number: S27
+        label: 'Left Flipper EOS'
     flipperLwL:
         number: S87
+        label: 'Right Flipper EOS'
     coinLeft:
         number: S16
+        label: 'Left Coin Slot'
     coinCenter:
         number: S15
+        label: 'Center Coin Slot'
     coinRight:
         number: S14
-    up:
+        label: 'Right Coin Slot'
+    upSys11:
         number: SD8
-    down:
+    downSys11:
         number: SD2
-    enter:
+    enterSys11:
         number: SD5
-    exit:
+    exitSys11:
         number: SD0
     startButton:
         number: S13
+        label: 'Start Button'
     tilt:
         number: S11
+        label: 'Tilt'
     outlaneLeft:
         number: S85
+        label: 'Left Outlane'
         tags: early_save
     inlaneLeft:
         number: S83
+        label: 'Left Inlane'
     inlaneRight:
         number: S84
+        label: 'Right Inlane'
     outlaneRight:
         number: S86
         tags: early_save
+        label: 'Right Outlane'
     slamTilt:
         number: S17
+        label: 'Slam Tilt'
     outhole:
         number: S22
         tags: outhole
+        label: 'Outhole'
     trough4:
         number: S23
         tags: trough, trough_eject
+        label: 'Right Ball Trough'
     trough2:
         number: S24
         tags: trough
+        label: 'Right Center Ball Trough'
     trough3:
         number: S25
         tags: trough
+        label: 'Left Center Ball Trough'
     trough1:
         number: S26
         tags: trough
+        label: 'Left Ball Trough'
     shooter:
         number: S28
         tags: shooter_lane
-    unused31:
+        label: 'Shooter Lane'
+    up:
         number: S31
-    unused32:
+    down:
         number: S32
-    unused33:
+    enter:
         number: S33
     rampEntry:
         number: S34
+        label: 'Ramp Entry'
     lowerEject:
         number: S35
+        label: 'Right Eject'
     middleEject:
         number: S36
+        label: 'Left Center Eject'
     upperEject:
         number: S37
+        label: 'Right Center Eject'
     vUK:
         number: S38
+        label: 'Ball Popper'
     leftRescue:
         number: S41
+        label: 'Left Center Target'
     rightRescue:
         number: S42
+        label: 'Right Center Target'
     debug:
         number: S43
     jetBumper:
         number: S44
-    unused45:
+        label: 'Pop Bumper'
+    exit:
         number: S45
     lowerRampMade:
         number: S46
+        label: 'Lower Ramp'
     middleRampMade:
         number: S47
+        label: 'Middle Ramp'
     upperRampMade:
         number: S48
+        label: 'Upper Ramp'
     lowerLeftT:
         number: S51
+        label: 'Lower Left T'
     lowerLeftO:
         number: S52
+        label: 'Lower Left O'
     lowerLeftM:
         number: S53
+        label: 'Lower Left M'
     lowerRightT:
         number: S54
+        label: 'Lower Right T'
     lowerRightA:
         number: S55
+        label: 'Lower Right A'
     lowerRightC:
         number: S56
+        label: 'Lower Right C'
     unused57:
         number: S57
     unused58:
         number: S58
     target3:
         number: S61
+        label: 'Target - 3'
     target2:
         number: S62
+        label: 'Target - 2'
     target1:
         number: S63
+        label: 'Target - 1'
     target4:
         number: S64
+        label: 'Target - 4'
     target5:
         number: S65
+        label: 'Target - 5'
     target6:
         number: S66
+        label: 'Target - 6'
     bonusXRight:
         number: S67
+        label: 'Top Right Loop'
     spinner:
         number: S68
+        label: 'Spinner'
     upperLeftT:
         number: S71
+        label: 'Upper Left T'
     upperLeftO:
         number: S72
+        label: 'Upper Left O'
     upperLeftM:
         number: S73
+        label: 'Upper Left M'
     upperRightT:
         number: S74
+        label: 'Upper Right T'
     upperRightA:
         number: S75
+        label: 'Upper Right A'
     upperRightC:
         number: S76
+        label: 'Upper Right C'
     yagov:
         number: S77
+        label: 'Yagov'
     bonusXLeft:
         number: S78
+        label: 'Top Left Loop'
     slingL:
         number: S81
+        label: 'Left Sling'
     slingR:
         number: S82
+        label: 'Right Sling'
     unused84:
         number: S84
     unused85:
@@ -205,181 +261,267 @@ PRCoils:
     outholeKicker_flasher1:
         number: C01
         tags: outhole
+        label: 'Outhole_Flasher 1'
     ballReleaseShooterLane_flasher2:
         number: C02
         tags: trough_eject
+        label: 'Trough Eject_Flasher 2'
     upKicker_flasher3:
         number: C03
+        label: 'Ball Popper_Flasher 3'
     unusedC4_flasher4:
         number: C04
+        label: 'Unused_Flasher 4'
     upperEject_flasher5:
         number: C05
+        label: 'Center Right Eject_Flasher 5'
     knocker_flasher6:
         number: C06
+        label: 'Knocker_Flasher 6'
     lowerEject_flasher7:
         number: C07
+        label: 'Right Eject_Flasher 7'
     unusedC8_flasher8:
         number: C08
+        label: 'Unused_Flasher 8'
     flasher9:
         number: C09
+        label: 'Flasher 9'
     middleEject:
         number: C10
+        label: 'Centre Left Eject'
     gi:
         number: C11
+        label: 'General Illumination'
     yagovKickBack:
         number: C12
+        label: 'Yagov Kickback'
     rescueKickBack:
         number: C13
+        label: 'Rescue Kickback'
     acSelect:
         number: C14
+        label: 'Solenoid A/C Select'
     flasher10:
         number: C15
+        label: 'Flasher 10'
     beacons:
         number: C16
+        label: 'Beacons'
     leftKicker:
         number: C17
+        label: 'Left Sling'
     rightKicker:
         number: C18
-
+        label: 'Right Sling'
     autoLaunch:
         number: C19
+        label: 'Ball Auto Launch'
     jetBumper:
         number: C20
+        label: 'Pop Bumper'
     upperDivertor:
         number: C21
+        label: 'Upper Divertor'
     lowerDivertor:
         number: C22
+        label: 'Lower Divertor'
     flipperEnable:
         number: C23
+        label: 'Flipper Enable'
 PRLamps:
     lightLockOn:
         number: L11
+        label: 'Lites Lock On'
     lightRelease:
         number: L12
+        label: 'Lites Release'
     blueSpecial:
         number: L13
+        label: 'Hot Streak'
     flyAgain:
         number: L14
+        label: 'Fly Again'
     leftRescue:
         number: L15
+        label: 'Left Rescue'
     kill:
         number: L16
+        label: 'Centre Kill'
     rightRescue:
         number: L17
+        label: 'Right Rescue'
     kickBack:
         number: L18
+        label: 'Rescue'
     kill1:
         number: L21
+        label: 'Alpha Kill'
     kill2:
         number: L22
+        label: 'Bravo Kill'
     kill3:
         number: L23
+        label: 'Charlie Kill'
     kill4:
         number: L24
+        label: 'Delta Kill'
     kill5:
         number: L25
+        label: 'Echo Kill'
     kill6:
         number: L26
+        label: 'Fox Kill'
     kill7:
         number: L27
+        label: 'Golf Kill'
     insurance:
         number: L28
+        label: 'Insurance'
     bonus1K:
         number: L31
+        label: '1K'
     bonus2K:
         number: L32
+        label: '2K'
     bonus4K:
         number: L33
+        label: '4K'
     bonus8K:
         number: L34
+        label: '8K'
     bonus16K:
         number: L35
+        label: '16K'
     bonus32K:
         number: L36
+        label: '32K'
     bonus64K:
         number: L37
+        label: '64K'
     special:
         number: L38
+        label: 'Special'
     bonus2X:
         number: L41
+        label: '2X'
     bonus3X:
         number: L42
+        label: '3X'
     bonus4X:
         number: L43
+        label: '4X'
     bonus5X:
         number: L44
+        label: '5X'
     bonus6X:
         number: L45
+        label: '6X'
     bonus7X:
         number: L46
+        label: '7X'
     bonus8X:
         number: L47
+        label: '8X'
     bonusXLeft:
         number: L48
+        label: 'Bonus X Left'
     lowerLeftT:
         number: L51
+        label: 'Lower Left T'
     lowerLeftO:
         number: L52
+        label: 'Lower Left O'
     lowerLeftM:
         number: L53
+        label: 'Lower Left M'
     lowerRightT:
         number: L54
+        label: 'Lower Right T'
     lowerRightA:
         number: L55
+        label: 'Lower Right A'
     lowerRightC:
         number: L56
+        label: 'Lower Right C'
     inLanes:
         number: L57
+        label: 'Inlanes x 2'
     landing:
         number: L58
+        label: 'Landing'
     target3:
         number: L61
+        label: 'Target - 3'
     target2:
         number: L62
+        label: 'Target - 2'
     target1:
         number: L63
+        label: 'Target - 1'
     target4:
         number: L64
+        label: 'Target - 4'
     target5:
         number: L65
+        label: 'Target - 5'
     target6:
         number: L66
+        label: 'Target - 6'
     release:
         number: L67
+        label: 'Release'
     lockOn:
         number: L68
+        label: 'Lock On'
     upperLeftT:
         number: L71
+        label: 'Upper Left T'
     upperLeftO:
         number: L72
+        label: 'Upper Left O'
     upperLeftM:
         number: L73
+        label: 'Upper Left M'
     upperRightT:
         number: L74
+        label: 'Upper Right T'
     upperRightA:
         number: L75
+        label: 'Upper Right A'
     upperRightC:
         number: L76
+        label: 'Upper Right C'
     bonusXRight:
         number: L77
+        label: 'Bonus X Right'
     spinner2K:
         number: L78
+        label: 'Spinner 2K'
     upperLock:
         number: L81
+        label: 'Upper Lock'
     middleLock:
         number: L82
+        label: 'Centre Lock'
     lowerLock:
         number: L83
+        label: 'Lower Lock'
     upperLanding:
         number: L84
+        label: 'Upper Landing'
     middleLanding:
         number: L85
+        label: 'Centre Landing'
     lowerLanding:
         number: L86
+        label: 'Lower Landing'
     ripOff:
         number: L87
+        label: 'Rip Off'
     extraBall:
         number: L88
+        label: 'Extra Ball'
     kill1red:
         number: 200
         tags: R

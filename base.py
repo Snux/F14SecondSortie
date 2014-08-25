@@ -552,3 +552,4 @@ class BaseGameMode(game.Mode):
 	def sw_flipperLwR_active_for_3s(self,sw):
 		if not self.info_on:
 			self.start_info()
+
