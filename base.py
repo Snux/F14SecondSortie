@@ -64,6 +64,7 @@ class BaseGameMode(game.Mode):
 		self.game.game_data['LastGameScores']['LastPlayer3Score'] = ' '
 		self.game.game_data['LastGameScores']['LastPlayer4Score'] = ' '
 
+
 		#This function is to be used when starting a NEW game, player 1 and ball 1
 		#Clean Up
 		self.game.modes.remove(self.game.attract_mode)
@@ -71,7 +72,8 @@ class BaseGameMode(game.Mode):
 		
 		self.game.add_player() #will be first player at this point
 		self.game.ball = 1
-
+                self.game.balls_per_game = self.game.user_settings['Standard']['Balls Per Game']
+                self.log.info('Starting '+str(self.game.balls_per_game)+ ' ball game')
 		self.start_ball()
 		
                 # Set up some handlers for the main playfield switches.
@@ -97,8 +99,8 @@ class BaseGameMode(game.Mode):
 		self.log.info('Start Ball')
 
 		#### Update Audits ####
-		self.game.game_data['Audits']['Balls Played'] += 1
-		self.game.save_game_data()
+		#self.game.game_data['Audits']['Balls Played'] += 1
+		#self.game.save_game_data()
 
                 ## Now we need to check if the number of balls physically locked on the playfield
                 ## is at least the number of balls that this player has locked before.  In multiplayer

@@ -21,6 +21,7 @@
 #################################################################################
 import logging
 import locale
+import copy
 from procgame import *
 
 
@@ -43,7 +44,8 @@ class ServiceModeSkeleton(game.Mode):
 		self.game.sound.play('service_enter')
 
 	def mode_stopped(self):
-		self.game.sound.play('service_exit')
+                self.log.info('Quit service mode')
+                self.game.sound.play('service_exit')
 
 	def disable(self):
 		pass
@@ -261,13 +263,44 @@ class CoilTest(ServiceModeList):
 		self.layer = dmd.GroupedLayer(128, 32, [self.bgnd_layer,self.title_layer,self.item_layer, self.board_layer,self.drive_layer,self.conn_layer,self.instruction_layer,self.matrix_layer])
 
                 #setup mode lists
-                self.colours = ['Brown','Red','Orange','Yellow','Green','Blue','Purple','Grey','White']
-                self.bank_colours = ['Purple','Brown','Black','Blue']
+                self.colours = ['Brown','Red','Orange','Yellow','Green','Blue','Purple','Grey']
+                self.bank_colours = ['Purple','Black','Brown','Blue','Unknown']
                 self.connector_key =[2,3,4,6]
-                self.connections=['J120-13','J120-11','J120-9','J120-7','J120-6','J120-4','J120-3','J120-1','J116-1','J116-2','J116-4','J116-5','J116-6','J116-7','J117-3','J116-9','J113-1','J113-3']
-                self.transistors=[90,92,87,89,84,86,81,83,72,68,71,67,70,66,69,65]
+                self.connections=['P11 1','P11 3','P11 4','P11 5','P11 6','P11 7','P11 8','P11 9','P12 1','P12 2','P12 4','P12 5','P12 6','P12 7','P12 8','P12-9','P19 7','P19 4','P19 3','P19 6','P19 8','P19 9']
+                self.transistors=[33,25,32,24,31,23,30,22,17,9,16,8,15,7,14,6,75,71,73,69,77,79]
 
-		self.items = self.game.coils
+                #self.drive_layer.set_text("COIL "+str(self.item.number-40+1).zfill(2)+" "+self.item.type)
+
+                #if self.item.number
+		
+                self.items= []
+                # Build up the item list.  Can't just use the standard coils because some need to appear twice
+                # Once for the 'A' side and once for the 'C'
+                for item in self.game.coils:
+                    # If this is an A/C select controlled coil, then the label will have a _ separating the 2 names
+                    ac_split = item.label.find('_', 0)
+                    # If no _, then this is a regular coil
+                    if ac_split == -1:
+                        std_item = item
+                        std_item.type = 'STD COIL'
+                        std_item.label = item.label
+                        self.items.append(std_item)
+                    # otherwise add 2 coils to the list, one for A and one for C
+                    else:
+                        a_coil = item.label[0:ac_split]
+                        c_coil = item.label[ac_split+1:len(item.label)]
+                        
+                        a_item = item
+                        a_item.label = a_coil
+                        a_item.type = 'A SIDE'
+                        self.items.append(a_item)
+                        
+                        c_item = copy.copy(item)
+                        c_item.label = c_coil
+                        c_item.type = 'C SIDE'
+                        self.items.append(c_item)
+                        
+                
 
 		self.max = len(self.items)
                 self.log.info("Max:"+str(self.max))
@@ -293,7 +326,7 @@ class CoilTest(ServiceModeList):
                         self.item = item
 
                     ctr += 1
-                    self.log.info("item:"+str(item.label))
+                self.log.info("item:"+str(self.iterator)+" "+str(self.item.label))
                  #for i in range(len(self.items)):
 #                    if i==self.iterator:
 #                        self.item = self.items[i]
@@ -301,16 +334,24 @@ class CoilTest(ServiceModeList):
 
 		#self.max = ctr - 1
 		self.item_layer.set_text(self.item.label)
-                #self.log.info("iterator:"+str(self.iterator))
-
-                coil_num =self.item.number-32+1
+                coil_num =self.item.number-40+1
+                
+                if coil_num < 9:
+                    self.drive_layer.set_text("SWITCHED COIL "+str(coil_num).zfill(2)+" "+self.item.type)
+                elif coil_num < 17:
+                    self.drive_layer.set_text("CONTROLLED COIL "+str(coil_num).zfill(2))
+                elif coil_num < 25:
+                    self.drive_layer.set_text("SPECIAL COIL "+str(coil_num).zfill(2))
 
                 if len(self.transistors)>coil_num:
-                    self.drive_layer.set_text("Q"+str(self.transistors[coil_num-1])+" Sol "+str(coil_num))
-                    self.conn_layer.set_text(self.connections[coil_num-1])
-
+                    self.board_layer.set_text("DRIVE TR"+str(self.transistors[coil_num-1])+" CN "+self.connections[coil_num-1])
+                
 
 	def process_auto(self):
+                if self.item.type == 'C SIDE':
+                        self.game.coils.acSelect.enable()
+                else:
+                        self.game.coils.acSelect.disable()
 		if (self.action == 'repeat'):
                     self.item.pulse()
                     self.set_matrix()
@@ -327,9 +368,11 @@ class CoilTest(ServiceModeList):
 
         def set_matrix(self):
             #update matrix to show active coil
-            num =self.item.number-32
+            num =self.item.number-40
             self.log.info('coil number is:%s',num)
             bank= num/8
+            if self.item.type != "A SIDE":
+                bank += 1
             drive = num%8
             self.matrix_layer.target_x = 105+(bank*5)
             self.matrix_layer.target_y = 7+(drive*3)
@@ -360,8 +403,13 @@ class CoilTest(ServiceModeList):
 
 	def sw_startButton_active(self,sw):
 		if (self.action == 'manual'):
-			self.item.pulse(20)
-                        self.set_matrix()
+                    if self.item.type == 'C SIDE':
+                        self.game.coils.acSelect.enable()
+                    else:
+                        self.game.coils.acSelect.disable()
+
+		    self.item.pulse(20)
+                    self.set_matrix()
 		return True
 
 
@@ -388,9 +436,9 @@ class SwitchTest(ServiceModeSkeleton):
 
                 #populate connector colours
                 for j in range (len(self.base_colour)):
-                    self.colours = ['Brown','Red','Orange','Yellow','Green','Blue','Purple','Grey','White']
+                    self.colours = ['Brown','Red','Orange','Yellow','Green','Blue','Purple','Grey']
                     colour_set = self.colours
-                    colour_set.pop(self.connector_key[j]-1)
+                    #colour_set.pop(self.connector_key[j]-1)
                     for i in range(len(colour_set)):
                         if colour_set[i]==self.base_colour[j]:
                          colour_set[i] = "Black"

@@ -93,7 +93,7 @@ class F14SecondSortie(game.BasicGame):
 
                 
         	self.logging_enabled = True
-		self.balls_per_game = ballsPerGame
+		#self.balls_per_game = ballsPerGame
 
                 ### Set Logging Info ###
 		logging.basicConfig(filename='f14.txt',level=logging.INFO)

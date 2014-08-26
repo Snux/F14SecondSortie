@@ -45,9 +45,9 @@ Standard:
   'Free Play':
     options: ['Yes','No']
     default: 'Yes'
-  'Outlane Ball Save':
-    options: ['Yes','No']
-    default: 'No'
+  'Ball Save Timer Seconds':
+    options: [0,10]
+    default: 5
   'Multiball Ballsaves':
     options: [1,10]
     increments: 1
@@ -119,14 +119,13 @@ Highscore:
     options: [50000000,500000000]
     increments: 50000000
     default: 200000000
-Feature:
-  'Jackpot Hold':
+Second Sortie Feature:
+  'Allow Lock Steal':
     options: [true,false]
+    default: false
+  'Upper and lower TOMCAT linked':
+    options: [true, false]
     default: true
-  'Drop Target Time':
-    options: [5,50]
-    increments: 1
-    default: 15
   'Super Spinner Spins':
     options: [10,100]
     default: 10

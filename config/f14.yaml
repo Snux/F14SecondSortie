@@ -292,7 +292,7 @@ PRCoils:
         label: 'Centre Left Eject'
     gi:
         number: C11
-        label: 'General Illumination'
+        label: 'General Illum'
     yagovKickBack:
         number: C12
         label: 'Yagov Kickback'
@@ -301,7 +301,7 @@ PRCoils:
         label: 'Rescue Kickback'
     acSelect:
         number: C14
-        label: 'Solenoid A/C Select'
+        label: 'A/C Select'
     flasher10:
         number: C15
         label: 'Flasher 10'
