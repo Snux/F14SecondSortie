@@ -43,7 +43,7 @@ class MissionMode(game.Mode):
 
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
-			
+	# Need to check that no multiball is running or ready before kicking off mission
 	def sw_vUK_active(self, sw):
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
                 self.game.modes.add(self.game.kill1mission)
@@ -65,6 +65,7 @@ class MissionMode(game.Mode):
                         self.log.info("Mission "+mission+" is available")
 
                 # If we actually have one available, then process the first one
+
                 if len(initial_missions) > 0:
                     mission_to_play = initial_missions[0]
                     self.log.info("Setting mission "+mission_to_play+" to available")

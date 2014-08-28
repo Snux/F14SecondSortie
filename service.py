@@ -263,15 +263,9 @@ class CoilTest(ServiceModeList):
 		self.layer = dmd.GroupedLayer(128, 32, [self.bgnd_layer,self.title_layer,self.item_layer, self.board_layer,self.drive_layer,self.conn_layer,self.instruction_layer,self.matrix_layer])
 
                 #setup mode lists
-                self.colours = ['Brown','Red','Orange','Yellow','Green','Blue','Purple','Grey']
-                self.bank_colours = ['Purple','Black','Brown','Blue','Unknown']
-                self.connector_key =[2,3,4,6]
                 self.connections=['P11 1','P11 3','P11 4','P11 5','P11 6','P11 7','P11 8','P11 9','P12 1','P12 2','P12 4','P12 5','P12 6','P12 7','P12 8','P12-9','P19 7','P19 4','P19 3','P19 6','P19 8','P19 9']
                 self.transistors=[33,25,32,24,31,23,30,22,17,9,16,8,15,7,14,6,75,71,73,69,77,79]
 
-                #self.drive_layer.set_text("COIL "+str(self.item.number-40+1).zfill(2)+" "+self.item.type)
-
-                #if self.item.number
 		
                 self.items= []
                 # Build up the item list.  Can't just use the standard coils because some need to appear twice
@@ -319,21 +313,15 @@ class CoilTest(ServiceModeList):
                 self.cancel_delayed('repeat')
 
         def change_item(self):
-                self.log.info("items total:"+str(len(self.items)))
+                
 		ctr = 0
                 for item in self.items:
                     if (ctr == self.iterator):
                         self.item = item
 
                     ctr += 1
-                self.log.info("item:"+str(self.iterator)+" "+str(self.item.label))
-                 #for i in range(len(self.items)):
-#                    if i==self.iterator:
-#                        self.item = self.items[i]
-                #self.item = self.items[self.iterator]
-
-		#self.max = ctr - 1
-		self.item_layer.set_text(self.item.label)
+                
+                self.item_layer.set_text(self.item.label)
                 coil_num =self.item.number-40+1
                 
                 if coil_num < 9:

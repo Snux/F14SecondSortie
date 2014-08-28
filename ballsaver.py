@@ -28,10 +28,13 @@ class BallSaver(game.Mode):
 	def __init__(self, game, priority):
 			super(BallSaver, self).__init__(game, priority)
 
-			self.ballSaverTime = 15 #This needs to be moved to pull from the configuration file
-			self.ballSaverGracePeriodThreshold = 3 #This needs to be moved to pull from the configuration file
-			#self.ballSaveLampsActive = True #Probably should move to mode started instead of init...
-			self.ballSavedEarly = False
+                        # Used to determine if this is a regular ball save (at the start of a new ball)
+                        # or during some kind of other game function.  For example a timed multiball might
+                        # want to have a much longer ball save period
+
+                        self.ballSaverType = 'standard'
+
+
                         self.log = logging.getLogger('f14.ballsave')
 
 
@@ -39,14 +42,35 @@ class BallSaver(game.Mode):
 	#### Standard Functions ####
 	############################
 	def mode_started(self):
-		self.cancel_delayed('stopballsavelamps')
-		self.game.utilities.set_player_stats('ballsave_active',True)
-		self.ballSaveLampsActive = True
-		self.game.trough.ball_save_active = True
-		self.update_lamps()
+            # For standard ball save, read the game settings to determine the period
+            if self.ballSaverType == 'standard':
+                self.ballSaverTime = self.game.user_settings['Standard']['Ball Save Timer Seconds']
+                self.ballSaverGracePeriodThreshold =  min(self.ballSaverTime,2)
+
+                # If the config gives a ball save time, then start the mode
+                if self.ballSaverTime != 0:
+                    self.cancel_delayed('stopballsavelamps')
+                    self.game.utilities.set_player_stats('ballsave_active',True)
+                    self.ballSaveLampsActive = True
+                    self.game.trough.ball_save_active = True
+                    self.update_lamps()
+                # otherwise it's disabled, so just quit
+                else:
+                    self.game.modes.remove(self)
+            # Otherwise this is for some other usage, in which case the saver time and threshold will have been
+            # set before the mode was called.
+            elif self.ballSaverType == 'custom':
+                self.cancel_delayed('stopballsavelamps')
+                self.game.utilities.set_player_stats('ballsave_active',True)
+                self.ballSaveLampsActive = True
+                self.game.trough.ball_save_active = True
+                self.update_lamps()
+
 
 	def mode_stopped(self):
 		self.game.trough.ball_save_active = False
+                # Reset the type of the ball save to the default for next time around
+                self.ballSaverType = 'standard'
 		return super(BallSaver, self).mode_stopped()
 
 	def update_lamps(self):
@@ -86,41 +110,37 @@ class BallSaver(game.Mode):
 		self.cancel_delayed('stopballsavelamps')
 		self.cancel_delayed('ballsaver')
 
-	def kickBallToTrough(self):
-		self.game.utilities.acCoilPulse(coilname='outholeKicker_flasher1',pulsetime=50)
+	#def kickBallToTrough(self):
+	#	self.game.utilities.acCoilPulse(coilname='outholeKicker_flasher1',pulsetime=50)
 
-	def kickBallToShooterLane(self):
-		self.game.utilities.acCoilPulse(coilname='ballReleaseShooterLane_flasher2',pulsetime=100)
+	#def kickBallToShooterLane(self):
+	#	self.game.utilities.acCoilPulse(coilname='ballReleaseShooterLane_flasher2',pulsetime=100)
 
 	def saveBall(self):
-		#self.game.utilities.display_text(txt='BALL SAVED',time=3)
-                #self.layer = dmd.AnimatedLayer(frames=self.game.dmd_assets['ball_saved'].frames, hold=True, repeat=False, frame_time=2)
+                # If this is just a regular 'one shot' ball save, then play the animation, launch a ball
+                # and then stop the mode
+		if self.ballSaverType == 'standard':
+                    self.game.utilities.ball_saved_animation()
+                    self.log.info("Launch ball auto due to ball saver")
+                    self.game.trough.launch_balls(num=1,autolaunch=True)
+                    self.stopBallSaverMode()
+                # Otherwise just launch a ball and carry on
+                elif self.ballSaverType == 'custom':
+                    self.game.trough.launch_balls(num=1,autolaunch=True)
 
-                # Display the animiation via the utils because this mode will quit immediately
-                self.game.utilities.ball_saved_animation()
-                #Stop Skillshot
-		#self.game.modes.remove(self.game.skillshot_mode)
 
-		#self.game.sound.play('ball_saved')
 
-		#These are from the original code
-		#self.kickBallToTrough()
-		#self.kickBallToShooterLane()
-                self.log.info("Launch ball auto due to ball saver")
-		self.game.trough.launch_balls(num=1,autolaunch=True)
-		self.stopBallSaverMode()
-
-	def saveBallEarly(self): #Need to work on this...
-		self.game.utilities.display_text(txt='BALL SAVED',time=3)
+	#def saveBallEarly(self): #Need to work on this...
+	#	self.game.utilities.display_text(txt='BALL SAVED',time=3)
 
 		#Stop Skillshot
 		#self.game.modes.remove(self.game.skillshot_mode)
 
-		self.game.sound.play('ball_saved')
+	#	self.game.sound.play('ball_saved')
 
-                self.log.info("Launch ball manual due to ball saver")
-		self.game.trough.launch_balls(num=1)
-		self.stopBallSaverMode()
+        #        self.log.info("Launch ball manual due to ball saver")
+	#	self.game.trough.launch_balls(num=1)
+	#	self.stopBallSaverMode()
 
 	
 	##################################################
