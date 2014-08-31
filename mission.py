@@ -143,6 +143,7 @@ class Kill1Mode(game.Mode):
 	def __init__(self, game, priority):
             super(Kill1Mode, self).__init__(game, priority)
 
+            self.active = False
             self.tomcatTargets={}
             self.tomcatTargetIndex={}
             #setup logging
@@ -153,14 +154,15 @@ class Kill1Mode(game.Mode):
 
             for switch in self.game.switches:
                 if switch.name[0:5] in self.game.tomcatTargetIndex:
-                    self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
+            #        self.add_switch_handler(name=switch.name, event_type='active' ,delay=0.01, handler=self.targetTOMCAT)
                     self.tomcatTargets[switch.name]=False
-                    
-                    target_index += 1
+            #
+                    #target_index += 1
             
             
 
         def mode_started(self):
+            self.active = True
             self.log.info("kill 1 starting")
             self.game.utilities.set_player_stats('mission_in_progress','kill1')
             self.game.utilities.set_player_stats('kill1',1)
@@ -204,6 +206,7 @@ class Kill1Mode(game.Mode):
 
 
         def mode_stopped(self):
+            self.active = False
             for x in self.tomcatTargets:
                 self.tomcatTargets[x]=False
             self.game.utilities.set_player_stats('kill1',2)
@@ -222,21 +225,26 @@ class Kill1Mode(game.Mode):
             #self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
             pass
 
+        # This handler for the TOMCAT targets is actually polled by the base mode which handles all of these
+
         def targetTOMCAT(self,sw):
-            if sw.name == self.game.tomcatTargetIndex[self.current_position]:
-                self.game.utilities.score(20000)
-                self.game.utilities.display_text(txt="TARGET HIT",time=3)
-                self.target_speed /= 2
-            else:
-                self.game.utilities.score(1500)
-            self.tomcatTargets[sw.name]=True
-            self.game.sound.play('tomcat')
-            #if sw.name[0:5]=="upper":
-            #    otherside="lower"+sw.name[5:]
-            #else:
-            #    otherside="upper"+sw.name[5:]
-            #self.tomcatTargets[otherside]=True
-            return procgame.game.SwitchStop
+            # If this mode is active, then process the switch hit and return SwitchStop to the base mode
+            # so no other mode is using it
+            if self.active :
+                if sw.name == self.game.tomcatTargetIndex[self.current_position]:
+                    self.game.utilities.score(20000)
+                    self.game.utilities.display_text(txt="TARGET HIT",time=3)
+                    self.target_speed /= 2
+                else:
+                    self.game.utilities.score(1500)
+                self.tomcatTargets[sw.name]=True
+                self.game.sound.play('tomcat')
+                #if sw.name[0:5]=="upper":
+                #    otherside="lower"+sw.name[5:]
+                #else:
+                #    otherside="upper"+sw.name[5:]
+                #self.tomcatTargets[otherside]=True
+                return procgame.game.SwitchStop
 
 
             

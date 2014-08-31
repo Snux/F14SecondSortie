@@ -53,6 +53,7 @@ from bonus import *
 from mission import *
 from locks import *
 from multiball import *
+from quickmultiball import *
 from trough import *
 from kickback import *
 from info import *
@@ -139,6 +140,7 @@ class F14SecondSortie(game.BasicGame):
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,102)
 		self.multiball_mode = Multiball(self,101)
+                self.quick_multiball_mode = QuickMultiball(self,101)
 
                 self.service_mode = ServiceMode(self,300,font_named("Font07x5.dmd"),font_named("font_8x6_bold.dmd"),[])
 

@@ -25,7 +25,7 @@ from random import choice
 from random import seed
 import logging
 
-class Multiball(game.Mode):
+class QuickMultiball(game.Mode):
 	def __init__(self, game, priority):
 			super(Multiball, self).__init__(game, priority)
 			#self.game.utilities.get_player_stats('balls_locked') = 0
@@ -35,9 +35,7 @@ class Multiball(game.Mode):
 			#self.game.utilities.get_player_stats('lower_lock') = 'off'
 
 			self.multiballStarting = False
-                        self.skipLanding = False
-			self.multiballIntroLength = 11.287
-                        self.log = logging.getLogger('f14.multiball')
+                        self.log = logging.getLogger('f14.quick_multiball')
 
 	def mode_started(self):
 		self.update_lamps()
@@ -107,7 +105,7 @@ class Multiball(game.Mode):
         # This will be called from the base mode whenever all the TOMCAT targets have been lit.
         # It will decide which lock to light - this can be made more complex later
 	def liteLock(self):
-	        if self.game.utilities.get_player_stats('multiball_running') ==  'None':
+	        if self.game.utilities.get_player_stats('multiball_running') ==  False:
                     if (self.game.utilities.get_player_stats('balls_locked') == 0):
                             self.game.utilities.set_player_stats('middle_lock','lit')
                             self.game.utilities.play_animation('lock_is_lit',frametime=2)
@@ -123,7 +121,7 @@ class Multiball(game.Mode):
 	def startMultiball(self):
                 self.log.info("Start multiball")
 		self.multiballStarting = True
-		self.game.utilities.set_player_stats('multiball_running','Standard')
+		self.game.utilities.set_player_stats('multiball_running',True)
                 self.game.utilities.set_player_stats('multiballs_played',1,mode='add')
 		self.resetMultiballStats()
                 self.setupLanding()
@@ -180,7 +178,7 @@ class Multiball(game.Mode):
 
 	def stopMultiball(self):
                 self.log.info("Stop multiball")
-		self.game.utilities.set_player_stats('multiball_running','None')
+		self.game.utilities.set_player_stats('multiball_running',False)
                 self.resetLanding()
                 self.cancel_delayed('reminder')
 		self.game.sound.stop_music()

@@ -46,8 +46,8 @@ Standard:
     options: ['Yes','No']
     default: 'Yes'
   'Ball Save Timer Seconds':
-    options: [0,10]
-    default: 5
+    options: [0,20]
+    default: 15
   'Multiball Ballsaves':
     options: [1,10]
     increments: 1

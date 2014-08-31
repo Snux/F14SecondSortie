@@ -310,6 +310,11 @@ class BaseGameMode(game.Mode):
 
 	
 	def sw_vUK_active(self, sw):
+                # In the base mode, if the ball lands in the VUK we just kick it out and let the
+                # lock handler know that a ball is on the way.  If the multiball mode or something
+                # similar wants to do something more clever than this, then that will be running
+                # in a mode with higher priority and will catch the switch activation and stop
+                # this code from running.
 		self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
                 self.game.locks.transitStart('base')
 		return procgame.game.SwitchStop
@@ -465,40 +470,49 @@ class BaseGameMode(game.Mode):
             self.game.utilities.set_player_stats('bonus',bonus_now)
             self.game.utilities.light_bonus()
 
-        
+
+        # Because there are so many TOMCAT targets and generally the handling for all of them is the
+        # same, we define a single switch handler for all of them which can then check which one was
+        # actually activated and take the appropriate action.
         def targetTOMCAT(self,sw):
-            self.game.sound.play('shoot1')
-            # If this target isn't already lit
-            if self.game.utilities.get_player_stats(sw.name) == False:
-                # Set it as lit
-                self.game.utilities.set_player_stats(sw.name, True)
-                # and increment the total number lit
-                count = self.game.utilities.get_player_stats('tomcat_completed')
-                count += 2
-                self.game.utilities.set_player_stats('tomcat_completed',count)
-                # If 12 are lit, that's all of them
-                if count == 12:
-                    # This will light lock for multiball
-                    self.game.multiball_mode.liteLock()
-                    # reset the counter
-                    self.game.utilities.set_player_stats('tomcat_completed',0)
-                    # and reset each switch too
-                    for switch in self.game.tomcatTargetIndex:
-                        self.game.utilities.set_player_stats(switch,False)
-                    self.update_lamps()
-                # If not 12, then flicker this lamp on
-                else:
-                    self.game.utilities.flickerOn(sw.name)
-                    # and also the matching lamp
-                    if sw.name[0:5]=="upper":
-                        otherside="lower"+sw.name[5:]
+            # We can't use the standard mode priority as we're using an event based handler here, so
+            # regardless of other modes all the TOMCAT activation will pass through here too.  So we'll
+            # use this routine to pass TOMCAT events elsewhere if needed
+            if self.game.kill1mission.targetTOMCAT(sw) == True:
+                pass
+            else:
+                self.game.sound.play('shoot1')
+                # If this target isn't already lit
+                if self.game.utilities.get_player_stats(sw.name) == False:
+                    # Set it as lit
+                    self.game.utilities.set_player_stats(sw.name, True)
+                    # and increment the total number lit
+                    count = self.game.utilities.get_player_stats('tomcat_completed')
+                    count += 2
+                    self.game.utilities.set_player_stats('tomcat_completed',count)
+                    # If 12 are lit, that's all of them
+                    if count == 12:
+                        # This will light lock for multiball
+                        self.game.multiball_mode.liteLock()
+                        # reset the counter
+                        self.game.utilities.set_player_stats('tomcat_completed',0)
+                        # and reset each switch too
+                        for switch in self.game.tomcatTargetIndex:
+                            self.game.utilities.set_player_stats(switch,False)
+                        self.update_lamps()
+                    # If not 12, then flicker this lamp on
                     else:
-                        otherside="upper"+sw.name[5:]
-                    self.game.utilities.set_player_stats(otherside, True)
-                    self.game.utilities.flickerOn(otherside)
-            self.game.utilities.score(500)
-            self.bonus()
-            
+                        self.game.utilities.flickerOn(sw.name)
+                        # and also the matching lamp
+                        if sw.name[0:5]=="upper":
+                            otherside="lower"+sw.name[5:]
+                        else:
+                            otherside="upper"+sw.name[5:]
+                        self.game.utilities.set_player_stats(otherside, True)
+                        self.game.utilities.flickerOn(otherside)
+                self.game.utilities.score(500)
+                self.bonus()
+
            ####################################################
 	# Info - Information for Instant Info Screens.
         ####################################################

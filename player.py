@@ -61,7 +61,7 @@ class Player(procgame.game.Player):
 			self.player_stats['upper_lock']='off'
 			self.player_stats['middle_lock']='off'
 			self.player_stats['lower_lock']='off'
-			self.player_stats['multiball_running']=False
+			self.player_stats['multiball_running']='None'
                         self.player_stats['multiballs_played']=0
 			self.player_stats['jackpot_lit']=False
 			self.player_stats['balls_locked']=0

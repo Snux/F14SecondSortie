@@ -169,11 +169,12 @@ class Trough(procgame.game.Mode):
                 self.outhole_switch_handler('Dummy')
             else:
                 self.log.info('Outhole process check')
-                if(self.game.utilities.get_player_stats('multiball_running') == True):
-			self.checkForEndOfMultiball()
                 # If ball save is active, save it but wait first for one second for the trough to settle
                 if (self.game.utilities.get_player_stats('ballsave_active') == True):
 			self.game.ballsaver_mode.saveBall()
+                # If ball save isn't active, check for end of multiball
+                elif(self.game.utilities.get_player_stats('multiball_running') != 'None'):
+			self.checkForEndOfMultiball()
                 elif self.num_balls_in_play == 0: #Last ball in play
 			self.game.utilities.setBallInPlay(False) # Will need to use the trough mode for this
 			self.game.base_mode.finish_ball()
@@ -181,8 +182,10 @@ class Trough(procgame.game.Mode):
 
 
 	def checkForEndOfMultiball(self):
-		if (self.num_balls() >= 3):
+		if (self.num_balls() >= 3 and self.game.utilities.get_player_stats('multiball_running') == 'Standard' ):
 			self.game.multiball_mode.stopMultiball()
+                elif self.game.utilities.get_player_stats('multiball_running') == 'Quick':
+                        self.game.quick_multiball_mode.stopMultiball()
 
 	# Switches will change states a lot as balls roll down the trough.
 	# So don't go through all of the logic every time.  Keep resetting a
