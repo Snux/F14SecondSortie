@@ -106,6 +106,8 @@ class BaseGameMode(game.Mode):
                 ## is at least the number of balls that this player has locked before.  In multiplayer
                 ## games it's possible for one player to empty locks that another player has filled.
                 ## So we may need to re-fill some locks to get the player back to a fair number
+                ## Also - set the callback so the restage code knows where to go next once restaging is done
+                self.game.locks.callback = self.start_ball_actual
                 self.game.locks.check_for_restage()
 
         ## This actually gets the ball started and is called by the locks restage code once locks have been sorted out

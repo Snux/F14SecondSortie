@@ -207,7 +207,8 @@ class LocksMode(game.Mode):
                 self.restageLock = 'lower'
                 self.game.trough.launch_balls(num=1,stealth=True,autolaunch=True)
             else:
-                self.game.base_mode.start_ball_actual()
+                self.callback()
+                
 
 
         

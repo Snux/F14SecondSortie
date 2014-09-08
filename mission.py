@@ -43,10 +43,15 @@ class MissionMode(game.Mode):
 
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
-	# Need to check that no multiball is running or ready before kicking off mission
+
+        # Need to check that no multiball is running or ready before kicking off mission
 	def sw_vUK_active(self, sw):
             if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
                 self.game.modes.add(self.game.kill1mission)
+                
+                # Kick the ball out and let the lock handler know a ball is on the way
+                self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
+                self.game.locks.transitStart('base')
                 return procgame.game.SwitchStop
 
         # Called by the base mode when lamps 1-6 have been lit.

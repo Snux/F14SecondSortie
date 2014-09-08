@@ -27,7 +27,7 @@ import logging
 
 class QuickMultiball(game.Mode):
 	def __init__(self, game, priority):
-			super(Multiball, self).__init__(game, priority)
+			super(QuickMultiball, self).__init__(game, priority)
 			#self.game.utilities.get_player_stats('balls_locked') = 0
                         #self.ballsLanded = 0
 			#self.game.utilities.get_player_stats('upper_lock') = 'off'
@@ -39,10 +39,28 @@ class QuickMultiball(game.Mode):
 
 	def mode_started(self):
 		self.update_lamps()
-		return super(Multiball, self).mode_started()
+		return super(QuickMultiball, self).mode_started()
+            
+                # This is a timed multiball, we want it to play for at least 30 seconds
+                # We will use the standard ball saver mode to do this, but will need to flag it as 
+                # a custom ball save and set the required time to over-ride the default.
+                self.game.ballsaver_mode.ballSaverTime = 30
+                self.game.ballsaver_mode.ballSaverType = 'custom'
+                self.game.modes.add(self.game.ballsaver_mode)
+
+                # Update the multiball flag so other modes are aware
+                self.game.utilities.set_player_stats('multiball_running','Quick')
+
+                # Now we need to decide where the second ball is going to come from.
+                # If there is a ball in the trough, we'll have one from there as it means
+                # we won't need to disturb one which is locked....
+
+                if self.game.trough.num_balls() > 0:
+                    self.game.trough.launch_balls(num=1,autolaunch=True)
+
 
 	#def mode_stopped(self):
-		#self.game.update_lamps()
+		#
 
 	def update_lamps(self):
 		self.disableLockLamps()
@@ -177,8 +195,8 @@ class QuickMultiball(game.Mode):
 		self.delay(name='reminder', event_type=None, delay=4.0, handler=self.multiball_reminder)
 
 	def stopMultiball(self):
-                self.log.info("Stop multiball")
-		self.game.utilities.set_player_stats('multiball_running',False)
+                self.log.info("Stop quick multiball")
+		self.game.utilities.set_player_stats('multiball_running','None')
                 self.resetLanding()
                 self.cancel_delayed('reminder')
 		self.game.sound.stop_music()

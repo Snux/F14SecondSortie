@@ -28,9 +28,12 @@ class BallSaver(game.Mode):
 	def __init__(self, game, priority):
 			super(BallSaver, self).__init__(game, priority)
 
-                        # Used to determine if this is a regular ball save (at the start of a new ball)
-                        # or during some kind of other game function.  For example a timed multiball might
-                        # want to have a much longer ball save period
+
+                        # Used to indicate whether this is a standard ball saver which will save the ball just
+                        # once and timeout after a fixed period, or if this is a custom saver.  If it's custom,
+                        # the routine requiring the save will set the type to custom ahead of time and also
+                        # set the duration of the timeout.  Custom ball save will also save multiple times if
+                        # needed
 
                         self.ballSaverType = 'standard'
 
