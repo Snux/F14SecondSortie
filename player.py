@@ -41,6 +41,8 @@ class Player(procgame.game.Player):
 			### Bonus and Status #####################################
 			self.player_stats['status']=''
 			self.player_stats['bonus_x']=1
+                        self.player_stats['bumper_score'] = 500
+                        self.player_stats['spinner_score'] = 500
                         self.player_stats['bonus']=0
                         self.player_stats['loop_shots']=0
                         self.player_stats['bonusXRight']='off'

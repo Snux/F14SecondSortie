@@ -109,7 +109,9 @@ class F14SecondSortie(game.BasicGame):
 			self.game_data['Time Stamps']['First Boot-Up'] = self.game_data['Time Stamps']['Last Boot-Up']
 		self.save_game_data()
 
+		
                 self.reset()
+
 
                 #### Setup Sound Controller ####
 		self.sound = sound.SoundController(self)
@@ -155,8 +157,7 @@ class F14SecondSortie(game.BasicGame):
                 
 	def reset(self):
 		super(F14SecondSortie, self).reset()
-                
-		self.ball = 0
+                self.ball = 0
 		self.old_players = []
 		self.old_players = self.players[:]
 		self.players = []

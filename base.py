@@ -89,7 +89,7 @@ class BaseGameMode(game.Mode):
                                 delay=0.01, handler=self.bonusLane)
                 self.add_switch_handler(name='bonusXLeft',event_type='active', \
                                 delay=0.01, handler=self.bonusLane)
-                self.game.utilities.arduino_blank_all()
+                #self.game.utilities.arduino_blank_all()
 
 		self.log.info('Game Started')
 
@@ -101,6 +101,10 @@ class BaseGameMode(game.Mode):
 		#### Update Audits ####
 		#self.game.game_data['Audits']['Balls Played'] += 1
 		#self.game.save_game_data()
+
+                self.game.utilities.arduino_write_alpha(display=3,text='BALL')
+                self.game.utilities.arduino_write_number(display=1,number=self.game.ball)
+
 
                 ## Now we need to check if the number of balls physically locked on the playfield
                 ## is at least the number of balls that this player has locked before.  In multiplayer
@@ -342,7 +346,7 @@ class BaseGameMode(game.Mode):
 
 	def sw_jetBumper_active(self, sw):
 		#self.game.sound.play('jet')
-		self.game.utilities.score(500)
+		self.game.utilities.score(self.game.utilities.get_player_stats('bumper_score'))
 		return procgame.game.SwitchStop
 
 	def sw_slingL_active(self, sw):
@@ -391,7 +395,7 @@ class BaseGameMode(game.Mode):
 
         def sw_spinner_closed(self, sw):
 		self.game.sound.play('spinner')
-                self.game.utilities.score(10)
+                self.game.utilities.score(self.game.utilities.get_player_stats('spinner_score'))
 
         # Yagov kickback handling.
         def sw_yagov_active(self, sw):
@@ -548,8 +552,13 @@ class BaseGameMode(game.Mode):
 
 		self.layer_3 = dmd.GroupedLayer(128, 32, [self.title_layer_3a, self.title_layer_3b])
 
+                self.title_layer_4a = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Spinner score : '+str(self.game.utilities.get_player_stats('spinner_score')))
+		self.title_layer_4b = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Bumper score : '+str(self.game.utilities.get_player_stats('bumper_score')))
 
-                return [self.layer_0, self.layer_1, self.layer_2, self.layer_3]
+		self.layer_4 = dmd.GroupedLayer(128, 32, [self.title_layer_4a, self.title_layer_4b])
+
+
+                return [self.layer_0, self.layer_1, self.layer_2, self.layer_3, self.layer_4]
 
 	def info_callback(self):
 		self.game.modes.remove(self.game.info)

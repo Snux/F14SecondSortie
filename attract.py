@@ -54,6 +54,7 @@ class AttractMode(game.Mode):
                 self.log.info("Enable GI")
 		self.game.utilities.enableGI()
                 self.seg7_1()
+                self.game.utilities.arduino_blank_all()
 
         def seg7_1(self):
                 self.game.utilities.write_arduino('D'+chr(0)+chr(115)+chr(56)+chr(119)+chr(110))
@@ -76,8 +77,9 @@ class AttractMode(game.Mode):
 			lamp.disable()
 
 		self.game.lampctrl.stop_show()
+                self.game.utilities.arduino_blank_all()
 
-                self.game.utilities.write_arduino('D'+chr(0)+chr(0)+chr(0)+chr(0)+chr(0))
+                #self.game.utilities.write_arduino('D'+chr(0)+chr(0)+chr(0)+chr(0)+chr(0))
 
 		
 		#### Enable AC Relay for Flashers ####
