@@ -353,14 +353,14 @@ class BaseGameMode(game.Mode):
 		#self.game.coils.slingL.pulse(30)
 		self.game.sound.play('slinglow')
 		self.game.utilities.score(100)
-                self.bonus()
+                #self.bonus()
 		return procgame.game.SwitchStop
 
 	def sw_slingR_active(self, sw):
 		#self.game.coils.slingR.pulse(30)
 		self.game.sound.play('slinglow')
 		self.game.utilities.score(100)
-                self.bonus()
+                #self.bonus()
 		return procgame.game.SwitchStop
 
 
@@ -404,13 +404,11 @@ class BaseGameMode(game.Mode):
 
 
                 # increment the shot counter
-                count=self.game.utilities.get_player_stats('yagov_shots')
-                count += 1
-                self.game.utilities.set_player_stats('yagov_shots',count)
+                count = self.game.utilities.set_player_stats('yagov_shots',mode='add',value=1)
                 
                 # every 5 shots award something - need to expand this
                 if count % 5 == 0:
-                    self.game.utilities.play_animation('f14missile2',frametime=1,txt='YAGOV BONUS - GET THE EXTRA BALL',txtPos='over')
+                    self.game.utilities.play_animation('f14missile2',frametime=1,txt='YAGOV BONUS - EXTRA BALL LIT',txtPos='over')
                     self.game.utilities.set_player_stats('extra_ball_lit',True)
                     self.update_lamps()
 
@@ -532,7 +530,7 @@ class BaseGameMode(game.Mode):
 		self.game.modes.add(self.game.info)
 
 	def get_info_layers(self):
-		self.title_layer_0 = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Ball in Play : '+str(self.game.ball))
+		self.title_layer_0 = dmd.TextLayer(128/2, 12, font_named("04B-03-7px.dmd"), "center").set_text('Ball in Play : '+str(self.game.ball)+ ' of '+str(self.game.balls_per_game))
 		self.value_0_layer = dmd.TextLayer(128/2, 22, font_named("04B-03-7px.dmd"), "center").set_text('Extra Balls to Play : '+str(self.game.utilities.get_player_stats('extra_balls')))
 
 		self.layer_0 = dmd.GroupedLayer(128, 32, [self.title_layer_0, self.value_0_layer])

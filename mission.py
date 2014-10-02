@@ -36,7 +36,7 @@ class MissionMode(game.Mode):
                                             'kill3' : 'charlie',
                                             'kill4' : 'delta',
                                             'kill5' : 'echo',
-                                            'kill6' : 'foxtrot',
+                                            'kill6' : 'fox',
                                             'kill7' : 'golf'
                                             }
                         
@@ -44,11 +44,37 @@ class MissionMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.mission')
 
-        # Need to check that no multiball is running or ready before kicking off mission
+        # This switch handler will only get called when no multiball is running, so no need to check that
+        # so if this is called, we should start a mission is one is available.
 	def sw_vUK_active(self, sw):
-            if (self.game.utilities.get_player_stats('mission_in_progress') == 'None' and self.game.utilities.get_player_stats('kill1') == 0):
-                self.game.modes.add(self.game.kill1mission)
+            if self.game.utilities.get_player_stats('mission_in_progress') == 'None':
                 
+
+                available_missions=[]
+                for mission in self.kill_list:
+                    if self.game.utilities.get_player_stats(mission) == 0:
+                        available_missions.append(mission)
+                        self.log.info("Mission "+mission+" is available")
+
+                # If something is available, pick one.
+                if len(available_missions) > 0:
+                    # Shuffle them up to get something random
+                    random.shuffle(available_missions)
+                    if available_mission[0] == 'kill1':
+                        self.game.modes.add(self.game.kill1mission)
+                    elif available_mission[0] == 'kill2':
+                        self.game.modes.add(self.game.kill2mission)
+                    elif available_mission[0] == 'kill3':
+                        self.game.modes.add(self.game.kill3mission)
+                    elif available_mission[0] == 'kill4':
+                        self.game.modes.add(self.game.kill4mission)
+                    elif available_mission[0] == 'kill5':
+                        self.game.modes.add(self.game.kill5mission)
+                    elif available_mission[0] == 'kill6':
+                        self.game.modes.add(self.game.kill6mission)
+                    elif available_mission[0] == 'kill7':
+                        self.game.modes.add(self.game.kill7mission)
+
                 # Kick the ball out and let the lock handler know a ball is on the way
                 self.game.utilities.acCoilPulse(coilname='upKicker_flasher3',pulsetime=50)
                 self.game.locks.transitStart('base')
@@ -69,9 +95,11 @@ class MissionMode(game.Mode):
                         initial_missions.append(mission)
                         self.log.info("Mission "+mission+" is available")
 
-                # If we actually have one available, then process the first one
+                # If we actually have one available, pick one to make available
 
                 if len(initial_missions) > 0:
+                    # Shuffle the list to give a random mission
+                    random.shuffle(initial_missions)
                     mission_to_play = initial_missions[0]
                     self.log.info("Setting mission "+mission_to_play+" to available")
                     self.game.utilities.set_player_stats(mission_to_play,0)
@@ -190,20 +218,27 @@ class Kill1Mode(game.Mode):
             self.delay(name='move_target',delay=3,handler=self.move_target)
             self.delay(name='fuel_out',delay=30,handler=self.fuel_out)
 
+        def update_lamps(self):
+            for target in self.game.tomcatTargetIndex:
+                if target == self.game.tomcatTargetIndex[self.current_position]:
+                    self.game.lamps[target].enable()
+                else:
+                    self.game.lamps[target].disable()
+
         def move_target(self):
-            self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].disable()
+            #self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].disable()
             self.current_position += random.choice([-1,1])
             if self.current_position == 12:
                 self.current_position = 0
             elif self.current_position == -1:
                 self.current_position = 11
-            self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].enable()
+            #self.game.lamps[self.game.tomcatTargetIndex[self.current_position]].enable()
             mission_text = list("------------")
             mission_text[self.current_position] = '+'
             self.third_layer= dmd.TextLayer(128/2, 24, font_named("Font_CC_7px_az.dmd"), "center").set_text(''.join(mission_text))
             self.layer = dmd.GroupedLayer(128, 32, [self.first_layer,self.second_layer,self.third_layer])
             self.delay(name='move_target',delay=self.target_speed,handler=self.move_target)
-            #self.update_lamps()
+            self.update_lamps()
 
         def fuel_out(self):
             self.game.utilities.display_text(txt="FUEL EMPTY",time=3,blink=4)
@@ -224,12 +259,7 @@ class Kill1Mode(game.Mode):
             self.game.update_lamps()
 
 
-        def update_lamps(self):
-            #for target in self.tomcatTargets:
-            #    self.game.lamps[target].disable()
-            #self.game.lamps[self.tomcatTargetIndex[self.current_position]].enable()
-            pass
-
+        
         # This handler for the TOMCAT targets is actually polled by the base mode which handles all of these
 
         def targetTOMCAT(self,sw):
@@ -252,4 +282,32 @@ class Kill1Mode(game.Mode):
                 return procgame.game.SwitchStop
 
 
-            
+class Kill2Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill2Mode, self).__init__(game, priority)
+
+class Kill3Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill3Mode, self).__init__(game, priority)
+
+class Kill4Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill4Mode, self).__init__(game, priority)
+
+class Kill5Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill5Mode, self).__init__(game, priority)
+
+class Kill6Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill6Mode, self).__init__(game, priority)
+
+class Kill7Mode(game.Mode):
+	"""docstring for Bonus"""
+	def __init__(self, game, priority):
+            super(Kill7Mode, self).__init__(game, priority)

@@ -247,6 +247,7 @@ class UtilitiesMode(game.Mode):
                             self.game.current_player().player_stats[id] = value
                         if mode == 'add':
                             self.game.current_player().player_stats[id] = self.game.current_player().player_stats[id] + value
+                            return self.game.current_player().player_stats[id]
 
 	def get_player_stats(self,id):
 		if (self.game.ball <> 0):

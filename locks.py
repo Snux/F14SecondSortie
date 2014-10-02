@@ -62,7 +62,7 @@ class LocksMode(game.Mode):
                         # Are we currently trying to restage a ball
                         self.restageLock = 'none'
 
-                        # Add a handler for the ramp entry switch
+                        # Add a handler for the ramp entry switch -
                         self.add_switch_handler(name='rampEntry',event_type='active',delay=0.01, handler=self.transitStart)
 
                         # All the locks can be routed to the same handler
