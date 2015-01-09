@@ -11,13 +11,13 @@
 //Incoming commands are 6 bytes long, the first byte gives the directive and the others
 //are related data
 //
-// Directive R, G and B control the neopixels.  Next byte contains the lamp number (0-6), 
+// Directive W,C,Y,M,R, G and B control the neopixels.  Next byte contains the lamp number (0-16), 
 // the next four hold the lamp schedule (same as used in pyprocgame for normal lamps
 //
 // Directives D controls the LED displays with raw data.  Next byte specifies which display (0 - 5)
 // then the next 4 contain raw data for the segments (one per character
 //
-// Directive C runs a counter.  Next byte signifies which display.  Then start count, up/down, limit, ticks per count
+// Directive T runs a counter.  Next byte signifies which display.  Then start count, up/down, limit, ticks per count
 //
 // Directive N will send a number to the numeric displays.  Next byte signifies which display.  Next 2 bytes contain number.
 //
@@ -25,7 +25,10 @@
 //
 // Directive Q will send the value of a counter back to the PC.  Next byte contains the counter number.
 //
-// Directive W will blank a display
+// Directive E will blank a display
+//
+// Directive S controls the radar insert.  Next byte flags red, next flags green, next flags rotate
+
 //Code version number
 int CODE_VERSION = 2;
 
@@ -38,10 +41,14 @@ int CODE_VERSION = 2;
 
 // Which output pin the neopixels chain from
 #define PIN 12
+#define OUTPIN 7
+#define RGB_COUNT 16
 
 // Define the blinky parts 
-// 7 neopixels in a chain
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, PIN, NEO_GRB + NEO_KHZ800);
+// 16 FAST RGB LEDs on pin 12
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(RGB_COUNT, 12, NEO_GRB + NEO_KHZ800);
+// A 16 pixel Neopixel ring for the radar
+Adafruit_NeoPixel radar = Adafruit_NeoPixel(16, 7);
 
 // 4 alphanumeric displays
 Adafruit_AlphaNum4 alpha4[4] = Adafruit_AlphaNum4();
@@ -50,16 +57,18 @@ Adafruit_AlphaNum4 alpha4[4] = Adafruit_AlphaNum4();
 Adafruit_7segment numeric4[2] = Adafruit_7segment();
 
 // Current state of lamp schedules
-volatile unsigned long red[7];
-volatile unsigned long green[7];
-volatile unsigned long blue[7];
+volatile unsigned long red[RGB_COUNT];
+volatile unsigned long green[RGB_COUNT];
+volatile unsigned long blue[RGB_COUNT];
 volatile unsigned long sched_reset=0xFFFFFFFF;
 
 // Stored lamp schedules coming in from USB
-volatile unsigned long red_stored[7];
-volatile unsigned long green_stored[7];
-volatile unsigned long blue_stored[7];
+volatile unsigned long red_stored[RGB_COUNT];
+volatile unsigned long green_stored[RGB_COUNT];
+volatile unsigned long blue_stored[RGB_COUNT];
 
+// Is the radar insert green or red (otherwise off) and is it spinning?
+volatile boolean radar_green, radar_red, radar_blue,radar_spin;
 
 // Holds data for the counters when used.
 
@@ -71,6 +80,7 @@ volatile byte count_ticks_counter[6],   // If we're counting, how many ticks on 
               count_ticks_per_count[6]; // If we're counting, how many 1/32 ticks per count?
               
 volatile byte count_ticks;              // 1/32 second counter, updated by hardware timer interrupt
+volatile uint8_t  offset   = 0; // position of radar spin
 
 
 void setup() {
@@ -78,9 +88,15 @@ void setup() {
   // Initialise the tick counter
   count_ticks = 0;
 
+  // Initial state for the radar insert - green and not spinning
+  radar_green = true;
+  radar_red = false;
+  radar_blue = false;
+  radar_spin = false;
+
   // Clear down the stored schedules, will switch all the lamps off
   byte i;
-  for (i=0;i<6;i++) {
+  for (i=0;i<RGB_COUNT-1;i++) {
     red_stored[i]=0;
     green_stored[i]=0;
     blue_stored[i]=0;
@@ -106,14 +122,20 @@ void setup() {
   alpha4[2].begin(0x72);
   alpha4[3].begin(0x74);
   strip.begin();
+  radar.begin();
   
   
 
   boot_display();
   
-  // Set the pixel brightness
+  // Set the pixel brightness for playfield inserts
   strip.setBrightness(128);
   strip.show(); // Initialize all pixels to 'off'
+
+  // Set the pixel brightness for the radar
+  radar.setBrightness(128);
+  radar.show(); // Initialize all pixels to 'off'
+
 
   // Get the hardware timer to count in 1/32 second
   Timer1.initialize(31250);
@@ -128,7 +150,7 @@ void loop() {
   unsigned long schedule;
   byte byte1, byte2, byte3, byte4, byte5;
   char command;
-  byte i;
+  byte i,j;
 
   // Each time around, take a look at the serial (USB) buffer and see if we have at least 6 bytes waiting which is
   // enough for a command
@@ -142,7 +164,7 @@ void loop() {
     switch (command) {
       
       // Set display counting
-      case 'C':
+      case 'T':
         count_limit[byte1] = byte3 * 256 + byte4;
         count_active[byte1] = true;
         if (byte2 == 0) count_direction[byte1] = 1;
@@ -175,6 +197,14 @@ void loop() {
         break;
 
 
+      // Insert control radar
+      case 'S':
+        radar_red = byte1;
+        radar_green = byte2;
+        radar_blue = byte3;
+        radar_spin = byte4;
+        break;
+        
       // Write data raw
       case 'D':
         // Getting raw data, so turn any possible count off
@@ -207,7 +237,7 @@ void loop() {
         break;
 
       // Blank the display
-      case 'W':
+      case 'E':
         // Blanking the display, so it needs to stop counting (if it was)
         count_active[byte1]=false;
         count_display[byte1]=0;
@@ -222,9 +252,13 @@ void loop() {
         break;
 
       // Pixel control
-      case 'R':
-      case 'G':
-      case 'B':
+      case 'R':  //Red
+      case 'G':  //Green
+      case 'B':  //Blue
+      case 'W':  //White
+      case 'C':  //Cyan
+      case 'M':  //Magenta
+      case 'Y':  //Yellow
         schedule = byte2;
         schedule <<= 8;
         schedule = schedule | byte3;
@@ -232,9 +266,12 @@ void loop() {
         schedule = schedule | byte4;
         schedule <<= 8;
         schedule = schedule | byte5;
-        if (command == 'R') red_stored[byte1]=schedule;
-        if (command == 'G') green_stored[byte1]=schedule;
-        if (command == 'B') blue_stored[byte1]=schedule;
+        red_stored[byte1] = 0;
+        green_stored[byte1] = 0;
+        blue_stored[byte1] = 0;
+        if (command == 'R' || command == 'W' || command == 'Y' || command == 'M') red_stored[byte1]=schedule;
+        if (command == 'G' || command == 'W' || command == 'Y' || command == 'C') green_stored[byte1]=schedule;
+        if (command == 'B' || command == 'W' || command == 'M' || command == 'C') blue_stored[byte1]=schedule;
         break;
 
       // PC is queerying the value of a counter - sent it back up the serial line in 2 bytes
@@ -246,7 +283,8 @@ void loop() {
     // Throw a character back to the game, so it knows we're ready for some more
     Serial.write('X');
     }
-    
+   
+   
     // If we have a display performing an active count, then process it
 
     for (i=0;i<2;i++) {
@@ -277,10 +315,11 @@ void scheduleProcess() {
   // Increment the tick counter
   count_ticks_counter[0] ++;
   count_ticks_counter[1] ++;  
+  count_ticks ++;
   // Grab the current (right most) bit of each schedule and send to the relevant pixel
   // then shift each schedule right
   byte i;
-  for (i=0;i<7;i++) {
+  for (i=0;i<RGB_COUNT;i++) {
     strip.setPixelColor(i,255*(red[i] & 0x1),255*(green[i] & 0x1),255 * (blue[i] & 0x1));
     red[i] >>= 1;
     green[i] >>= 1;
@@ -290,10 +329,27 @@ void scheduleProcess() {
   // Push the result to the pixel chain
   strip.show();
   
+  // Every 4 ticks (1/8 of a second) update the radar
+  if (count_ticks % 4 == 0) {
+    offset++;
+    if (offset == 16) offset = 0;
+    for(i=0; i<16; i++) {
+      if (radar_spin) 
+        radar.setPixelColor(   (offset+i)%16, i * 10 * radar_red,i*10*radar_green, i * 10 * radar_blue);
+      else
+        radar.setPixelColor(   (offset+i)%16, 255 * radar_red,255*radar_green,255*radar_blue);
+    }
+    radar.show();
+  
+
+}
+
+ 
+  
   // If we've shifted the sched_reset all the way out, we've done the 32 schedule bits
   // and need to set them up again
   if (sched_reset==0) {
-    for (i=0;i<7;i++) {
+    for (i=0;i<RGB_COUNT;i++) {
       red[i]=red_stored[i];
       green[i]=green_stored[i];
       blue[i]=blue_stored[i];
