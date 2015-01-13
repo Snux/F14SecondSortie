@@ -82,6 +82,8 @@ volatile byte count_ticks_counter[6],   // If we're counting, how many ticks on 
 volatile byte count_ticks;              // 1/32 second counter, updated by hardware timer interrupt
 volatile uint8_t  offset   = 0; // position of radar spin
 
+boolean isPinmame = false;
+
 
 void setup() {
   
@@ -112,7 +114,7 @@ void setup() {
   }
   
   // Setup the serial port, need to find the fastest reliable rate
-  Serial.begin(9600);
+  Serial.begin(19200);
 
   // Initialise the displays and neopixels
   numeric4[0].begin(0x70);
@@ -269,9 +271,13 @@ void loop() {
         red_stored[byte1] = 0;
         green_stored[byte1] = 0;
         blue_stored[byte1] = 0;
-        if (command == 'R' || command == 'W' || command == 'Y' || command == 'M') red_stored[byte1]=schedule;
-        if (command == 'G' || command == 'W' || command == 'Y' || command == 'C') green_stored[byte1]=schedule;
-        if (command == 'B' || command == 'W' || command == 'M' || command == 'C') blue_stored[byte1]=schedule;
+        // If the lamp number is 20 or higher, then it's a directive for the (lamp-20) but should be processed immediately
+        // in which case we update both the stored schedule and the currently executing schedule
+        if (byte1 >=20) {isPinmame = true; byte1 = byte1 - 20; red[byte1]=0;green[byte1]=0;blue[byte1]=0;} 
+
+        if (command == 'R' || command == 'W' || command == 'Y' || command == 'M') {red_stored[byte1]=schedule; if (isPinmame) red[byte1]=schedule;}
+        if (command == 'G' || command == 'W' || command == 'Y' || command == 'C') {green_stored[byte1]=schedule; if (isPinmame) green[byte1]=schedule;}
+        if (command == 'B' || command == 'W' || command == 'M' || command == 'C') {blue_stored[byte1]=schedule; if (isPinmame) blue[byte1]=schedule;}
         break;
 
       // PC is queerying the value of a counter - sent it back up the serial line in 2 bytes
@@ -281,7 +287,7 @@ void loop() {
       
     }
     // Throw a character back to the game, so it knows we're ready for some more
-    Serial.write('X');
+    //Serial.write('X');
     }
    
    
@@ -348,7 +354,7 @@ void scheduleProcess() {
   
   // If we've shifted the sched_reset all the way out, we've done the 32 schedule bits
   // and need to set them up again
-  if (sched_reset==0) {
+  if (sched_reset==0 && !isPinmame) {
     for (i=0;i<RGB_COUNT;i++) {
       red[i]=red_stored[i];
       green[i]=green_stored[i];
