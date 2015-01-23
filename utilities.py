@@ -58,7 +58,7 @@ class UtilitiesMode(game.Mode):
                         ## Open up the Arduino COM port if one is specified.
                         self.sect_dict = self.game.config['PRGame']
                         if (self.sect_dict['arduino'] != False) :
-                            self.ser=serial.Serial(port=self.sect_dict['arduino'],baudrate=9600,timeout=1)
+                            self.ser=serial.Serial(port=self.sect_dict['arduino'],baudrate=19200,timeout=1)
                             ## Need to sleep here for a couple of seconds to let the port settle down
                             time.sleep(2)
                         
@@ -203,6 +203,9 @@ class UtilitiesMode(game.Mode):
         def arduino_blank(self,display):
             self.log.info('Arduino - blank display '+str(display))
             self.write_arduino('W'+chr(display)+'    ')
+
+        def radar_spin_green(self):
+            self.write_arduino('S'+chr(0)+chr(255)+chr(0)+chr(255)+chr(0))
 
         def arduino_write_alpha(self,display,text):
             self.log.info('Arduino - write '+text+' to display '+str(display))

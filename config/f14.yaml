@@ -17,7 +17,7 @@ PRGame:
     machineType: wpc
     numBalls: 4
     # Should we attempt to initialise and use the Arduino?
-    arduino: false
+    arduino: COM3
 PRFlippers:
     - flipperLwR
     - flipperLwL
@@ -585,7 +585,96 @@ PRLamps:
     kill7blue:
         number: 206
         tags: B
-
+    1red:
+        number: 207
+        tags: R
+    1green:
+        number: 207
+        tags: G
+    1blue:
+        number: 207
+        tags: B
+    2red:
+        number: 208
+        tags: R
+    2green:
+        number: 208
+        tags: G
+    2blue:
+        number: 208
+        tags: B
+    3red:
+        number: 209
+        tags: R
+    3green:
+        number: 209
+        tags: G
+    3blue:
+        number: 209
+        tags: B
+    4red:
+        number: 210
+        tags: R
+    4green:
+        number: 210
+        tags: G
+    4blue:
+        number: 210
+        tags: B
+    5red:
+        number: 211
+        tags: R
+    5green:
+        number: 211
+        tags: G
+    5blue:
+        number: 211
+        tags: B
+    6red:
+        number: 212
+        tags: R
+    6green:
+        number: 212
+        tags: G
+    6blue:
+        number: 212
+        tags: B
+    resecueRred:
+        number: 213
+        tags: R
+    resecueRgreen:
+        number: 213
+        tags: G
+    resecueRblue:
+        number: 213
+        tags: B
+    resecueLred:
+        number: 214
+        tags: R
+    resecueLgreen:
+        number: 214
+        tags: G
+    resecueLblue:
+        number: 214
+        tags: B
+    ripred:
+        number: 215
+        tags: R
+    ripgreen:
+        number: 215
+        tags: G
+    ripblue:
+        number: 215
+        tags: B
+    releasered:
+        number: 216
+        tags: R
+    releasegreen:
+        number: 216
+        tags: G
+    releaseblue:
+        number: 216
+        tags: B
 
 PRBallSave:
 

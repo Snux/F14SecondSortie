@@ -40,13 +40,11 @@ int CODE_VERSION = 2;
 #include <Adafruit_NeoPixel.h>    // Neopixels
 
 // Which output pin the neopixels chain from
-#define PIN 12
-#define OUTPIN 7
 #define RGB_COUNT 16
 
 // Define the blinky parts 
-// 16 FAST RGB LEDs on pin 12
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(RGB_COUNT, 12, NEO_GRB + NEO_KHZ800);
+// 16 FAST RGB LEDs on pin 11
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(RGB_COUNT, 11, NEO_GRB + NEO_KHZ800);
 // A 16 pixel Neopixel ring for the radar
 Adafruit_NeoPixel radar = Adafruit_NeoPixel(16, 7);
 
@@ -94,7 +92,7 @@ void setup() {
   radar_green = true;
   radar_red = false;
   radar_blue = false;
-  radar_spin = false;
+  radar_spin = true;
 
   // Clear down the stored schedules, will switch all the lamps off
   byte i;
@@ -153,6 +151,11 @@ void loop() {
   byte byte1, byte2, byte3, byte4, byte5;
   char command;
   byte i,j;
+
+  radar_green = true;
+  radar_red = false;
+  radar_blue = false;
+  radar_spin = true;
 
   // Each time around, take a look at the serial (USB) buffer and see if we have at least 6 bytes waiting which is
   // enough for a command
@@ -287,7 +290,7 @@ void loop() {
       
     }
     // Throw a character back to the game, so it knows we're ready for some more
-    //Serial.write('X');
+    if (!isPinmame) Serial.write('X');
     }
    
    

@@ -372,7 +372,7 @@ class Trough(procgame.game.Mode):
 	def shooter_lane_switch_handler(self,sw):
             if self.autolaunch == True:
                 self.log.info("Shooter lane autolaunch = "+str(self.autolaunch))
-                self.game.coils.autoLaunch.pulse(100)
+                self.game.coils.autoLaunch.pulse(200)
                 self.autolaunch=False
 
         # The trough mode can handle the extra ball lamp

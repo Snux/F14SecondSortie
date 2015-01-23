@@ -53,8 +53,8 @@ class AttractMode(game.Mode):
 		#### Ensure GI is on ####
                 self.log.info("Enable GI")
 		self.game.utilities.enableGI()
-                self.seg7_1()
-                self.game.utilities.arduino_blank_all()
+                #self.seg7_1()
+                #self.game.utilities.arduino_blank_all()
 
         def seg7_1(self):
                 self.game.utilities.write_arduino('D'+chr(0)+chr(115)+chr(56)+chr(119)+chr(110))
@@ -77,7 +77,8 @@ class AttractMode(game.Mode):
 			lamp.disable()
 
 		self.game.lampctrl.stop_show()
-                self.game.utilities.arduino_blank_all()
+                #self.game.utilities.arduino_blank_all()
+                self.game.utilities.radar_spin_green()
 
                 #self.game.utilities.write_arduino('D'+chr(0)+chr(0)+chr(0)+chr(0)+chr(0))
 
