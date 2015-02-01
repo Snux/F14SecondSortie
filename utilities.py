@@ -191,11 +191,11 @@ class UtilitiesMode(game.Mode):
                         self.ser.write(servalue)
                     else:
                         self.log.info('Length error')
-                    if len(self.ser.read()) == 1:
-                        self.log.info('Got handshake')
-                    else:
-                        self.log.info('Handshake failed - disable Arduino')
-                        self.sect_dict['arduino'] = False
+                    #if len(self.ser.read()) == 1:
+                    #    self.log.info('Got handshake')
+                    #else:
+                    #    self.log.info('Handshake failed - disable Arduino')
+                    #    self.sect_dict['arduino'] = False
 
         def arduino_start_count(self,display,direction,limit,ticks):
             self.write_arduino('C'+chr(display)+chr(direction)+chr(limit/256)+chr(limit % 256)+chr(ticks))

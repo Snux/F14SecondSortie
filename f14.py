@@ -227,6 +227,7 @@ class F14SecondSortie(game.BasicGame):
 		self.lampctrl.register_show('f14fireboth', game_lampshows + 'f14fireboth.lampshow')
 		self.lampctrlflash.register_show('topstrobe', game_lampshows + 'topstrobe.lampshow')
                 self.lampctrl.register_show('wipeleftright', game_lampshows + 'wipeleftright.lampshow')
+                self.lampctrl.register_show('test', game_lampshows + 'test.lampshow')
 
         def RegisterAnimations(self):
 

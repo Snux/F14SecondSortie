@@ -135,7 +135,7 @@ class Trough(procgame.game.Mode):
 
 	def debug(self):
 		self.log.info("Play "+str(self.num_balls_in_play) + ", locked " + str(self.num_balls_locked)+ ", trough " + str(self.num_balls())+", player locks "+str(self.game.utilities.get_player_stats('balls_locked')))
-		self.delay(name='launch', event_type=None, delay=1.0, handler=self.debug)
+		self.delay(name='launch', event_type=None, delay=3.0, handler=self.debug)
 
 	def state_str(self):
 		return '%d/%d balls' % (self.num_balls(), self.game.num_balls_total)

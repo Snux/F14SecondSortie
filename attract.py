@@ -43,8 +43,8 @@ class AttractMode(game.Mode):
 		
 		#### Start Attract Mode Lamps ####
                 self.log.info("Start Lamps")
-		self.startAttractLamps2()
-		#self.game.lampctrl.play_show('attract1', repeat=True)
+		#self.startAttractLamps2()
+		self.game.lampctrl.play_show('test', repeat=True)
 
 		#### Create and Set Display Content ####
                 self.log.info("Start Content")
