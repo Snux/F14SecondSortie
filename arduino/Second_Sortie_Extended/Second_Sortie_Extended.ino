@@ -271,12 +271,14 @@ void loop() {
         schedule = schedule | byte4;
         schedule <<= 8;
         schedule = schedule | byte5;
-        red_stored[byte1] = 0;
-        green_stored[byte1] = 0;
-        blue_stored[byte1] = 0;
+        
         // If the lamp number is 20 or higher, then it's a directive for the (lamp-20) but should be processed immediately
         // in which case we update both the stored schedule and the currently executing schedule
         if (byte1 >=20) {isPinmame = true; byte1 = byte1 - 20; red[byte1]=0;green[byte1]=0;blue[byte1]=0;} 
+
+        red_stored[byte1] = 0;
+        green_stored[byte1] = 0;
+        blue_stored[byte1] = 0;
 
         if (command == 'R' || command == 'W' || command == 'Y' || command == 'M') {red_stored[byte1]=schedule; if (isPinmame) red[byte1]=schedule;}
         if (command == 'G' || command == 'W' || command == 'Y' || command == 'C') {green_stored[byte1]=schedule; if (isPinmame) green[byte1]=schedule;}
@@ -330,11 +332,15 @@ void scheduleProcess() {
   byte i;
   for (i=0;i<RGB_COUNT;i++) {
     strip.setPixelColor(i,255*(red[i] & 0x1),255*(green[i] & 0x1),255 * (blue[i] & 0x1));
-    red[i] >>= 1;
-    green[i] >>= 1;
-    blue[i] >>= 1;
+    if (!isPinmame) {
+     red[i] >>= 1;
+     green[i] >>= 1;
+     blue[i] >>= 1; }
   } 
-  sched_reset >>= 1;
+
+  // if we're not running in Pinmame, then we push the "schedule" timer along
+  if (!isPinmame) sched_reset >>= 1;
+
   // Push the result to the pixel chain
   strip.show();
   
@@ -357,7 +363,7 @@ void scheduleProcess() {
   
   // If we've shifted the sched_reset all the way out, we've done the 32 schedule bits
   // and need to set them up again
-  if (sched_reset==0 && !isPinmame) {
+  if (sched_reset==0) {
     for (i=0;i<RGB_COUNT;i++) {
       red[i]=red_stored[i];
       green[i]=green_stored[i];
