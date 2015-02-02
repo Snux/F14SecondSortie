@@ -19,12 +19,10 @@ PRGame:
     # Should we attempt to initialise and use the Arduino?
     arduino: COM3
 PRFlippers:
-    - flipperLwR
-    - flipperLwL
 PRBumpers:
     - jetBumper
 PRKickbacks:
-    rescue:
+    #rescue:
 PRPinmame:
     # This section is specific to running the P-ROC via Pinmame.
 
@@ -46,11 +44,14 @@ PRPinmame:
     #   0 or 1 - set to 1 if your machine has 2 lines of 16 character alphanumeric displays.
     #   This will adapt the code to properly handle the various display types in Sys11 machines (and a couple of WPC)
 
-    keyboard: on
+    keyboard: off
     autoPatterDetection: off
     s11CreditDisplay: 0
     s11BallDisplay: 0
     doubleAlpha: 0
+    startButtonHoldTime: 2000
+    BOPHelmetFile: c:\pinmame\helmet_lightshow.txt
+    BOPTwinkle: 110
 PRSwitches:
     # **** Format ****
     # name:

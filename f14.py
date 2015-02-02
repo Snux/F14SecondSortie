@@ -58,6 +58,7 @@ from trough import *
 from kickback import *
 from info import *
 from service import *
+from exitgame import *
 
 # Used to put commas in the score.
 locale.setlocale(locale.LC_ALL, "")
@@ -145,6 +146,7 @@ class F14SecondSortie(game.BasicGame):
                 self.kill7mission = Kill7Mode(self,3)
 		self.ballsaver_mode = BallSaver(self,1)
                 self.kickback_mode = KickbackMode(self,1)
+                self.exitgame_mode = ExitGameMode(self,1)
 		#self.tilt = Tilt(self,200)
 		self.bonus_mode = Bonus(self,102)
 		self.multiball_mode = Multiball(self,101)
@@ -153,6 +155,7 @@ class F14SecondSortie(game.BasicGame):
                 self.service_mode = ServiceMode(self,300,font_named("Font07x5.dmd"),font_named("font_8x6_bold.dmd"),[])
 
 		#### Initial Mode Queue ####
+                self.modes.add(self.exitgame_mode)
 		self.modes.add(self.utilities)
 		self.modes.add(self.trough)
 		self.modes.add(self.base_mode)

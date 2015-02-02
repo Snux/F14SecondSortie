@@ -52,6 +52,9 @@ Standard:
     options: [1,10]
     increments: 1
     default: 2
+  'Exit on flippers + start':
+    options: [no,yes]
+    default: yes
 Sound:
   'Initial volume':
     options: [0.1,1.0]
