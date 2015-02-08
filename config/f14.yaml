@@ -20,9 +20,7 @@ PRGame:
     arduino: COM3
 PRFlippers:
 PRBumpers:
-    - jetBumper
 PRKickbacks:
-    #rescue:
 PRPinmame:
     # This section is specific to running the P-ROC via Pinmame.
 
@@ -50,8 +48,8 @@ PRPinmame:
     s11BallDisplay: 0
     doubleAlpha: 0
     startButtonHoldTime: 2000
-    BOPHelmetFile: c:\pinmame\helmet_lightshow.txt
-    BOPTwinkle: 110
+    #BOPHelmetFile: c:\pinmame\helmet_lightshow.txt
+    #BOPTwinkle: 110
 PRSwitches:
     # **** Format ****
     # name:
@@ -358,24 +356,31 @@ PRLamps:
     kill1:
         number: L21
         label: 'Alpha Kill'
+        rgb_equiv: 200
     kill2:
         number: L22
         label: 'Bravo Kill'
+        rgb_equiv: 201
     kill3:
         number: L23
         label: 'Charlie Kill'
+        rgb_equiv: 202
     kill4:
         number: L24
         label: 'Delta Kill'
+        rgb_equiv: 203
     kill5:
         number: L25
         label: 'Echo Kill'
+        rgb_equiv: 204
     kill6:
         number: L26
         label: 'Fox Kill'
+        rgb_equiv: 205
     kill7:
         number: L27
         label: 'Golf Kill'
+        rgb_equiv: 206
     insurance:
         number: L28
         label: 'Insurance'
@@ -454,21 +459,27 @@ PRLamps:
     target3:
         number: L61
         label: 'Target - 3'
+        rgb_equiv: 209
     target2:
         number: L62
         label: 'Target - 2'
+        rgb_equiv: 208
     target1:
         number: L63
         label: 'Target - 1'
+        rgb_equiv: 207
     target4:
         number: L64
         label: 'Target - 4'
+        rgb_equiv: 210
     target5:
         number: L65
         label: 'Target - 5'
+        rgb_equiv: 211
     target6:
         number: L66
         label: 'Target - 6'
+        rgb_equiv: 212
     release:
         number: L67
         label: 'Release'

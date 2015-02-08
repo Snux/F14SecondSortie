@@ -104,7 +104,7 @@ class Trough(procgame.game.Mode):
 			#self.add_switch_handler(name=switch, event_type='active', delay=None, handler=self.early_save_switch_handler)
 
 		# Install outhole switch handler.
-		self.add_switch_handler(name=self.outhole_switchname, event_type='active', delay=0, handler=self.outhole_switch_handler)
+		self.add_switch_handler(name=self.outhole_switchname, event_type='active', delay=0.75, handler=self.outhole_switch_handler)
 
                 # Install shooter lane handler
                 self.add_switch_handler(name=self.shooter_lane_switchname, event_type='active', delay=0.75, handler=self.shooter_lane_switch_handler)
@@ -154,6 +154,10 @@ class Trough(procgame.game.Mode):
 
 		#add handler for outhole
 	def outhole_switch_handler(self,sw):
+                # cancel the existing recheck if there is one, sometimes the ball can bounce 
+                # back to the outhole 
+                
+                self.cancel_delayed('outhole_recheck')
 		self.log.info('Outhole switch handler')
 
                 # Kick the ball into the trough
@@ -165,7 +169,7 @@ class Trough(procgame.game.Mode):
         # Called one second after the outhole is handled.  Will call the handler again if there is still
         # a ball in the outhole, otherwise will continue with rest of outhole processing
         def outhole_recheck(self):
-            if self.game.switches.outhole.is_closed() == True:
+            if self.game.switches.outhole.is_active():
                 self.outhole_switch_handler('Dummy')
             else:
                 self.log.info('Outhole process check')
