@@ -40,6 +40,7 @@ from time import strftime
 import procgame.dmd
 from procgame.dmd import font_named
 
+
 ###################################
 # MODE IMPORTS
 ###################################
@@ -130,6 +131,11 @@ class F14SecondSortie(game.BasicGame):
 		self.revision = "2.0.0"
 
 		#### Mode Definitions ####
+                OSC_closed_switches = []
+        
+                self.osc = modes.OSC_Mode(game=self, priority=1, closed_switches=OSC_closed_switches)
+                self.modes.add(self.osc)
+
 		self.utilities = UtilitiesMode(self,100)
 		self.trough = Trough(self,0)
                 self.info = Info(self,200)

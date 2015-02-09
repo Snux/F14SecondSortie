@@ -166,7 +166,7 @@ class BaseGameMode(game.Mode):
                         if self.game.utilities.get_player_stats(switch.name):
                             self.game.lamps[switch.name].enable()
                         else:
-                            self.game.lamps[switch.name].disable()
+                            self.game.lamps[switch.name].schedule(schedule=0xF0F0F0F0)
             if self.game.utilities.get_player_stats('extra_ball_lit') == True:
                 self.game.lamps.extraBall.schedule(schedule=0xFF00FF00)
             else:
