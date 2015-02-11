@@ -347,6 +347,7 @@ PRLamps:
     kill:
         number: L16
         label: 'Centre Kill'
+        rgb_equiv: 207
     rightRescue:
         number: L17
         label: 'Right Rescue'
@@ -459,30 +460,31 @@ PRLamps:
     target3:
         number: L61
         label: 'Target - 3'
-        rgb_equiv: 209
+        rgb_equiv: 212
     target2:
         number: L62
         label: 'Target - 2'
-        rgb_equiv: 208
+        rgb_equiv: 213
     target1:
         number: L63
         label: 'Target - 1'
-        rgb_equiv: 207
+        rgb_equiv: 214
     target4:
         number: L64
         label: 'Target - 4'
-        rgb_equiv: 210
+        rgb_equiv: 211
     target5:
         number: L65
         label: 'Target - 5'
-        rgb_equiv: 211
+        rgb_equiv: 208
     target6:
         number: L66
         label: 'Target - 6'
-        rgb_equiv: 212
+        rgb_equiv: 210
     release:
         number: L67
         label: 'Release'
+        rgb_equiv: 209
     lockOn:
         number: L68
         label: 'Lock On'
@@ -531,6 +533,7 @@ PRLamps:
     ripOff:
         number: L87
         label: 'Rip Off'
+        rgb_equiv: 215
     extraBall:
         number: L88
         label: 'Extra Ball'
@@ -619,58 +622,58 @@ PRLamps:
         number: 206
         tags: W
     1red:
-        number: 207
+        number: 214
         tags: R
     1green:
-        number: 207
+        number: 214
         tags: G
     1blue:
-        number: 207
+        number: 214
         tags: B
     2red:
-        number: 208
+        number: 213
         tags: R
     2green:
-        number: 208
+        number: 213
         tags: G
     2blue:
-        number: 208
+        number: 213
         tags: B
     3red:
-        number: 209
+        number: 212
         tags: R
     3green:
-        number: 209
+        number: 212
         tags: G
     3blue:
-        number: 209
+        number: 212
         tags: B
     4red:
-        number: 210
+        number: 211
         tags: R
     4green:
-        number: 210
+        number: 211
         tags: G
     4blue:
-        number: 210
+        number: 211
         tags: B
     5red:
-        number: 211
+        number: 208
         tags: R
     5green:
-        number: 211
+        number: 208
         tags: G
     5blue:
-        number: 211
+        number: 208
         tags: B
     6red:
-        number: 212
+        number: 210
         tags: R
     6green:
-        number: 212
+        number: 210
         tags: G
     6blue:
-        number: 212
+        number: 210
         tags: B
     resecueRred:
         number: 213
@@ -700,13 +703,13 @@ PRLamps:
         number: 215
         tags: B
     releasered:
-        number: 216
+        number: 209
         tags: R
     releasegreen:
-        number: 216
+        number: 209
         tags: G
     releaseblue:
-        number: 216
+        number: 209
         tags: B
 
 PRBallSave:
