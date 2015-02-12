@@ -558,7 +558,7 @@ PRLamps:
     kill2blue:
         number: 201
         tags: B
-    kill2wbite:
+    kill2white:
         number: 201
         tags: W
     kill3red:
@@ -567,7 +567,7 @@ PRLamps:
     kill3green:
         number: 202
         tags: G
-    kill3wbite:
+    kill3white:
         number: 202
         tags: W
     kill3blue:
@@ -582,7 +582,7 @@ PRLamps:
     kill4blue:
         number: 203
         tags: B
-    kill4wbite:
+    kill4white:
         number: 203
         tags: W
     kill5red:
@@ -594,7 +594,7 @@ PRLamps:
     kill5blue:
         number: 204
         tags: B
-    kill5wbite:
+    kill5white:
         number: 204
         tags: W
     kill6red:
@@ -606,7 +606,7 @@ PRLamps:
     kill6blue:
         number: 205
         tags: B
-    kill6wbite:
+    kill6white:
         number: 205
         tags: W
     kill7red:
@@ -618,7 +618,7 @@ PRLamps:
     kill7blue:
         number: 206
         tags: B
-    kill7wbite:
+    kill7white:
         number: 206
         tags: W
     1red:
