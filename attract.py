@@ -39,12 +39,25 @@ class AttractMode(game.Mode):
                         #setup logging
                         self.log = logging.getLogger('f14.attract')
 
+        def change_lampshow(self):
+                self.game.lampctrl.stop_show()
+                if self.show == 1:
+                    self.game.lampctrl.play_show('pulse', repeat=True)
+                    self.show = 2
+                else:
+                    self.game.lampctrl.play_show('rotate', repeat=True)
+                    self.show = 1
+                    
+                self.delay(name='lampshow', event_type=None, delay=10, handler=self.change_lampshow)
+		
 	def mode_started(self):
 		
 		#### Start Attract Mode Lamps ####
                 self.log.info("Start Lamps")
 		#self.startAttractLamps2()
-		self.game.lampctrl.play_show('test', repeat=True)
+		#self.game.lampctrl.play_show('pulse', repeat=True)
+                self.show = 1
+                self.change_lampshow()
 
 		#### Create and Set Display Content ####
                 self.log.info("Start Content")

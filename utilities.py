@@ -60,7 +60,7 @@ class UtilitiesMode(game.Mode):
                         if (self.sect_dict['arduino'] != False) :
                             self.ser=serial.Serial(port=self.sect_dict['arduino'],baudrate=19200,timeout=1)
                             ## Need to sleep here for a couple of seconds to let the port settle down
-                            time.sleep(2)
+                            time.sleep(4)
                         
 
 	
@@ -186,7 +186,7 @@ class UtilitiesMode(game.Mode):
         ######################
         def write_arduino(self,servalue):
                 if (self.sect_dict['arduino'] != False):
-                    
+                    #self.log.info('Arduino send')
                     if len(servalue) == 6:
                         self.ser.write(servalue)
                     else:
@@ -237,6 +237,7 @@ class UtilitiesMode(game.Mode):
                 self.game.effects.flickerOn(lamp='shootAgain')
                 self.game.effects.flickerOn(lamp='shootAgain', duration=3.0)
                 """
+                
                 self.game.lamps[lamp].schedule(schedule=schedule, cycle_seconds=duration, now=True)
                 self.delay(name=lamp+"on",event_type=None,delay=duration,handler=self.game.lamps[lamp].enable)
 

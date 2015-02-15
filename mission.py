@@ -131,35 +131,35 @@ class MissionMode(game.Mode):
                     status=self.game.utilities.get_player_stats(mission);
                     if status == -1:
                         self.log.info("- setting "+mission+" to disabled")
-                        self.game.lamps[mission].disable()
+                        #self.game.lamps[mission].disable()
                         self.game.lamps[mission+'red'].disable()
-                        self.game.lamps[mission+'green'].disable()
-                        self.game.lamps[mission+'blue'].disable()
+                        #self.game.lamps[mission+'green'].disable()
+                        #self.game.lamps[mission+'blue'].disable()
                     elif status == 0:
                         self.log.info("- setting "+mission+" to available")
-                        self.game.lamps[mission].schedule(schedule=0xFF00FF00)
-                        self.game.lamps[mission+'blue'].schedule(schedule=0xFF00FF00)
-                        self.game.lamps[mission+'red'].disable()
-                        self.game.lamps[mission+'green'].disable()
+                        #self.game.lamps[mission].schedule(schedule=0xFF00FF00)
+                        self.game.lamps[mission+'blue'].schedule(schedule=0xFF00FF00,now=True)
+                        #self.game.lamps[mission+'red'].disable()
+                        #self.game.lamps[mission+'green'].disable()
                     elif status == 1:
                         self.log.info("- setting "+mission+" to in progress")
-                        self.game.lamps[mission].schedule(schedule=0xFF00FF00)
+                        #self.game.lamps[mission].schedule(schedule=0xFF00FF00)
                         self.game.lamps[mission+'red'].schedule(schedule=0xFF00FF00)
-                        self.game.lamps[mission+'green'].disable()
-                        self.game.lamps[mission+'blue'].disable()
+                        #self.game.lamps[mission+'green'].disable()
+                        #self.game.lamps[mission+'blue'].disable()
                     else:
                         self.log.info("- setting "+mission+" to complete")
                         self.game.lamps[mission].enable()
-                        self.game.lamps[mission+'red'].disable()
+                        #self.game.lamps[mission+'red'].disable()
                         self.game.lamps[mission+'green'].enable()
-                        self.game.lamps[mission+'blue'].disable()
+                        #self.game.lamps[mission+'blue'].disable()
 
                 # If there is a mission waiting to be played, flash the release lamp
                 if self.game.utilities.get_player_stats('next_mission') != 'None':
-                    self.game.lamps.release.schedule(schedule=0xF0F0F0F0)
+                    self.game.lamps.releasegreen.schedule(schedule=0xF0F0F0F0)
                     self.log.info(" - next mission to play is " +self.game.utilities.get_player_stats('next_mission'))
                 else:
-                    self.game.lamps.release.disable()
+                    self.game.lamps.releasegreen.disable()
 
 
 

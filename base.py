@@ -159,9 +159,9 @@ class BaseGameMode(game.Mode):
             for switch in self.game.switches:
                     if switch.name.find('target', 0) != -1:
                         if self.game.utilities.get_player_stats(switch.name):
-                            self.game.lamps[switch.name].enable()
+                            self.game.lamps[switch.name+'green'].enable()
                         else:
-                            self.game.lamps[switch.name].disable()
+                            self.game.lamps[switch.name+'green'].disable()
                     if switch.name in self.game.tomcatTargetIndex:
                         if self.game.utilities.get_player_stats(switch.name):
                             self.game.lamps[switch.name].enable()
@@ -335,7 +335,8 @@ class BaseGameMode(game.Mode):
             # otherwise switch the lamp on, note that we hit it and increment the counter
             else:
                 self.game.utilities.score(1000)
-                self.game.utilities.flickerOn(sw.name)   # switch on the lamp at the target
+                self.log.info('target '+sw.name)
+                self.game.utilities.flickerOn(sw.name+'red')   # switch on the lamp at the target
                 self.game.utilities.set_player_stats(sw.name,True)
                 completed = self.game.utilities.get_player_stats('target1-6_completed') + 1
                 
@@ -343,7 +344,7 @@ class BaseGameMode(game.Mode):
                 # If we've lit all 6, need to let the mission handler know.
                 if completed == 6:
                     self.game.mission.completed1_6()
-
+                    
 	def sw_jetBumper_active(self, sw):
 		#self.game.sound.play('jet')
 		self.game.utilities.score(self.game.utilities.get_player_stats('bumper_score'))

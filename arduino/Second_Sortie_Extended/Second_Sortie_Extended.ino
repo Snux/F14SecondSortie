@@ -58,7 +58,7 @@ Adafruit_7segment numeric4[2] = Adafruit_7segment();
 volatile unsigned long red[RGB_COUNT];
 volatile unsigned long green[RGB_COUNT];
 volatile unsigned long blue[RGB_COUNT];
-volatile unsigned long sched_reset=0xFFFFFFFF;
+volatile unsigned long lamp_index[RGB_COUNT];
 
 // Stored lamp schedules coming in from USB
 volatile unsigned long red_stored[RGB_COUNT];
@@ -80,7 +80,6 @@ volatile byte count_ticks_counter[6],   // If we're counting, how many ticks on 
 volatile byte count_ticks;              // 1/32 second counter, updated by hardware timer interrupt
 volatile uint8_t  offset   = 0; // position of radar spin
 
-boolean isPinmame = false;
 
 
 void setup() {
@@ -100,6 +99,7 @@ void setup() {
     red_stored[i]=0;
     green_stored[i]=0;
     blue_stored[i]=0;
+    lamp_index[i]=0x80000000;
   }
 
   // Also set all the displays to non-counting, reset the values
@@ -151,11 +151,12 @@ void loop() {
   byte byte1, byte2, byte3, byte4, byte5;
   char command;
   byte i,j;
+  boolean process_now = false;
 
-  radar_green = true;
-  radar_red = false;
-  radar_blue = false;
-  radar_spin = true;
+//  radar_green = true;
+//  radar_red = false;
+//  radar_blue = false;
+//  radar_spin = true;
 
   // Each time around, take a look at the serial (USB) buffer and see if we have at least 6 bytes waiting which is
   // enough for a command
@@ -264,6 +265,10 @@ void loop() {
       case 'C':  //Cyan
       case 'M':  //Magenta
       case 'Y':  //Yellow
+
+        
+      //schedule = byte2 << 24 | ((byte3 << 16) | ((byte4 << 8) | byte5));
+
         schedule = byte2;
         schedule <<= 8;
         schedule = schedule | byte3;
@@ -272,17 +277,54 @@ void loop() {
         schedule <<= 8;
         schedule = schedule | byte5;
         
-        // If the lamp number is 20 or higher, then it's a directive for the (lamp-20) but should be processed immediately
-        // in which case we update both the stored schedule and the currently executing schedule
-        if (byte1 >=20) {isPinmame = true; byte1 = byte1 - 20; red[byte1]=0;green[byte1]=0;blue[byte1]=0;} 
-
-        red_stored[byte1] = 0;
-        green_stored[byte1] = 0;
-        blue_stored[byte1] = 0;
-
-        if (command == 'R' || command == 'W' || command == 'Y' || command == 'M') {red_stored[byte1]=schedule; if (isPinmame) red[byte1]=schedule;}
-        if (command == 'G' || command == 'W' || command == 'Y' || command == 'C') {green_stored[byte1]=schedule; if (isPinmame) green[byte1]=schedule;}
-        if (command == 'B' || command == 'W' || command == 'M' || command == 'C') {blue_stored[byte1]=schedule; if (isPinmame) blue[byte1]=schedule;}
+        // Reset the schedule index for this lamp back to the start
+        lamp_index[byte1]=0x1;      
+        
+        switch(command) {
+            case 'R':
+                red[byte1] = schedule;
+                green[byte1]=0;
+                blue[byte1]=0;
+                break;
+                
+            case 'G':
+                green[byte1] = schedule;
+                red[byte1]=0;
+                blue[byte1]=0;
+                break;
+            
+            case 'B':
+                blue[byte1] = schedule;
+                red[byte1]=0;
+                green[byte1]=0;
+                break;
+            
+            case 'Y':
+                red[byte1] = schedule;
+                green[byte1] = schedule;
+                blue[byte1]=0;
+                break;
+            
+            case 'M':
+                red[byte1] = schedule;
+                blue[byte1] = schedule;
+                green[byte1]=0;
+                break;
+            
+            case 'C':
+                green[byte1] = schedule;
+                blue[byte1] = schedule;
+                red[byte1]=0;
+                break;
+            
+            case 'W':
+                red[byte1] = schedule;
+                green[byte1] = schedule;
+                blue[byte1] = schedule;
+                break;
+                
+        }
+        
         break;
 
       // PC is queerying the value of a counter - sent it back up the serial line in 2 bytes
@@ -292,7 +334,7 @@ void loop() {
       
     }
     // Throw a character back to the game, so it knows we're ready for some more
-    if (!isPinmame) Serial.write('X');
+    //if (!isPinmame) Serial.write('X');
     }
    
    
@@ -322,24 +364,20 @@ void loop() {
 
 // Routine called by the hardware timer interrupt
 void scheduleProcess() {
-  
+  static byte i;
   // Increment the tick counter
   count_ticks_counter[0] ++;
   count_ticks_counter[1] ++;  
   count_ticks ++;
-  // Grab the current (right most) bit of each schedule and send to the relevant pixel
-  // then shift each schedule right
-  byte i;
+  
+  
+  // Grab the current bit of each schedule and send to the relevant pixel
   for (i=0;i<RGB_COUNT;i++) {
-    strip.setPixelColor(i,255*(red[i] & 0x1),255*(green[i] & 0x1),255 * (blue[i] & 0x1));
-    if (!isPinmame) {
-     red[i] >>= 1;
-     green[i] >>= 1;
-     blue[i] >>= 1; }
+     strip.setPixelColor(i,255*((red[i] & lamp_index[i])!=0),255*((green[i] & lamp_index[i]) !=0),255 * ((blue[i] & lamp_index[i]) !=0));
+     // Move the current bit along for this lamp
+     lamp_index[i] <<= 1;
+     if (lamp_index[i] > 0x80000000) lamp_index[i] = 0x1;
   } 
-
-  // if we're not running in Pinmame, then we push the "schedule" timer along
-  if (!isPinmame) sched_reset >>= 1;
 
   // Push the result to the pixel chain
   strip.show();
@@ -355,23 +393,7 @@ void scheduleProcess() {
         radar.setPixelColor(   (offset+i)%16, 255 * radar_red,255*radar_green,255*radar_blue);
     }
     radar.show();
-  
-
-}
-
- 
-  
-  // If we've shifted the sched_reset all the way out, we've done the 32 schedule bits
-  // and need to set them up again
-  if (sched_reset==0) {
-    for (i=0;i<RGB_COUNT;i++) {
-      red[i]=red_stored[i];
-      green[i]=green_stored[i];
-      blue[i]=blue_stored[i];
-    }
-    sched_reset=0xFFFFFFFF;
   }
-  
 }  
 
 // Throw something on the display to start with
