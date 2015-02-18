@@ -60,11 +60,6 @@ volatile unsigned long green[RGB_COUNT];
 volatile unsigned long blue[RGB_COUNT];
 volatile unsigned long lamp_index[RGB_COUNT];
 
-// Stored lamp schedules coming in from USB
-volatile unsigned long red_stored[RGB_COUNT];
-volatile unsigned long green_stored[RGB_COUNT];
-volatile unsigned long blue_stored[RGB_COUNT];
-
 // Is the radar insert green or red (otherwise off) and is it spinning?
 volatile boolean radar_green, radar_red, radar_blue,radar_spin;
 
@@ -87,19 +82,19 @@ void setup() {
   // Initialise the tick counter
   count_ticks = 0;
 
-  // Initial state for the radar insert - green and not spinning
+  // Initial state for the radar insert - green and spinning
   radar_green = true;
   radar_red = false;
   radar_blue = false;
   radar_spin = true;
 
-  // Clear down the stored schedules, will switch all the lamps off
+  // Clear down the schedules, will switch all the lamps off
   byte i;
   for (i=0;i<RGB_COUNT-1;i++) {
-    red_stored[i]=0;
-    green_stored[i]=0;
-    blue_stored[i]=0;
-    lamp_index[i]=0x80000000;
+    red[i]=0;
+    green[i]=0;
+    blue[i]=0;
+    lamp_index[i]=0x1;
   }
 
   // Also set all the displays to non-counting, reset the values
@@ -151,13 +146,7 @@ void loop() {
   byte byte1, byte2, byte3, byte4, byte5;
   char command;
   byte i,j;
-  boolean process_now = false;
-
-//  radar_green = true;
-//  radar_red = false;
-//  radar_blue = false;
-//  radar_spin = true;
-
+  
   // Each time around, take a look at the serial (USB) buffer and see if we have at least 6 bytes waiting which is
   // enough for a command
   if (Serial.available() >= 6) {
@@ -267,8 +256,7 @@ void loop() {
       case 'Y':  //Yellow
 
         
-      //schedule = byte2 << 24 | ((byte3 << 16) | ((byte4 << 8) | byte5));
-
+  
         schedule = byte2;
         schedule <<= 8;
         schedule = schedule | byte3;
