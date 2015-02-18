@@ -321,8 +321,6 @@ void loop() {
         break;
       
     }
-    // Throw a character back to the game, so it knows we're ready for some more
-    //if (!isPinmame) Serial.write('X');
     }
    
    
