@@ -23,9 +23,9 @@ Adafruit_NeoPixel inserts = Adafruit_NeoPixel(NUM_LEDS_INSERTS,DATA_PIN_INSERTS,
 Adafruit_NeoPixel gi = Adafruit_NeoPixel(NUM_LEDS_GI,DATA_PIN_GI,NEO_RGB + NEO_KHZ800);
 
 // Current state of lamp schedules
-volatile unsigned long sched[NUM_LEDS_INSERTS+1];
-volatile unsigned long colour[NUM_LEDS_INSERTS+1];
-volatile unsigned long lamp_index[NUM_LEDS_INSERTS+1];
+volatile unsigned long sched[NUM_LEDS_INSERTS];
+volatile unsigned long colour[NUM_LEDS_INSERTS];
+volatile unsigned long lamp_index[NUM_LEDS_INSERTS];
 
 // Holds data for the counters when used.
 
@@ -37,7 +37,7 @@ void setup() {
 
   // Clear down the schedules, will switch all the lamps off
   byte i;
-  for (i=0;i<=NUM_LEDS_INSERTS;i++) {
+  for (i=0;i<NUM_LEDS_INSERTS;i++) {
     colour[i]=0;
     sched[i]=0;
     lamp_index[i]=0x1;
@@ -130,6 +130,7 @@ void loop() {
         // whole GI string to that colour
         if (byte1 == NUM_LEDS_INSERTS) {
             for (i=0;i<NUM_LEDS_GI;i++) {
+              // If there was something in the schedule, switch the lamps on to the colour given, otherwise all off
               if (schedule) 
                  gi.setPixelColor(i,this_colour);
               else 
