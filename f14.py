@@ -238,6 +238,7 @@ class F14SecondSortie(game.BasicGame):
                 self.lampctrl.register_show('wipeleftright', game_lampshows + 'wipeleftright.lampshow')
                 self.lampctrl.register_show('pulse', game_lampshows + 'attract1.lampshow')
                 self.lampctrl.register_show('rotate', game_lampshows + 'attract2.lampshow')
+                self.lampctrl.register_show('wipeupdown', game_lampshows + 'WipeUpDown.lampshow')
 
         def RegisterAnimations(self):
 

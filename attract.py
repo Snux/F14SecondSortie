@@ -40,15 +40,24 @@ class AttractMode(game.Mode):
                         self.log = logging.getLogger('f14.attract')
 
         def change_lampshow(self):
+                
                 self.game.lampctrl.stop_show()
                 if self.show == 1:
+                    self.game.lamps.gired.schedule(schedule=0xFFFFFFFF,now=True)
                     self.game.lampctrl.play_show('pulse', repeat=True)
                     self.show = 2
-                else:
+                elif self.show == 2:
                     self.game.lampctrl.play_show('rotate', repeat=True)
+                    self.game.lamps.gigreen.schedule(schedule=0xFFFFFFFF,now=True)
+                    self.show = 3
+                else: 
+                    self.game.lampctrl.play_show('wipeupdown', repeat=True)
+                    self.game.lamps.giblue.schedule(schedule=0xFFFFFFFF,now=True)
                     self.show = 1
                     
-                self.delay(name='lampshow', event_type=None, delay=10, handler=self.change_lampshow)
+                    
+                    
+                self.delay(name='lampshow', event_type=None, delay=12, handler=self.change_lampshow)
 		
 	def mode_started(self):
 		
@@ -86,12 +95,12 @@ class AttractMode(game.Mode):
 	def mode_stopped(self):
                 self.log.info("Stop mode")
 		#### Disable All Lamps ####
-		for lamp in self.game.lamps:
-			lamp.disable()
+		#for lamp in self.game.lamps:
+	#		lamp.disable()
 
 		self.game.lampctrl.stop_show()
                 #self.game.utilities.arduino_blank_all()
-                self.game.utilities.radar_spin_green()
+                #self.game.utilities.radar_spin_green()
 
                 #self.game.utilities.write_arduino('D'+chr(0)+chr(0)+chr(0)+chr(0)+chr(0))
 

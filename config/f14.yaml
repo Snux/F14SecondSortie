@@ -714,6 +714,16 @@ PRLamps:
     releaseblue:
         number: 209
         tags: B
+    giblue:
+        number: 216
+        tags: B
+    gired:
+        number: 216
+        tags: R
+    gigreen:
+        number: 216
+        tags: G
+    
 
 PRBallSave:
 
