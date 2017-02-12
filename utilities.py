@@ -353,7 +353,7 @@ class UtilitiesMode(game.Mode):
 
     def disableAllLamps(self, include_GI=False):
         # turn off all the lamps
-        for lamp in [l for l in self.game.lamps if not isinstance(l, wsRGB)]:
+        for lamp in [l for l in self.game.lamps if not hasattr(l, 'color')]:
             lamp.disable()
         if (hasattr(self.game, 'wsRGBs')):
             if (include_GI):

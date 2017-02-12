@@ -780,5 +780,9 @@ WsRGBs:
     ALL_GI:
         number: A128
         default_colour: W
+    ALL_INSERTS:
+        number: A254
+    ALL_LAMPS:
+        number: A255
     
 
