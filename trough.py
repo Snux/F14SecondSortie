@@ -161,7 +161,7 @@ class Trough(procgame.game.Mode):
 		self.log.info('Outhole switch handler')
 
                 # Kick the ball into the trough
-		self.game.utilities.acCoilPulse('outholeKicker_flasher1')
+		self.game.utilities.acCoilPulse('outholeKicker_flasher1',pulsetime=30)
 
                 # Schedule a call for one second from now to let things settle
                 self.delay('outhole_recheck',delay=1.5,handler=self.outhole_recheck)

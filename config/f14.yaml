@@ -17,7 +17,8 @@ PRGame:
     machineType: wpc
     numBalls: 4
     # Should we attempt to initialise and use the Arduino?
-    arduino: COM3
+    arduino: com17
+    arduino_alpha: False
 PRFlippers:
 PRBumpers:
 PRKickbacks:
@@ -537,241 +538,247 @@ PRLamps:
     extraBall:
         number: L88
         label: 'Extra Ball'
+
+WsRGBs:
     kill1red:
-        number: 200
-        tags: R
+        number: A0
+        default_color: R
     kill1green:
-        number: 200
-        tags: G
+        number: A0
+        default_color: G
     kill1blue:
-        number: 200
-        tags: B
+        number: A0
+        default_color: B
     kill1white:
-        number: 200
-        tags: W
+        number: A0
+        default_color: W
     kill2red:
-        number: 201
-        tags: R
+        number: A0
+        default_color: R
     kill2green:
-        number: 201
-        tags: G
+        number: A1
+        default_color: G
     kill2blue:
-        number: 201
-        tags: B
+        number: A1
+        default_color: B
     kill2white:
-        number: 201
-        tags: W
+        number: A1
+        default_color: W
     kill3red:
-        number: 202
-        tags: R
+        number: A2
+        default_color: R
     kill3green:
-        number: 202
-        tags: G
+        number: A2
+        default_color: G
     kill3white:
-        number: 202
-        tags: W
+        number: A2
+        default_color: W
     kill3blue:
-        number: 202
-        tags: B
+        number: A2
+        default_color: B
     kill4red:
-        number: 203
-        tags: R
+        number: A3
+        default_color: R
     kill4green:
-        number: 203
-        tags: G
+        number: A3
+        default_color: G
     kill4blue:
-        number: 203
-        tags: B
+        number: A3
+        default_color: B
     kill4white:
-        number: 203
-        tags: W
+        number: A3
+        default_color: W
     kill5red:
-        number: 204
-        tags: R
+        number: A4
+        default_color: R
     kill5green:
-        number: 204
-        tags: G
+        number: A4
+        default_color: G
     kill5blue:
-        number: 204
-        tags: B
+        number: A4
+        default_color: B
     kill5white:
-        number: 204
-        tags: W
+        number: A4
+        default_color: W
     kill6red:
-        number: 205
-        tags: R
+        number: A5
+        default_color: R
     kill6green:
-        number: 205
-        tags: G
+        number: A5
+        default_color: G
     kill6blue:
-        number: 205
-        tags: B
+        number: A5
+        default_color: B
     kill6white:
-        number: 205
-        tags: W
+        number: A5
+        default_color: W
     kill7red:
-        number: 206
-        tags: R
+        number: A6
+        default_color: R
     kill7green:
-        number: 206
-        tags: G
+        number: A6
+        default_color: G
     kill7blue:
-        number: 206
-        tags: B
+        number: A6
+        default_color: B
     kill7white:
-        number: 206
-        tags: W
+        number: A6
+        default_color: W
     target1red:
-        number: 214
-        tags: R
+        number: A14
+        default_color: R
     target1green:
-        number: 214
-        tags: G
+        number: A14
+        default_color: G
     target1blue:
-        number: 214
-        tags: B
+        number: A14
+        default_color: B
+    target1white:
+        number: A14
+        default_color: W
     target2red:
-        number: 213
-        tags: R
+        number: A13
+        default_color: R
     target2green:
-        number: 213
-        tags: G
+        number: A13
+        default_color: G
     target2blue:
-        number: 213
-        tags: B
+        number: A13
+        default_color: B
+    target2white:
+        number: A13
+        default_color: W
     target3red:
-        number: 212
-        tags: R
+        number: A12
+        default_color: R
     target3green:
-        number: 212
-        tags: G
+        number: A12
+        default_color: G
     target3blue:
-        number: 212
-        tags: B
+        number: A12
+        default_color: B
+    target3white:
+        number: A12
+        default_color: W
     target4red:
-        number: 211
-        tags: R
+        number: A11
+        default_color: R
     target4green:
-        number: 211
-        tags: G
+        number: A11
+        default_color: G
     target4blue:
-        number: 211
-        tags: B
+        number: A11
+        default_color: B
+    target4white:
+        number: A11
+        default_color: W
     target5red:
-        number: 208
-        tags: R
+        number: A8
+        default_color: R
     target5green:
-        number: 208
-        tags: G
+        number: A8
+        default_color: G
     target5blue:
-        number: 208
-        tags: B
+        number: A8
+        default_color: B
+    target5white:
+        number: A8
+        default_color: W
     target6red:
-        number: 210
-        tags: R
+        number: A10
+        default_color: R
     target6green:
-        number: 210
-        tags: G
+        number: A10
+        default_color: G
     target6blue:
-        number: 210
-        tags: B
+        number: A10
+        default_color: B
+    target6white:
+        number: A10
+        default_color: W
     resecueRred:
-        number: 213
-        tags: R
+        number: A13
+        default_color: R
     resecueRgreen:
-        number: 213
-        tags: G
+        number: A13
+        default_color: G
     resecueRblue:
-        number: 213
-        tags: B
+        number: A13
+        default_color: B
     resecueLred:
-        number: 214
-        tags: R
+        number: A14
+        default_color: R
     resecueLgreen:
-        number: 214
-        tags: G
+        number: A14
+        default_color: G
     resecueLblue:
-        number: 214
-        tags: B
+        number: A14
+        default_color: B
     ripOffred:
-        number: 215
-        tags: R
+        number: A15
+        default_color: R
     ripOffgreen:
-        number: 215
-        tags: G
+        number: A15
+        default_color: G
     ripOffblue:
-        number: 215
-        tags: B
+        number: A15
+        default_color: B
     ripOffwhite:
-        number: 215
-        tags: W
+        number: A15
+        default_color: W
     releasered:
-        number: 209
-        tags: R
+        number: A9
+        default_color: R
     releasegreen:
-        number: 209
-        tags: G
+        number: A9
+        default_color: G
     releaseblue:
-        number: 209
-        tags: B
+        number: A9
+        default_color: B
+    releasewhite:
+        number: A9
+        default_color: W
     giblue:
-        number: 216
-        tags: B
+        number: A252
+        default_color: B
     gired:
-        number: 216
-        tags: R
+        number: A252
+        default_color: R
     gigreen:
-        number: 216
-        tags: G
+        number: A252
+        default_color: G
+    giwhite:
+        number: A252
+        default_color: W
+    gimagenta:
+        number: A252
+        default_color: M
+    gicyan:
+        number: A252
+        default_color: C
+    giyellow:
+        number: A252
+        default_color: Y
+    radar_green:
+        number: A253
+        default_color: G
+    radar_red:
+        number: A253
+        default_color: R
+    radar_blue:
+        number: A253
+        default_color: B
+    radar_rotate_blue:
+        number: A253
+        default_color: X
+    radar_rotate_red:
+        number: A253
+        default_color: Y
+    radar_rotate_green:
+        number: A253
+        default_color: Z
+    ALL_GI:
+        number: A128
+        default_colour: W
     
-
-PRBallSave:
-
-    pulseCoils:
-
-    resetSwitches:
-#        shooterL: open
-#        outlaneL: open
-#        inlaneL: open
-#        threeBankTargets: open
-#        rightTopPost: open
-#        captiveBall1: open
-#        mystery: open
-#        leftRampEnter: closed
-#        leftRollover: open
-#        inlaneR: open
-#        topCenterRollover: open
-#        leftScorePost: open
-#        subwayEnter1: open
-#        subwayEnter2: open
-#        shooterR: open
-#        outlaneR: open
-#        inlaneFarR: open
-#        slingL: open
-#        slingR: open
-#        captiveBall2: open
-#        dropTargetJ: open
-#        dropTargetU: open
-#        dropTargetD: open
-#        dropTargetG: open
-#        dropTargetE: open
-#        trough1: closed
-#        leftRampEnter: closed
-#        leftRampToLock: closed
-#        leftRampExit: closed
-#        rightRampEnter: closed
-#        centerRampExit: closed
-#        captiveBall3: open
-#        topRightOpto: closed
-#        topRampExit: closed
-#        rightRampExit: closed
-#        globePosition2: open
-    stopSwitches:
-#        shooterR: closed
-#        shooterL: closed
-#        popperL: active
-#        popperR: active
-#        # don't ball search if a flipper button is pressed
-#        flipperLwL: closed
-#        flipperLwR: closed
 

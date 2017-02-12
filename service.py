@@ -31,7 +31,8 @@ class ServiceModeSkeleton(game.Mode):
 		super(ServiceModeSkeleton, self).__init__(game, priority)
                 self.log = logging.getLogger('f14.service')
 		self.name = ""
-                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['service_bgnd'].frames[0])
+                #self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['service_bgnd'].frames[0])
+		self.bgnd_layer = self.game.animations['service_bgnd']
 		self.title_layer = dmd.TextLayer(1, 0, font, "left")
 		self.item_layer = dmd.TextLayer(128/2, 11, font, "center")
 		self.instruction_layer = dmd.TextLayer(1, 25, font, "left")
@@ -151,8 +152,8 @@ class LampTest(ServiceModeList):
 		self.name = "Lamp Test"
 
                 #set layers
-                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['switch_test_bgnd'].frames[0])
-		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.dmd_assets['matrix_square'].frames[0])
+                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.animations['switch_test_bgnd'].frames[0])
+		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.animations['matrix_square'].frames[0])
                 self.matrix_layer.composite_op = "blacksrc"
                 self.matrix_layer.target_x = 128
                 self.matrix_layer.target_y = 32
@@ -249,8 +250,8 @@ class CoilTest(ServiceModeList):
                 self.name = "Coil Test"
 
                 #setup layers
-                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['coil_test_bgnd'].frames[0])
-		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.dmd_assets['matrix_square'].frames[0])
+                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.animations['coil_test_bgnd'].frames[0])
+		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.animations['matrix_square'].frames[0])
                 self.matrix_layer.composite_op = "blacksrc"
                 self.matrix_layer.target_x = 128
                 self.matrix_layer.target_y = 32
@@ -406,8 +407,8 @@ class SwitchTest(ServiceModeSkeleton):
 	def __init__(self, game, priority, font, big_font):
 		super(SwitchTest, self).__init__(game, priority,font)
 		self.name = "Switch Test"
-                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['switch_test_bgnd'].frames[0])
-		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.dmd_assets['matrix_square'].frames[0])
+                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.animations['switch_test_bgnd'].frames[0])
+		self.matrix_layer = dmd.FrameLayer(opaque=False, frame=self.game.animations['matrix_square'].frames[0])
                 self.matrix_layer.composite_op = "blacksrc"
                 self.matrix_layer.target_x = 128
                 self.matrix_layer.target_y = 32
@@ -621,7 +622,7 @@ class SettingsEditor(ServiceModeList):
 	"""Service Mode."""
 	def __init__(self, game, priority, font, big_font, name, itemlist):
 		super(SettingsEditor, self).__init__(game, priority, font)
-                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.dmd_assets['service_bgnd'].frames[0])
+                self.bgnd_layer = dmd.FrameLayer(opaque=True, frame=self.game.animations['service_bgnd'].frames[0])
 		self.title_layer = dmd.TextLayer(1, 0, font, "left")
 		self.item_layer = dmd.TextLayer(1, 11, font, "left")
 		self.instruction_layer = dmd.TextLayer(1, 25, font, "left")

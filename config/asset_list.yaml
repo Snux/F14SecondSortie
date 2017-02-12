@@ -1,0 +1,375 @@
+UserInterface:
+  splash_screen: 'f14_logo.png'
+  progress_bar:
+      x_center: 0.495
+      y_center: 0.74
+      width: 0.9
+      height: 0.05
+      border: 
+        - 0
+        - 0
+        - 0
+      fill: 
+        - 255
+        - 0
+        - 0
+  text:
+    color: [0,0,128] # no 0/255 Red, 0/255 Green, 128/255 Blue
+    y_center: 0.9
+LampShows:
+- key: 'f14fireboth'
+  file: 'f14fireboth.lampshow'
+- key: 'topstrobe'
+  file: 'topstrobe.lampshow'
+- key: 'wipeleftright'
+  file: 'wipeleftright.lampshow'
+- key: 'pulse'
+  file: 'attract1.lampshow'
+- key: 'rotate'
+  file: 'attract2.lampshow'
+- key: 'wipeupdown'
+  file: 'wipeupdown.lampshow'
+Animations:
+- key: 'alpha_available'
+  file: 'alpha_available.dmd'
+  frame_time : 2
+- key: 'bravo_available'
+  file: 'bravo_available.dmd'
+  frame_time : 2
+- key: 'charlie_available'
+  file: 'charlie_available.dmd'
+  frame_time : 2
+- key: 'delta_available'
+  file: 'delta_available.dmd'
+  frame_time : 2
+- key: 'echo_available'
+  file: 'echo_available.dmd'
+  frame_time : 2
+- key: 'fox_available'
+  file: 'fox_available.dmd'
+  frame_time : 2
+- key: 'golf_available'
+  file: 'golf_available.dmd'
+  frame_time : 2
+- key: 'alpha_spin'
+  file: 'alpha_rotate.dmd'
+  frame_time : 2
+- key: 'bravo_spin'
+  file: 'bravo_rotate.dmd'
+  frame_time : 2
+- key: 'charlie_spin'
+  file: 'charlie_rotate.dmd'
+  frame_time : 2
+- key: 'delta_spin'
+  file: 'delta_rotate.dmd'
+  frame_time : 2
+- key: 'echo_spin'
+  file: 'echo_rotate.dmd'
+  frame_time : 2
+- key: 'fox_spin'
+  file: 'fox_rotate.dmd'
+  frame_time : 2
+- key: 'golf_spin'
+  file: 'golf_rotate.dmd'
+  frame_time : 2
+- key: 'bonus2x'
+  file: 'bonus2x.dmd'
+  frame_time : 2
+- key: 'bonus3x'
+  file: 'bonus3x.dmd'
+  frame_time : 2
+- key: 'bonus4x'
+  file: 'bonus4x.dmd'
+  frame_time : 2
+- key: 'bonus5x'
+  file: 'bonus5x.dmd'
+  frame_time : 2
+- key: 'bonus6x'
+  file: 'bonus6x.dmd'
+  frame_time : 2
+- key: 'bonus7x'
+  file: 'bonus7x.dmd'
+  frame_time : 2
+- key: 'bonus8x'
+  file: 'bonus8x.dmd'
+  frame_time : 2
+- key: 'ball_saved'
+  file: 'ball_saved.dmd'
+  frame_time : 2
+- key: 'f14_roll1'
+  file: 'f14_roll1.dmd'
+  frame_time : 2
+- key: 'f14_roll2'
+  file: 'f14_roll2.dmd'
+  frame_time : 2
+- key: 'f14_roll3'
+  file: 'f14_roll3.dmd'
+  frame_time : 2
+- key: 'f14_roll4'
+  file: 'f14_roll4.dmd'
+  frame_time : 2
+- key: 'f14_roll5'
+  file: 'f14_roll5.dmd'
+  frame_time : 2
+- key: 'f14_roll6'
+  file: 'f14_roll6.dmd'
+  frame_time : 2
+- key: 'f14_roll7'
+  file: 'f14_roll7.dmd'
+  frame_time : 2
+- key: 'f14_roll8'
+  file: 'f14_roll8.dmd'
+  frame_time : 2
+- key: 'f14_roll9'
+  file: 'f14_roll9.dmd'
+  frame_time : 2
+- key: 'second_sortie_rotate'
+  file: 'second_sortie_rotate.avi'
+  frame_time : 2
+  repeatAnim: True
+  streamingMovie: True
+- key: 'credit_background'
+  file: 'Test F14 Background.avi'
+  streamingMovie: True
+  frame_time: 2
+- key: 'tomcat_multiball_rotate'
+  file: 'tomcat_multiball_rotate.dmd'
+  frame_time : 2
+  repeatAnim: True
+- key: 'ball_1_locked'
+  file: 'ball_1_locked.dmd'
+  frame_time : 2
+- key: 'ball_2_locked'
+  file: 'ball_2_locked.dmd'
+  frame_time : 2
+- key: 'ball_3_locked'
+  file: 'ball_3_locked.dmd'
+  frame_time : 2
+- key: 'lock_is_lit'
+  file: 'lock_is_lit.dmd'
+  frame_time : 2
+- key: 'lock_on'
+  file: 'lock_on.dmd'
+  frame_time : 2
+- key: 'f14missile1'
+  file: 'f14missile1.dmd'
+  frame_time : 2
+- key: 'f14missile2'
+  file: 'f14missile2.dmd'
+  frame_time : 2
+- key: 'f14roll'
+  file: 'f14roll.dmd'
+  frame_time : 2
+- key: 'f14landing'
+  file: 'f14landing.dmd'
+  frame_time : 2
+- key: 'f14front'
+  file: 'f14front.dmd'
+  frame_time : 2
+- key: 'rescue_active'
+  file: 'rescue_active.dmd'
+  frame_time : 2
+- key: 'ball_rescued'
+  file: 'ball_rescued.dmd'
+  frame_time : 2
+- key: 'shoot_again'
+  file: 'shoot_again.dmd'
+  frame_time : 2
+- key: 'extra_ball'
+  file: 'extra_ball.dmd'
+  frame_time : 2
+- key: 'coil_test_bgnd'
+  file: 'coil_test_bgnd.dmd'
+  frame_time : 2
+- key: 'service_bgnd'
+  file: 'service_bgnd.dmd'
+  frame_time : 2
+- key: 'switch_test_bgnd'
+  file: 'switch_test_bgnd.dmd'
+  frame_time : 2
+- key: 'switch_test_grid'
+  file: 'switch_test_grid.dmd'
+  frame_time : 2
+- key: 'matrix_square'
+  file: 'matrix_square.dmd'
+  frame_time : 2
+- key : 'flames'
+  file: 'flames/flame_%03d.png'
+  frame_time : 3
+  repeatAnim : True
+  composite_op: 'blacksrc' # make the black in the image transparent
+
+Fonts:
+  FontStyles:
+  - key: weird
+    interior_color:
+      - 0
+      - 0
+      - 128
+    line_width: 1
+    line_color:
+      - 255
+      - 0
+      - 128
+  FontStyles:
+  - key: blueish
+    interior_color:
+      - 0
+      - 0
+      - 255
+    line_width: 1
+    line_color:
+      - 0
+      - 0
+      - 128
+  HDFonts:
+  - key: 'Tiny7'
+    file: 'Oswald-Heavy.ttf'
+    size: 14
+    # NOTE: if you want to use a system font, instead of file use the following tag srtle
+    # systemName: "consolas"
+  - key: 'Font_7x5'
+    file: 'Oswald-Heavy.ttf'
+    size: 14
+  - key: 'Font_14x10'
+    file: 'Oswald-Heavy.ttf'
+    size: 20
+  - key: 'SM20aa'
+    file: 'Oswald-Heavy.ttf'
+    size: 20
+  - key: 'mono-tiny'
+    file: 'Oswald-Heavy.ttf'
+    size: 18
+  - key: 'mono-micro'
+    file: 'Oswald-Heavy.ttf'
+    size: 12
+  - key: 'settings-font'
+    file: 'Oswald-Heavy.ttf'
+    size: 16
+  - key: 'settings-font-small'
+    file: 'Oswald-Heavy.ttf'
+    size: 15
+  - key: 'tiny'
+    file: 'Oswald-Heavy.ttf'
+    size: 8
+  - key: 'small'
+    file: 'Oswald-Heavy.ttf'
+    size: 12
+  - key: 'med'
+    file: 'Oswald-Heavy.ttf'
+    size: 15
+  - key: 'large'
+    file: 'Oswald-Heavy.ttf'
+    size: 20
+  - key: 'score_1p'
+    file: 'Oswald-Heavy.ttf'
+    size: 48
+  - key: 'score_activeL'
+    file: 'Oswald-Heavy.ttf'
+    size: 48
+  - key: 'score_activeM'
+    file: 'Oswald-Medium.ttf'
+    size: 40
+  - key: 'score_active'
+    file: 'Oswald-Medium.ttf'
+    size: 40
+  - key: 'score_activeS'
+    file: 'Oswald-Light.ttf'
+    size: 32
+  - key: 'score_inactive'
+    file: 'Oswald-Light.ttf'
+    size: 32
+  - key: 'score_sub'
+    file: 'Oswald-Heavy.ttf'
+    size: 14
+  - key: 'default_msg'
+    file: 'Oswald-Heavy.ttf'
+    size: 15
+  - key: 'tilt-font-small'
+    file: 'Oswald-Heavy.ttf'
+    size: 15
+  - key: 'tilt-font-big'
+    file: 'Oswald-Heavy.ttf'
+    size: 18
+  - key: 'high_score_entry_inits'
+    file: 'Oswald-Heavy.ttf'
+    size: 12
+  - key: 'high_score_entry_msg'
+    file: 'Oswald-Heavy.ttf'
+    size: 12
+  - key: 'high_score_entry_letters'
+    file: 'Oswald-Heavy.ttf'
+    size: 12
+  DMDFonts:
+  # Example follows; I don't actually use any, but this is how you would.
+  # - key: 'CC_9px'
+  #   file: "Font_CC_9px_az.dmd"
+Audio:
+  Music:
+    - key: 'dangerzone'
+      file: 'Kenny Loggins - Danger Zone.mp3'
+      volume: 0.5
+    - key: 'shooterlane'
+      file: 'Tomcat shooter.mp3'
+    - key: 'tomcatmain'
+      file: 'Tomcat main.mp3'
+  Effects:
+    # - key: 'ball_serve'
+    #   file: 'BallServe.ogg'
+    # - key: 'ball_launch'
+    #   file: 'ballServed.ogg'
+    # - key: 'ball_saved'
+    #   file: 'AutoFire.ogg'
+    - key: 'ball_saved'
+      file: 'AutoFire.ogg'
+    # - key: 'ss_tick'
+    #   file: 'skill_shot_target_move.ogg'
+    # - key: 'ss_hit'
+    #   file: 'TargetHit.ogg'
+    # - key: 'ss_miss'
+    #   file: 'ss_miss.ogg'
+    - key: 'service_save'
+      file: 'accomplish_tune.wav'
+    - key: 'service_previous'
+      file: 'click.wav'
+    - key: 'service_next'
+      file: 'click.wav'
+    - key: 'service_enter'
+      file: 'MENU A_Select.wav'
+    - key: 'service_exit'
+      file: 'MENU A_Back.wav'
+    - key: 'service_cancel'
+      file: 'MESSAGE-B_Decline.wav'
+    - key: 'startup'
+      file: 'Jet_F14_TakeOff.wav'
+    - key: 'inbound'
+      file: 'inound.wav'
+    - key: 'slinglow'
+      file: 'slinglow.wav'
+    - key: 'tomcat'
+      file: 'tomcat.wav'
+    - key: 'launch'
+      file: 'launch.wav'
+    - key: 'alarm'
+      file: 'alarm.wav'
+    - key: 'explode1'
+      file: 'explode1.wav'
+    - key: 'explode2'
+      file: 'explode2.wav'
+    - key: 'shoot1'
+      file: 'shoot1.wav'
+    - key: 'spinner'
+      file: 'spinner.wav'
+    - key: 'machine_gun_short'
+      file: 'machine_gun_short.wav'
+    - key: 'machine_gun_long'
+      file: 'machine_gun_long.wav'
+    - key: 'lock_on'
+      file: 'lock_on.mp3'
+  Voice:
+    - key: 'launchspeech'
+      file: 'missiles launched speech.wav'
+      volume: 0.8
+    - key: 'ss_missV'
+      file: 'YouMissed2.ogg'
+      volume: 0.8

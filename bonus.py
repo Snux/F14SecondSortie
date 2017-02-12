@@ -49,11 +49,9 @@ class Bonus(game.Mode):
 		self.game.coils.flipperEnable.disable()
 		#self.game.sound.stop_music()
                 self.game.sound.fadeout_music(time_ms=1000)
-		self.game.utilities.disableGI()
+		#self.game.utilities.disableGI()
 
-		#### Disable All Lamps ####
-		for lamp in self.game.lamps:
-			lamp.disable()
+		self.game.utilities.disableAllLamps(include_GI=True)
 
 	def mode_stopped(self):
 		# Enable the flippers

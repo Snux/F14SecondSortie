@@ -1,0 +1,89 @@
+font_path:
+    - ./assets/
+    - ./assets/dmd/
+    - c:\p-roc\shared\dmd\
+hdfont_path:
+    - ./assets/
+    - ./assets/dmd/
+    - ./assets/fonts/
+    - c:\p-roc\shared\dmd\
+config_path:
+    - C:\P-ROC\shared\config\
+dmd_path: .\assets\dmd\
+sound_path: .\assets\sound\
+lampshow_path: .\assets\lamps\
+voice_dir: voice/
+sfx_dir: sfx/
+music_dir: music/
+PYSDL2_DLL_PATH: c:/P-ROC/DLLs
+#c:\Python26\DLLs\SDL2\
+
+default_modes:  # these are the default provided modes by SkeletonGame; turn them off here.
+    score_display: True
+    bonus_tally: True
+    osc_input: True
+    service_mode: True
+    ball_save: False
+    trough_mode: False
+
+#pinproc_class: procgame.fakepinproc.FakePinPROC
+
+# all of this is for the hdDMD
+use_virtual_dmd_only: True
+dmd_grid_path: ./assets/dmd/
+dmd_dots_w: 1200
+dmd_dots_h: 600
+dmd_dot_filter: False
+dmd_fullscreen: False
+desktop_dmd_scale: 1
+dmd_framerate: 30
+screen_position_x: 100
+screen_position_y: 30
+dmd_window_border: False
+
+# this is where I put my map...
+vp_game_map_file: /P-ROC/shared/vp_game_map.yaml
+
+keyboard_switch_map:
+    w: S28 # unused s54
+    n: S84 # RIGHT flipper
+    r: S82 # left center target
+    q: S55 # magnet
+    b: S82 # LEFT flipper
+    a: S18 # SERVICE BUTTON #SD4 is volume up
+    z: SD6 #SD5 is exit
+    s: S13 # start button
+    # 1: S15 # SOF trough 1
+    # 2: S16 # trough 2
+    # 3: S17 # trough 3
+    d: S26 # shooter lane
+    v: S77 # lower lock
+    f: S78 # upperLock:
+    m: S76 # TOP "EJECT" / SAUCER
+    #v: SF4
+    #b: SF2
+    x: S18
+    g: S37 # Orbit/Loop spinner left 
+    h: S38 # Orbit/Loop spinner right 
+    k: S85 # top Loop Left
+    l: S86 # top Loop Right
+    1: S23 # SOF trough 1
+    2: S24 # trough 2
+    3: S25 # trough 3
+    r: S42 # A
+    t: S43 # V
+    y: S44 # E
+    u: S45 # N
+    i: S46 # G
+    o: S47 # E
+    p: S48 # R
+    4: S66 # SOF - ramp into miniPF
+    5: S57 # left spinner - out of mini PF
+    6: S31 # DROP 1
+    7: S32 # DROP 2
+    8: S33 # DROP 3
+    9: S34 # DROP 4
+    0: S35 # DROP 5    
+    c: S55 # Top 10pts magnet
+
+

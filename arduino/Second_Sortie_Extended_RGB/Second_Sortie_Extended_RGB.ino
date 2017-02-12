@@ -45,7 +45,7 @@ void setup() {
   
   
   // Setup the serial port, need to find the fastest reliable rate
-  Serial.begin(19200);
+  Serial.begin(9600);
 
   inserts.begin();
   gi.begin();
@@ -69,6 +69,7 @@ void loop() {
   // enough for a command
   if (Serial.available() >= 6) {
     // Grab the command
+    //Serial.write('X');
     command = Serial.read();
     // and the next 5 bytes
     byte1 = Serial.read(); byte2 = Serial.read(); byte3 = Serial.read(); byte4 = Serial.read(); byte5 = Serial.read();

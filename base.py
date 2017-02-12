@@ -31,6 +31,7 @@ import random
 import logging
 import procgame.dmd
 from procgame.dmd import font_named
+from procgame.game import SkeletonGame
 
 #from bonus import *
 
@@ -267,7 +268,7 @@ class BaseGameMode(game.Mode):
 		self.game.tiltStatus = 0
 
 		#setup high scores
-		self.game.ighscore_categories = []
+		self.game.highscore_categories = []
 
 		#### Classic High Score Data ####
 		cat = highscore.HighScoreCategory()
