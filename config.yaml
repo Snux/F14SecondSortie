@@ -21,7 +21,7 @@ PYSDL2_DLL_PATH: c:/P-ROC/DLLs
 default_modes:  # these are the default provided modes by SkeletonGame; turn them off here.
     score_display: True
     bonus_tally: True
-    osc_input: True
+    osc_input: False
     service_mode: True
     ball_save: False
     trough_mode: False
@@ -39,7 +39,7 @@ desktop_dmd_scale: 1
 dmd_framerate: 30
 screen_position_x: 100
 screen_position_y: 30
-dmd_window_border: False
+dmd_window_border: True
 
 # this is where I put my map...
 vp_game_map_file: /P-ROC/shared/vp_game_map.yaml

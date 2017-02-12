@@ -36,6 +36,7 @@ import pinproc
 import locale
 import os
 import logging
+import threading
 from time import strftime
 import procgame.dmd
 import procgame.assetmanager
@@ -155,7 +156,7 @@ class F14SecondSortie(game.BasicGame):
         #### Mode Definitions ####
         OSC_closed_switches = ['trough1', 'trough2', 'trough3', 'trough4']
 
-        self.osc = modes.OSC_Mode(game=self, priority=1, closed_switches=OSC_closed_switches)
+        #self.osc = modes.OSC_Mode(game=self, priority=1, closed_switches=OSC_closed_switches)
         #self.modes.add(self.osc)
 
         self.score_display = score_display.ScoreDisplay(self, 0)
@@ -295,25 +296,35 @@ class F14SecondSortie(game.BasicGame):
 
     def create_player(self, name):
         return Player(name)
+    
+    def end_run_loop(self):
+        super(F14SecondSortie, self).end_run_loop()
+        if self.arduino_client.running:
+            self.arduino_client.quit()
 
 def cleanup():
     import sdl2.ext
     sdl2.ext.quit()
-    from procgame.modes.osc import OSC_INST
-    global OSC_INST
-    if(OSC_INST is not None):
-        OSC_INST.OSC_shutdown()
+    #from procgame.modes.osc import OSC_INST
+    #global OSC_INST
+    #if(OSC_INST is not None):
+    #    OSC_INST.OSC_shutdown()
 
 def main():
     game = None
+    #try:
+    game = F14SecondSortie()
     log = logging.getLogger('f14.main')
-    try:
-        game = F14SecondSortie()
-        game.run_loop()
-        game.reset()
-        cleanup();
-    finally:
-        del game
+    log.info("Before run loop")
+    game.run_loop()
+        #game.reset()
+    log.info("Call cleanup")
+    cleanup();
+    log.info("Back from cleanup")
+    #finally:
+    #del game
+    threading.enumerate()
+    log.info("Done with thread")
 
 
 if __name__ == '__main__':
